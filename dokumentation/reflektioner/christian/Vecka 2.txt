@@ -1,0 +1,11 @@
+•what do I want to learn or understand better?
+Just nu hur man skriver och strukturerar upp user stories så att de är lagom stora, samt att veta ungefär hur mycket man hinner med på en sprint (1 vecka).
+
+•how can I help someone else, or the entire team, to learn something new?
+Nu ska vi sätta oss in i hur man skapar en discord bot och ingen har någon erfarenhet utav det och därför behöver alla lära sig genom tutorials och av varandra.
+
+•what is my contribution towards the team’s use of Scrum?
+En sålänge så har vi inte gått igenom det utan tänker göra det nästa vecka.
+
+•what is my contribution towards the team’s deliveries?
+Att alltid vara med när vi diskuterar om hur vi ska gå vidare.
