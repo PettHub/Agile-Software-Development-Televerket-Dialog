@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+node.js and typescript in order to be able to write a discord bot
+
+how can I help someone else, or the entire team, to learn something new?
+N/A
+
+what is my contribution towards the team’s use of Scrum?
+To be implemented
+
+what is my contribution towards the team’s deliveries?
+Discussions about language and problems
