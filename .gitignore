@@ -144,3 +144,4 @@ temp/
 # don't push bot token to git
 token.ts
 token.js
+dist
