@@ -142,4 +142,5 @@ temp/
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
 
 # don't push bot token to git
-token.txt
+token.ts
+token.js
