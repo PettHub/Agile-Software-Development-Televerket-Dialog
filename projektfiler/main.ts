@@ -5,7 +5,6 @@ const client = new Discord.Client();
 
 let prefix = '!';
 
-
 client.once('ready', () => {
     console.log('bot is now online');
 });
@@ -24,4 +23,4 @@ client.on('message', message =>{
     }
 })
 
-client.login(token());
+client.login(token(true)); //true = dev, false = product
