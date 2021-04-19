@@ -1,9 +1,13 @@
 import Discord from 'discord.js';
-import {token} from './token';
+//import {token} from './token';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({path : path.join(__dirname,`.env.${process.env.NODE_ENV}`)});
 
 const client = new Discord.Client();
 
-let prefix = '!';
+let prefix = process.env.DISCORD_PREFIX;
 
 client.once('ready', () => {
     console.log('bot is now online');
@@ -19,8 +23,8 @@ client.on('message', message =>{
         message.channel.send('pong!');
     } 
     else if (command === 'cool'){
-        message.channel.send('me')
+        message.channel.send('me');
     }
 })
 
-client.login(token(true)); //true = dev, false = product
+client.login(process.env.DISCORD_TOKEN); //true = dev, false = product
