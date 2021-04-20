@@ -1,6 +1,7 @@
-import {CommandPing} from './CommandPing';
+import {CommandPing} from 'CommandPing';
+import {CommandAddSection} from 'CommandAddSection';
 import Discord from 'discord.js';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv/types';
 import path from 'path';
 
 
@@ -27,6 +28,8 @@ client.on('message', message =>{
         case 'cool':
             message.channel.send('me');
             break;
+        case 'addsection':
+        new CommandAddSection().doIt(message, args);
     }
 });
 
