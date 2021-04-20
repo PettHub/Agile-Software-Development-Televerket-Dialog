@@ -1,7 +1,8 @@
+import {CommandPing} from './CommandPing';
 import Discord from 'discord.js';
-//import {token} from './token';
 import dotenv from 'dotenv';
 import path from 'path';
+
 
 dotenv.config({path : path.join(__dirname,`.env.${process.env.NODE_ENV}`)});
 
@@ -19,12 +20,17 @@ client.on('message', message =>{
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
-    if(command === 'ping'){
-        message.channel.send('pong!');
-    } 
-    else if (command === 'cool'){
-        message.channel.send('me');
+    switch (command){
+        case 'ping':
+            new CommandPing().doIt(message, args);
+            break;
+        case 'cool':
+            message.channel.send('me');
+            break;
     }
-})
+});
+
+
+
 
 client.login(process.env.DISCORD_TOKEN); //true = dev, false = product
