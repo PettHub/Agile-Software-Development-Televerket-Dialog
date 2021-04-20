@@ -1,4 +1,5 @@
 import {CommandPing} from './CommandPing';
+import {PMHandler} from './Pms';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -26,6 +27,9 @@ client.on('message', message =>{
             break;
         case 'cool':
             message.channel.send('me');
+            break;
+        case 'dm':
+            new PMHandler().doIt(message.author, client, message.guild);
             break;
     }
 });
