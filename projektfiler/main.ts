@@ -1,7 +1,7 @@
-import {CommandPing} from 'CommandPing';
-import {CommandAddSection} from 'CommandAddSection';
+import {CommandPing} from './CommandPing';
+import {CommandAddSection} from './CommandAddSection';
 import Discord from 'discord.js';
-import dotenv from 'dotenv/types';
+import dotenv from 'dotenv';
 import path from 'path';
 
 
