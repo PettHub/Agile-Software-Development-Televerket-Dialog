@@ -2,39 +2,55 @@ import Discord from 'discord.js';
 
 export class CommandAddSection {
     
-    static sections: string[] = [];
+    static sectionList: string[] = []; //Contains only section names (e.g. = [Best Gamer,Funniest Person])
 
     doIt(message : Discord.Message, args){
 
-        //currently accepts several one-word section names (supports adding several sections at once)
+        //
+        let tempList: string[] = [];
+        let tempString: string = '';
+        let formattedString: string = '';
 
-        //check message sender role
-        if(false) //if not mod (replace false with test access-method later)
+        //Check message sender role (replace false with test access-method later)
+        if(false) //If sender is not a moderator: 
         {
             message.channel.send('You are not a moderator!');
             return;
         }
-        else //if it is a mod
+        else //If sender is a moderator: 
         {
-            //console.log(args);
-            for(let a of args){
-                if(!(CommandAddSection.sections.indexOf(a) > -1))
-                {
-                CommandAddSection.sections.push(a);
-                message.channel.send(a + ' has been added!');
+            for(let a of args){ //Restores args to include the spaces between the words
+                if(args.indexOf(a) == (args.length - 1)){
+                    tempString = tempString.concat(a);
                 }else{
-                    message.channel.send('Section ' + a + ' has already been added earlier.');
+                    tempString = tempString.concat(a, ' ');
+                }
+            }
+
+            tempList = tempString.split(/, +/); //Splits where there are commas, to distinguish section-names (tempList consists of section names)
+            
+            for(let a of tempList){
+                if(!(CommandAddSection.sectionList.indexOf(a) > -1)) //If the section has NOT already been added, add section name to sectionList
+                {
+                CommandAddSection.sectionList.push(a);
+                 message.channel.send('Section ' + a + ' has been added!');
+                }else{
+                    message.channel.send('Section ' + a + ' has already been added earlier.'); //If the section has been added, inform user
                 }
             }
             
-            message.channel.send('The current added sections are: ' + CommandAddSection.sections);
-            //^should be formatted to look better
+            //Creates a formatted string from the sectionList, to make printing look good 
+            //Should probably be refactored into a common nominations-class, to make it accessible for !removesections and possibly !viewsections
+            for(let s of CommandAddSection.sectionList){ 
+                if(CommandAddSection.sectionList.indexOf(s) == (CommandAddSection.sectionList.length - 1)){
+                    formattedString = formattedString.concat(s, '.')
+                }else
+                formattedString = formattedString.concat(s, ', ');
+            }
 
+            message.channel.send('The current added sections are: ' + formattedString); //Prints the formatted list
 
             return;
         }
-
-
-
     }
 }
