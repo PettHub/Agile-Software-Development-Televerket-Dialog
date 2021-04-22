@@ -4,7 +4,7 @@ export class PMHandler {
     constructor(){
         
     }
-    doIt(author : Discord.User, client : Discord.Client, guild : Discord.Guild){
+    doIt(author : Discord.User, client : Discord.Client){
 
         let listener = message => { //saves listener to be able to remove it when it is done
             if (author === message.author){

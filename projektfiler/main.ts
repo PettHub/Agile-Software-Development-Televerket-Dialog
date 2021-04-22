@@ -30,7 +30,7 @@ client.on('message', message =>{
             message.channel.send('me');
             break;
         case 'dm':
-            new PMHandler().doIt(message.author, client, message.guild);
+            new PMHandler().doIt(message.author, client);
             break;
         case 'addsection':
             new CommandAddSection().doIt(message, args);
