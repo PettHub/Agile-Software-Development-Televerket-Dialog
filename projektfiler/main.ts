@@ -1,5 +1,6 @@
 import {CommandPing} from './CommandPing';
 import {PMHandler} from './Pms';
+import {CommandAddSection} from './CommandAddSection';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -30,6 +31,9 @@ client.on('message', message =>{
             break;
         case 'dm':
             new PMHandler().doIt(message.author, client, message.guild);
+            break;
+        case 'addsection':
+            new CommandAddSection().doIt(message, args);
             break;
     }
 });
