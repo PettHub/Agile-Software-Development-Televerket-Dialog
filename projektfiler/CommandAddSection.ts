@@ -6,7 +6,6 @@ export class CommandAddSection {
 
     doIt(message : Discord.Message, args){
 
-        //
         let tempList: string[] = [];
         let tempString: string = '';
         let formattedString: string = '';
@@ -19,7 +18,7 @@ export class CommandAddSection {
         }
         else //If sender is a moderator: 
         {
-            for(let a of args){ //Restores args to include the spaces between the words
+            for(let a of args){ //Restores input args to include the spaces between the words
                 if(args.indexOf(a) == (args.length - 1)){
                     tempString = tempString.concat(a);
                 }else{
@@ -27,7 +26,7 @@ export class CommandAddSection {
                 }
             }
 
-            tempList = tempString.split(/, +/); //Splits where there are commas, to distinguish section-names (tempList consists of section names)
+            tempList = tempString.split(/, +/); //Splits where there are commas, to distinguish section-names (tempList consists of entered section names)
             
             for(let a of tempList){
                 if(!(CommandAddSection.sectionList.indexOf(a) > -1)) //If the section has NOT already been added, add section name to sectionList
@@ -42,10 +41,10 @@ export class CommandAddSection {
             //Creates a formatted string from the sectionList, to make printing look good 
             //Should probably be refactored into a common nominations-class, to make it accessible for !removesections and possibly !viewsections
             for(let s of CommandAddSection.sectionList){ 
-                if(CommandAddSection.sectionList.indexOf(s) == (CommandAddSection.sectionList.length - 1)){
+                if(CommandAddSection.sectionList.indexOf(s) == (CommandAddSection.sectionList.length - 1)){ //end with dot
                     formattedString = formattedString.concat(s, '.')
                 }else
-                formattedString = formattedString.concat(s, ', ');
+                formattedString = formattedString.concat(s, ', '); //Comma and space between section names
             }
 
             message.channel.send('The current added sections are: ' + formattedString); //Prints the formatted list
