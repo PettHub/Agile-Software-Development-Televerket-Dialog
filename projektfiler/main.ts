@@ -1,6 +1,7 @@
 import {CommandPing} from './CommandPing';
 import {PMHandler} from './Pms';
 import {CommandAddSection} from './CommandAddSection';
+import {TestAccess} from './TestAccess';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -15,6 +16,7 @@ let prefix = process.env.DISCORD_PREFIX;
 client.once('ready', () => {
     console.log('bot is now online');
 });
+let accesscontrol = new TestAccess('');
 
 client.on('message', message =>{
     if(!message.content.startsWith(prefix) || message.author.bot) return;
@@ -30,10 +32,21 @@ client.on('message', message =>{
             message.channel.send('me');
             break;
         case 'dm':
-            new PMHandler().doIt(message.author, client, message.guild);
+            new PMHandler().doIt(message.author, client);
             break;
         case 'addsection':
             new CommandAddSection().doIt(message, args);
+            break;
+        case 'hasaccess':
+            if(accesscontrol.doIt(message, 'mod')){
+                message.channel.send('You have access');
+            }
+            else{
+                message.channel.send('You do not have access');
+            }
+            break;
+        case 'setmod':
+            accesscontrol.setMod(message, args.shift().toLowerCase());
             break;
     }
 });
