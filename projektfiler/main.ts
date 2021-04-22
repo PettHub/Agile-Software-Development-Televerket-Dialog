@@ -46,7 +46,7 @@ client.on('message', message =>{
             }
             break;
         case 'setmod':
-            accesscontrol.setMod(message, args.shift().toLowerCase());
+            accesscontrol.setMod(message, args.shift());
             break;
     }
 });

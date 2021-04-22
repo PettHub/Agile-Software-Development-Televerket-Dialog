@@ -1,60 +1,63 @@
 import Discord from 'discord.js';
 
 export class TestAccess {
-    mod : string;
+    mod: string;
     modset = new Set();
 
-    constructor(role : string){
+    constructor(role: string) {
         this.modset.add(role);
     }
 
-    doIt(message : Discord.Message, accessLevel : string){
-       // let modlist : Array<string>;        
-    this.isMod(message);
-       switch (accessLevel){
-        case 'mod':
-            if (message.author.id === message.member.guild.ownerID || this.isMod(message)){
+    doIt(message: Discord.Message, accessLevel: string) {
+        // let modlist : Array<string>;        
+        this.isMod(message);
+        switch (accessLevel) {
+            case 'mod':
+                if (message.author.id === message.member.guild.ownerID || this.isMod(message)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+                break;
+            case 'owner':
+                if (message.author.id === message.member.guild.ownerID) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+                break;
+            case 'member':
                 return true;
-            }
-            else{
-                return false;
-            }
-            break;
-        case 'owner':
-            if (message.author.id === message.member.guild.ownerID){
-                return true;
-            }
-            else{
-                return false;
-            }
-            break;
-        case 'member':
-            return true;
-            break;
-       
+                break;
+
         }
         return false;
     }
 
-    setMod(message : Discord.Message, command){
-        if (this.doIt(message, 'owner')){
-            this.modset.add(command);
-            message.channel.send('OK');
-        }
-        else{
-            message.channel.send('Must be owner');
+    setMod(message: Discord.Message, command) {
+        if (!command) {
+            message.channel.send('please provide a role');
+        } else {
+            if (this.doIt(message, 'owner')) {
+                this.modset.add(command);
+                message.channel.send('OK');
+            } else {
+                message.channel.send('Must be owner');
+            }
         }
     }
 
-    isMod(message : Discord.Message){
-        let value : boolean = false;
-        this.modset.forEach(function(role : any){
-            if(message.member.roles.cache.has(role)){
+    isMod(message: Discord.Message) {
+        let value: boolean = false;
+        this.modset.forEach(function (role: any) {
+            if (message.member.roles.cache.has(role)) {
                 value = true;
             };
-            
-            });
-            return value;
+
+        });
+        return value;
     }
 }
 
