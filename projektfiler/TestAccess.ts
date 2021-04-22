@@ -2,17 +2,18 @@ import Discord from 'discord.js';
 
 export class TestAccess {
     mod : string;
+    modset = new Set();
 
     constructor(role : string){
-        this.mod = role;
+        this.modset.add(role);
     }
 
     doIt(message : Discord.Message, accessLevel : string){
        // let modlist : Array<string>;        
-    
+    this.isMod(message);
        switch (accessLevel){
         case 'mod':
-            if (message.author.id === message.member.guild.ownerID || message.author.id === this.mod){
+            if (message.author.id === message.member.guild.ownerID || this.isMod(message)){
                 return true;
             }
             else{
@@ -36,13 +37,24 @@ export class TestAccess {
     }
 
     setMod(message : Discord.Message, command){
-        console.log(command);
         if (this.doIt(message, 'owner')){
-            this.mod = command;
+            this.modset.add(command);
             message.channel.send('OK');
         }
         else{
             message.channel.send('Must be owner');
         }
     }
+
+    isMod(message : Discord.Message){
+        let value : boolean = false;
+        this.modset.forEach(function(role : any){
+            if(message.member.roles.cache.has(role)){
+                value = true;
+            };
+            
+            });
+            return value;
+    }
 }
+

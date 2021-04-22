@@ -30,7 +30,12 @@ client.on('message', message =>{
             message.channel.send('me');
             break;
         case 'hasaccess':
-            accesscontrol.doIt(message, 'mod');
+            if(accesscontrol.doIt(message, 'mod')){
+                message.channel.send('You have access');
+            }
+            else{
+                message.channel.send('You do not have access');
+            }
             break;
         case 'setmod':
             accesscontrol.setMod(message, args.shift().toLowerCase());
