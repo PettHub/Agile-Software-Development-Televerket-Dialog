@@ -48,6 +48,10 @@ client.on('message', message => {
         case 'setmod':
             accesscontrol.setMod(message, args.shift());
             break;
+
+        case 'unmod':
+            accesscontrol.unMod(message, args.shift());
+            break;
     }
 });
 

@@ -39,6 +39,19 @@ export class TestAccess {
         }
     }
 
+    public unMod(message: Discord.Message, command: string): void {
+        if (!command) {
+            message.channel.send('please provide a role');
+        } else {
+            if (this.doIt(message, 'owner')) {
+                this.modset.delete(command);
+                message.channel.send('OK');
+            } else {
+                message.channel.send('Must be owner');
+            }
+        }
+    }
+
     private isMod(message: Discord.Message): boolean {
         let value: boolean = false;
         this.modset.forEach(function (role: any) {
