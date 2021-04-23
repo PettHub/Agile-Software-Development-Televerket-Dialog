@@ -1,0 +1,11 @@
+1. what do I want to learn or understand better?
+I want to  get a better understanding of typescript to be able to help the team more
+
+2. how can I help someone else, or the entire team, to learn something new?
+I can share the different skills I have learned from my friend about typescript with the rest of the team to make our work more efficient. 
+
+3. what is my contribution towards the team’s use of Scrum?
+I haven't contributed with too much yet but a lot of time saving tricks to make it easier to modify and test the code. 
+
+4. what is my contribution towards the team’s deliveries?
+Mostly time saving tricks that helps the team modify and test code more efficiently
