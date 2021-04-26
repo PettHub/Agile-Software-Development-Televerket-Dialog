@@ -1,0 +1,11 @@
+1. what do I want to learn or understand better?
+I want to get a better understanding for discord js and how I properly use it in typescript without following basic javascript 
+
+2. how can I help someone else, or the entire team, to learn something new?
+Switch up the work pairs, by allowing us to work with the ones we use to work with we will lock ourself in certain speeds that might be bad for the project as a whole or for the pair as they have less opportunities to learn. 
+
+3. what is my contribution towards the team’s use of Scrum?
+I have helped my own work group as well as an other pair who were struggling a bit with typescript as the language was new for them and they were new to the work process. But we managed to get through it together and I am happy with the work I have done. 
+
+4. what is my contribution towards the team’s deliveries?
+As mentioned before I helped a pair who were getting a bit behind and managed to help them up to the speed. I have also helped the group as a whole by helping with the communication between the pairs and the PO as well as coming with with suggestions how to improve the overall delivery. 
