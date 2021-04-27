@@ -1,10 +1,12 @@
 import Discord from 'discord.js';
+import { DatabaseFunctions } from './DatabaseFunctions';
 
 export class TestAccess {
     modset = new Set();
 
     constructor(role: string) {
         this.modset.add(role);
+        DatabaseFunctions.getInstance().addTable('access','AccessLVL TEXT NOT NULL, role TEXT NOT NULL');
     }
 
     public doIt(message: Discord.Message, accessLevel: string): boolean {

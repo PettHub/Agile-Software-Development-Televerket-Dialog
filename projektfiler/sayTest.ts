@@ -1,12 +1,19 @@
 import Discord from 'discord.js';
+import { DatabaseFunctions } from './DatabaseFunctions';
 import sqlite from 'sqlite3';
 sqlite.verbose();
 
 export class sayTest {
-    doIt(message: Discord.Message, db, args): void {
-        db.run('CREATE TABLE IF NOT EXISTS data(user INTENGER PRIMARY KEY, said TEXT NOT NULL)');
+    doIt(message: Discord.Message, args : any): void {
+        let data = DatabaseFunctions.getInstance();
+        if (data){
+            console.log('nice');
+        }
+        let db = new sqlite.Database('database.db', sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
+        db.run('CREATE TABLE IF NOT EXISTS data(user INTEGER PRIMARY KEY, said TEXT NOT NULL)');
         let querry = 'SELECT * FROM data WHERE user = ?';
         let msg: string;
+        
 
         db.get(querry, message.author.id, (err, row) => {
             if (err) {

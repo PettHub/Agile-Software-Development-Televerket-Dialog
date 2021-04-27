@@ -6,8 +6,7 @@ import { sayTest } from './sayTest';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
-import sqlite from 'sqlite3';
-sqlite.verbose();
+
 
 
 
@@ -21,9 +20,7 @@ const client = new Discord.Client();
 let prefix = process.env.DISCORD_PREFIX;
 
 client.once('ready', () => {
-    let db = new sqlite.Database('./dataBase.db', sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
     console.log('bot is now online');
-
 });
 let accesscontrol = new TestAccess('');
 
@@ -33,7 +30,6 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
-    let db = new sqlite.Database('./dataBase.db', sqlite.OPEN_READWRITE);
 
     switch (command) {
         case 'ping':
@@ -64,7 +60,7 @@ client.on('message', message => {
             accesscontrol.unMod(message, args.shift());
             break;
         case 'say':
-            new sayTest().doIt(message, db, args);
+            new sayTest().doIt(message, args);
     break;
 }
 });
