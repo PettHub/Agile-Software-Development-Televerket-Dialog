@@ -24,6 +24,7 @@ export class Nominator {
             message.channel.send('!nominate [member] [section]');
             return;
         }
+        if (message.author.id.toString() === nominee) return;
         if (this.nominate(nominee, section)) {
             this.usersThatHaveNominated.add(message.author);
             message.channel.send('nomination has been registered, type !nominations [section]');
