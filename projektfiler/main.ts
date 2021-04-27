@@ -31,7 +31,7 @@ client.on('message', message => {
         case 'cool':
             message.channel.send('me');
             break;
-        case 'dm':
+        case 'apply':
             new PMHandler().doIt(message.author, client);
             break;
         case 'addsection':
