@@ -23,9 +23,7 @@ let prefix = process.env.DISCORD_PREFIX;
 client.once('ready', () => {
     let db = new sqlite.Database('./dataBase.db', sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
     console.log('bot is now online');
-    if (db) {
-        console.log('hi');
-    }
+
 });
 let accesscontrol = new TestAccess('');
 
@@ -35,7 +33,7 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
-    let db = new sqlite.Database('./testdb.db', sqlite.OPEN_READWRITE);
+    let db = new sqlite.Database('./dataBase.db', sqlite.OPEN_READWRITE);
 
     switch (command) {
         case 'ping':
