@@ -20,6 +20,7 @@ export class Nominator {
         if (this.usersThatHaveNominated.has(message.author)) return;
         let nominee = args[0];
         let section = args[1];
+        if (message.author.id.toString() === nominee) return;
         if (!(args.shift() && args.shift())) {
             message.channel.send('!nominate [member] [section]');
             return;
