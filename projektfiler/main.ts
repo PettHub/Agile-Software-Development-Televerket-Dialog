@@ -23,6 +23,7 @@ client.on('message', message => {
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
+    let sectionObject: CommandAddSection;
 
     switch (command) {
         case 'ping':
@@ -35,7 +36,9 @@ client.on('message', message => {
             new PMHandler().doIt(message.author, client);
             break;
         case 'addsection':
-            new CommandAddSection().doIt(message, args, accesscontrol);
+            if (!sectionObject)
+                sectionObject = new CommandAddSection();
+            sectionObject.doIt(message, args, accesscontrol);
             break;
         case 'hasaccess':
             if (accesscontrol.doIt(message, 'mod')) {
