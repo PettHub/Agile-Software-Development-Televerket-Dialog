@@ -2,9 +2,11 @@ import { CommandPing } from './CommandPing';
 import { PMHandler } from './Pms';
 import { CommandAddSection } from './CommandAddSection';
 import { TestAccess } from './TestAccess';
+import { Nominator } from './Nominator';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
+import { getParsedCommandLineOfConfigFile, isBreakStatement } from 'typescript';
 
 
 dotenv.config({ path: path.join(__dirname, `.env.${process.env.NODE_ENV}`) });
@@ -24,7 +26,7 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
     let sectionObject: CommandAddSection;
-
+    let nominations: Nominator;
     switch (command) {
         case 'ping':
             new CommandPing().doIt(message);
@@ -51,9 +53,13 @@ client.on('message', message => {
         case 'setmod':
             accesscontrol.setMod(message, args.shift());
             break;
-
         case 'unmod':
             accesscontrol.unMod(message, args.shift());
+            break;
+        case 'nominate':
+            if (!nominations)
+                nominations = new Nominator(client);
+            nominations.doIt(args, message);
             break;
     }
 });
