@@ -12,7 +12,7 @@ export class Nominator {
         this.usersForSection = new Map();
         this.usersThatHaveNominated = new Set();
         this.client = client;
-        this.outputChannel = client.channels.cache.get('826895001446645800'); //settings for changings ooutputchannel should be implemented later along with pms
+        this.outputChannel = client.channels.cache.get('826895001446645800'); //settings for changings outputchannel should be implemented later along with pms
         this.startTimer();
     }
 
@@ -40,18 +40,26 @@ export class Nominator {
     }
 
     nominate(user: string, section: string): boolean {
-        if (!CommandAddSection.sectionList.has(section))
+        if (!CommandAddSection.sectionList.has(section)) {
+            console.log('section does not exist'); //section has not been created or at least does not exist in sectionlist
             return false;
-        if (!this.client.users.cache.has(user))
+        }
+        /* //this does not return the expected set, it is therefore not used. Please be aware
+        if (!this.client.users.cache.has(user)) {
+            console.log('user not in server');
             return false;
+        }*/
         if (!this.sectionsForUser.get(user))
             this.sectionsForUser.set(user, new Set());
         if (!this.usersForSection.get(section))
             this.usersForSection.set(section, new Set());
-        if (this.usersForSection.get(section).has(user))
+        if (this.usersForSection.get(section).has(user)) {
+            console.log('this person is already nominated'); //user already voted in the latest 24 hour cycle
             return false; //this does not need to be checked in the other map since they both get updated with the same data. Possible bad practice
+        }
         this.usersForSection.get(section).add(user);
         this.sectionsForUser.get(user).add(section);
         return true;
     }
+
 }
