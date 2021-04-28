@@ -7,9 +7,6 @@ import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
 
-
-
-
 if (process.env.NODE_ENV) {
     dotenv.config({ path: path.join(__dirname, `.env.${process.env.NODE_ENV}`) });
 } else {
@@ -22,7 +19,7 @@ let prefix = process.env.DISCORD_PREFIX;
 client.once('ready', () => {
     console.log('bot is now online');
 });
-let accesscontrol = new TestAccess('');
+let accesscontrol = new TestAccess();
 
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -34,7 +31,6 @@ client.on('message', message => {
     switch (command) {
         case 'ping':
             new CommandPing().doIt(message);
-            
             break;
         case 'cool':
             message.channel.send('me');
@@ -47,13 +43,12 @@ client.on('message', message => {
             break;
         case 'hasaccess':
             accesscontrol.doIt(message, 'mod').then(res => {
-                message.channel.send(res ? 'You have Access':'You dont have Access')
+                message.channel.send(res ? 'You have Access' : 'You dont have Access')
             });
             break;
         case 'setmod':
             accesscontrol.setMod(message, args.shift());
             break;
-
         case 'unmod':
             accesscontrol.unMod(message, args.shift());
             break;
@@ -62,8 +57,8 @@ client.on('message', message => {
             break;
         case 'say':
             new sayTest().doIt(message, args);
-    break;
-}
+            break;
+    }
 });
 
 client.login(process.env.DISCORD_TOKEN); //true = dev, false = product

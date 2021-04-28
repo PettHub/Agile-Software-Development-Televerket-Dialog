@@ -9,7 +9,6 @@ export class sayTest {
         if (data) {
             console.log("nice");
         }
-        // let db = new sqlite.Database('database.db', sqlite.OPEN_READWRITE);
         let db = DatabaseFunctions.getInstance().db;
         db.run(
             "CREATE TABLE IF NOT EXISTS data(user INTEGER PRIMARY KEY, said TEXT NOT NULL)"
@@ -31,17 +30,13 @@ export class sayTest {
                 }
 
                 insertdata.finalize();
-
-                db.close();
                 console.log("data logged");
                 console.log(message.author.id);
                 console.log(row);
                 return;
             } else {
                 if ((msg = args.shift())) {
-                    let insertdata = db.prepare(
-                        "UPDATE data SET said =? WHERE user =?"
-                    );
+                    let insertdata = db.prepare("UPDATE data SET said =? WHERE user =?");
                     insertdata.run(msg, message.author.id);
                     insertdata.finalize();
                     db.close();
