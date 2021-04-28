@@ -24,7 +24,10 @@ export class Nominator {
 
     doIt(args: string[], message: Discord.Message): void {
         if (this.usersThatHaveNominated.size == 0) this.startTimer();
-        if (this.usersThatHaveNominated.has(message.author)) return;
+        if (this.usersThatHaveNominated.has(message.author)) {
+            console.log('user has already nominated someone');
+            return;
+        }
         let nominee = args[0];
         let section = args[1];
         if (message.author.id.toString() === nominee) return;
@@ -44,6 +47,11 @@ export class Nominator {
             console.log('section does not exist'); //section has not been created or at least does not exist in sectionlist
             return false;
         }
+        let guild = this.client.guilds.cache.get('823518625062977626');
+        if (!guild.member(user)) {
+            console.log('user not in server');
+            return false;
+        }
         /* //this does not return the expected set, it is therefore not used. Please be aware
         if (!this.client.users.cache.has(user)) {
             console.log('user not in server');
@@ -54,7 +62,7 @@ export class Nominator {
         if (!this.usersForSection.get(section))
             this.usersForSection.set(section, new Set());
         if (this.usersForSection.get(section).has(user)) {
-            console.log('this person is already nominated'); //user already voted in the latest 24 hour cycle
+            console.log('this person is already nominated');
             return false; //this does not need to be checked in the other map since they both get updated with the same data. Possible bad practice
         }
         this.usersForSection.get(section).add(user);

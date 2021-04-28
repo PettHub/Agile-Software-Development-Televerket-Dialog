@@ -13,7 +13,7 @@ export class CommandAddSection {
         let formattedString: string = '';
 
         //Check message sender role
-        if (!accesscontrol.doIt(message, 'mod')) //If sender is not a moderator: 
+        if (!accesscontrol.doIt(message, 'member')) //If sender is not a moderator: 
         {
             message.channel.send('You are not a moderator!');
             return;
