@@ -54,4 +54,31 @@ export class Nominator {
         return true;
     }
 
+    static displayCandidates(section: string, client: Discord.Client) {
+        let outputChannel: any = client.channels.cache.get('826895001446645800');
+        let guild = client.guilds.cache.get('823518625062977626');
+        let embed: Discord.MessageEmbed;
+        let iterator = Nominator.usersForSection.get(section).entries();
+        let i = 1;
+        let user: string;
+        let next: IteratorResult<[string, string], any>;
+        embed = new Discord.MessageEmbed();
+        while (true) {
+            if (i++ % 100 == 0) {
+                embed.setAuthor('nominations for ' + section).setColor('#ff0000');
+                outputChannel.send(embed);
+                embed = new Discord.MessageEmbed();
+            }
+            next = iterator.next();
+            console.log(next);
+            if (next.done)
+                break;
+            user = next.value[0];
+            embed.addField(guild.member(user).displayName, user);
+        }
+        if (embed.fields.length > 0) {
+            embed.setAuthor('nominations for ' + section).setColor('#ff0000');
+            outputChannel.send(embed);
+        }
+    }
 }
