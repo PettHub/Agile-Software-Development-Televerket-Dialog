@@ -62,6 +62,9 @@ client.on('message', message => {
         case 'sections':
             Sections.doIt(message);
             break;
+        case 'removesection':
+            Sections.removesection(args, message);
+            break;
 
     }
 });
