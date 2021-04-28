@@ -3,9 +3,11 @@ import { PMHandler } from './Pms';
 import { CommandAddSection } from './CommandAddSection';
 import { TestAccess } from './TestAccess';
 import { Nominator } from './Nominator';
+import { Sections } from './Sections';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
+
 
 dotenv.config({ path: path.join(__dirname, `.env.${process.env.NODE_ENV}`) });
 
@@ -57,6 +59,10 @@ client.on('message', message => {
         case 'nominations':
             Nominator.displayCandidates(args.shift(), client);
             break;
+        case 'sections':
+            Sections.doIt(message);
+            break;
+
     }
 });
 
