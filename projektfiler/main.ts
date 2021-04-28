@@ -2,8 +2,9 @@ import { CommandPing } from './CommandPing';
 import { PMHandler } from './Pms';
 import { CommandAddSection } from './CommandAddSection';
 import { TestAccess } from './TestAccess';
+import { setChannel } from './setChannel';
 import Discord from 'discord.js';
-import dotenv from 'dotenv';
+import dotenv from './node_modules/dotenv';
 import path from 'path';
 
 
@@ -32,7 +33,10 @@ client.on('message', message => {
             message.channel.send('me');
             break;
         case 'apply':
-            new PMHandler().doIt(message.author, client);
+            new PMHandler().doIt(message, message.author, client);
+            break;
+        case 'setchannel':
+            new setChannel().doIt(message, args[0], accesscontrol, client);
             break;
         case 'addsection':
             new CommandAddSection().doIt(message, args, accesscontrol);
