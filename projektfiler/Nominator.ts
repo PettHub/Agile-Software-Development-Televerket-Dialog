@@ -62,4 +62,11 @@ export class Nominator {
         return true;
     }
 
+    getUsersForSection(): Map<string, Set<string>> {
+        return this.usersForSection;
+    }
+
+    getSectionsForUser(): Map<string, Set<string>> {
+        return this.sectionsForUser;
+    }
 }
