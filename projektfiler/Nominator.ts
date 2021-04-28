@@ -54,30 +54,66 @@ export class Nominator {
         return true;
     }
 
-    static displayCandidates(section: string, client: Discord.Client) {
+    static displayCandidates(arg: string, client: Discord.Client, message: Discord.Message) {
+        let guild = client.guilds.cache.get('823518625062977626');
+        if (CommandAddSection.sectionList.has(arg))
+            this.displayCandidatesForSection(arg, client);
+        else if (guild.member(arg)) {
+            this.displaySectionsForCandidate(arg, client);
+        }
+        else
+            message.reply('please use correct input values, !nominations [section]/[userId]');
+    }
+
+    private static displaySectionsForCandidate(arg: string, client: Discord.Client): void {
+        let outputChannel: any = client.channels.cache.get('826895001446645800');
+        let embed: Discord.MessageEmbed;
+        let iterator = Nominator.sectionsForUser.get(arg).entries();
+        let i = 1;
+        let section: string;
+        let next: IteratorResult<[string, string], any>;
+        embed = new Discord.MessageEmbed();
+        while (true) {
+            if (i++ % 100 == 0) { //in case someone have been nominated for every section
+                embed.setAuthor('sections ' + arg + ' is nominated for').setColor('#ff0000');
+                outputChannel.send(embed);
+                embed = new Discord.MessageEmbed();
+            }
+            next = iterator.next();
+            if (next.done)
+                break;
+            section = next.value[0];
+            embed.addField(section, 'placeholder', false);
+        }
+        if (embed.fields.length > 0) { //if there are remaining fields in the embed
+            embed.setAuthor('sections ' + arg + ' is nominated for').setColor('#ff0000');
+            outputChannel.send(embed);
+        }
+    }
+
+    private static displayCandidatesForSection(arg: string, client: Discord.Client): void {
         let outputChannel: any = client.channels.cache.get('826895001446645800');
         let guild = client.guilds.cache.get('823518625062977626');
         let embed: Discord.MessageEmbed;
-        let iterator = Nominator.usersForSection.get(section).entries();
+        let iterator = Nominator.usersForSection.get(arg).entries();
         let i = 1;
         let user: string;
         let next: IteratorResult<[string, string], any>;
         embed = new Discord.MessageEmbed();
         while (true) {
-            if (i++ % 100 == 0) {
-                embed.setAuthor('nominations for ' + section).setColor('#ff0000');
+            if (i++ % 100 == 0) { //in case there are more than 100 users for a section
+                embed.setAuthor('nominations for ' + arg).setColor('#ff0000');
                 outputChannel.send(embed);
                 embed = new Discord.MessageEmbed();
             }
             next = iterator.next();
-            console.log(next);
             if (next.done)
                 break;
             user = next.value[0];
             embed.addField(guild.member(user).displayName, user);
         }
         if (embed.fields.length > 0) {
-            embed.setAuthor('nominations for ' + section).setColor('#ff0000');
+            embed.setAuthor('nominations for ' + arg).setColor('#ff0000');
             outputChannel.send(embed);
         }
     }

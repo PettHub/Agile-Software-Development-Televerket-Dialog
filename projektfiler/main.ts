@@ -55,7 +55,7 @@ client.on('message', message => {
             new Nominator(client).doIt(args, message);
             break;
         case 'nominations':
-            Nominator.displayCandidates(args.shift(), client);
+            Nominator.displayCandidates(args.shift(), client, message);
             break;
     }
 });
