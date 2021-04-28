@@ -4,19 +4,26 @@ export class Nominator {
     sectionsForUser: Map<string, Set<string>>;
     usersForSection: Map<string, Set<string>>;
     usersThatHaveNominated: Set<Discord.User>;
+    outputChannel: any;
     client: Discord.Client;
-
+    timeout: NodeJS.Timeout;
     constructor(client: Discord.Client) {
         this.sectionsForUser = new Map();
         this.usersForSection = new Map();
         this.usersThatHaveNominated = new Set();
         this.client = client;
+        this.outputChannel = client.channels.cache.get('826895001446645800'); //settings for changings ooutputchannel should be implemented later along with pms
         this.startTimer();
     }
 
-    private startTimer(): void { }
+    private startTimer(): void {
+        let outputChannel = this.outputChannel;
+        let usersThatHaveNominated = this.usersThatHaveNominated;                                                           //  ms     s    m    h
+        this.timeout = setTimeout(function () { outputChannel.send('nominations have closed'); usersThatHaveNominated.clear(); }, 1000 * 60 * 60 * 24); //this should reset the set of users that have voted 24 hours after the first one voted
+    }
 
     doIt(args: string[], message: Discord.Message): void {
+        if (this.usersThatHaveNominated.size == 0) this.startTimer();
         if (this.usersThatHaveNominated.has(message.author)) return;
         let nominee = args[0];
         let section = args[1];
