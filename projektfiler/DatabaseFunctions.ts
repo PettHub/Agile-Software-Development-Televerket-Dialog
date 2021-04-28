@@ -3,11 +3,13 @@ import sqlite from 'sqlite3';
 sqlite.verbose();
 
 export class DatabaseFunctions {
+    db;
     name : string = 'database.db';
     private static me : DatabaseFunctions;
 
     private constructor() {
     new sqlite.Database(this.name, sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
+    this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE);
     }
 
     public static getInstance(): DatabaseFunctions{
@@ -19,12 +21,12 @@ export class DatabaseFunctions {
         }
     }
 
-    get(table: string, key: any): any{
-
+    get(): any{
+        
     }
 
-    set(): boolean{
-
+    set(table : string, key : any, args : string[]): boolean{
+        
         return false;
     }
 

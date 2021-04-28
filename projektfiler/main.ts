@@ -34,6 +34,7 @@ client.on('message', message => {
     switch (command) {
         case 'ping':
             new CommandPing().doIt(message);
+            
             break;
         case 'cool':
             message.channel.send('me');
@@ -45,12 +46,9 @@ client.on('message', message => {
             new CommandAddSection().doIt(message, args, accesscontrol);
             break;
         case 'hasaccess':
-            if (accesscontrol.doIt(message, 'mod')) {
-                message.channel.send('You have access');
-            }
-            else {
-                message.channel.send('You do not have access');
-            }
+            accesscontrol.doIt(message, 'mod').then(res => {
+                message.channel.send(res ? 'You have Access':'You dont have Access')
+            });
             break;
         case 'setmod':
             accesscontrol.setMod(message, args.shift());
@@ -58,6 +56,9 @@ client.on('message', message => {
 
         case 'unmod':
             accesscontrol.unMod(message, args.shift());
+            break;
+        case 'setowner':
+            accesscontrol.setOwner(message, args.shift());
             break;
         case 'say':
             new sayTest().doIt(message, args);
