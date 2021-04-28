@@ -23,8 +23,7 @@ client.on('message', message => {
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
-    let sectionObject: CommandAddSection;
-    let nominations: Nominator;
+
     switch (command) {
         case 'ping':
             new CommandPing().doIt(message);
@@ -36,9 +35,7 @@ client.on('message', message => {
             new PMHandler().doIt(message.author, client);
             break;
         case 'addsection':
-            if (!sectionObject)
-                sectionObject = new CommandAddSection();
-            sectionObject.doIt(message, args, accesscontrol);
+            new CommandAddSection().doIt(message, args, accesscontrol);
             break;
         case 'hasaccess':
             if (accesscontrol.doIt(message, 'mod')) {
@@ -55,9 +52,7 @@ client.on('message', message => {
             accesscontrol.unMod(message, args.shift());
             break;
         case 'nominate':
-            if (!nominations)
-                nominations = new Nominator(client);
-            nominations.doIt(args, message);
+            new Nominator(client).doIt(args, message);
             break;
     }
 });
