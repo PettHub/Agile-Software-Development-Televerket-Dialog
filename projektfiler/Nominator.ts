@@ -16,7 +16,7 @@ export class Nominator {
         if (Nominator.usersThatHaveNominated.get(message.author.id))
             if (
                 Date.now() -
-                    Nominator.usersThatHaveNominated.get(message.author.id) <
+                Nominator.usersThatHaveNominated.get(message.author.id) <
                 1000 * 60 * 60 * 24
             ) {
                 console.log("user has already nominated someone");
@@ -66,10 +66,15 @@ export class Nominator {
     }
 
     static displayCandidates(
-        arg: string,
+        args: string[],
         client: Discord.Client,
         message: Discord.Message
     ) {
+        let arg = '';
+        for (let i = 0; i < args.length; i++) {
+            arg = arg.concat(args[i] + " ");
+        } //display uses concatination for double word inputs. Still only expects one argument, either user or section
+        arg = arg.slice(0, -1);
         let guild = client.guilds.cache.get("823518625062977626"); //settings guildId
         if (CommandAddSection.sectionList.has(arg))
             this.displayCandidatesForSection(arg, client);
