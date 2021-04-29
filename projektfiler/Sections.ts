@@ -26,7 +26,7 @@ export class Sections {
         let tempString: string = '';
         if (CommandAddSection.sectionList.size == 0) return;
 
-        if (!new TestAccess('').doIt(message, 'member')) //If sender is not a moderator: 
+        if (!new TestAccess().doIt(message, 'member')) //If sender is not a moderator: 
         {
             message.channel.send('You are not a moderator!');
             return;
