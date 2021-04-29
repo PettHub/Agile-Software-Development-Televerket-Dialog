@@ -39,6 +39,7 @@ export class TestAccess {
             //Checks if there is a command after the prefix
             message.channel.send("please provide a role");
         } else {
+            command = this.toRole(command);
             if (
                 (await this.doIt(message, "owner")) &&
                 this.isguild(message, command)
@@ -64,6 +65,7 @@ export class TestAccess {
             //Checks if there is a command after the prefix
             message.channel.send("please provide a role");
         } else {
+            command = this.toRole(command);
             if (
                 (await this.doIt(message, "gowner")) &&
                 this.isguild(message, command)
@@ -92,7 +94,11 @@ export class TestAccess {
             //Checks if there is a command after the prefix
             message.channel.send("please provide a role");
         } else {
-            if (await this.doIt(message, "owner")) {
+            command = this.toRole(command);
+            if (
+                (await this.doIt(message, "owner")) &&
+                this.isguild(message, command)
+            ) {
                 //Make sure only people with owner role can access
                 DatabaseFunctions.getInstance()
                     .db.prepare(
@@ -139,15 +145,21 @@ export class TestAccess {
         });
     }
 
-    private isguild(message: Discord.Message, command: string) {
-        if (command.indexOf("@") == 1) {
-            command = command.substring(3, command.length - 1);
-        }
+    private isguild(message: Discord.Message, command: string): boolean {
+        console.log(command);
+
         if (
             message.guild.roles.cache.find((role) => role.name == command) ||
             message.guild.roles.cache.has(command)
         )
             return true;
         return false;
+    }
+
+    private toRole(command): string {
+        if (command.indexOf("@") == 1) {
+            command = command.substring(3, command.length - 1);
+        }
+        return command;
     }
 }
