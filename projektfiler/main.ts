@@ -3,6 +3,8 @@ import { PMHandler } from './Pms';
 import { CommandAddSection } from './CommandAddSection';
 import { TestAccess } from './TestAccess';
 import { sayTest } from './sayTest';
+import { Nominator } from './Nominator';
+import { Sections } from './Sections';
 import Discord from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -57,6 +59,18 @@ client.on('message', message => {
             break;
         case 'say':
             new sayTest().doIt(message, args);
+            break;
+        case 'nominate':
+            new Nominator(client).doIt(args, message);
+            break;
+        case 'nominations':
+            Nominator.displayCandidates(args.shift(), client, message);
+            break;
+        case 'sections':
+            Sections.viewSections(message);
+            break;
+        case 'removesection':
+            Sections.removesection(args, message);
             break;
     }
 });
