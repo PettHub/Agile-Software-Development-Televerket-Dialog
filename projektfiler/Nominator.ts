@@ -19,7 +19,11 @@ export class Nominator {
                 return;
             }
         let nominee = args[0];
-        let section = args[1];
+        let section: string;
+        for (let i = 1; i < args.length; i++) {
+            section.concat(args[i] + ' ')
+        }
+        section.slice(0, -1);
         if (message.author.id.toString() === nominee) return;
         if (!(args.shift() && args.shift())) {
             message.channel.send('!nominate [member] [section]');
