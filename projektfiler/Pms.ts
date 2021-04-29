@@ -1,16 +1,26 @@
 import Discord from 'discord.js';
+import { setChannel } from './setChannel';
 
 export class PMHandler {
+    
+    
+    
     constructor() {
-
     }
-
 
     public doIt(firstmessage: Discord.Message, author: Discord.User, client: Discord.Client): void {
         //let guild = client.guilds.cache.get('823518625062977626'); //idk
 
         var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
         var regex = new RegExp(expression);
+
+        let repostChannel;
+        repostChannel = client.channels.cache.get(setChannel.getOutputChannel());
+        if(repostChannel === undefined) {
+            firstmessage.channel.send('No !art apply receiver channel has been set.') //ev. kan man @:a moderators här
+            console.log('repostChannel is undefined');
+            return;
+        }
         
         if(firstmessage.member.roles.cache.has('836598304140820500') ){ //checks if author already is Artist, if so they cannot apply again
             author.send('You already have the Artist role and can therefore not apply for it.');
@@ -39,10 +49,11 @@ export class PMHandler {
         author.send('Please send 3 images (as attachements and/or links), you have 5 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered.'); //send initial message asking for images. Could include rules if Matt has some.
         let timeout = setTimeout(function () { author.send('Timed out, please'); client.removeListener('message', listener); }, 1000 * 60 * 5); //create a timeout to relieve the bot in case of spam
         let numberOfImages = 3;
-        let repostChannel;
-        repostChannel = client.channels.cache.get('826895001446645800'); //this is the channel id of the channel we want the application to be sent to, should be a enviromental variable or a variable that can be changed during runtime
-        //guild.channels.get('826895001446645800') ???
         
+        
+        //repostChannel = client.channels.cache.get('826895001446645800'); //this is the channel id of the channel we want the application to be sent to, should be a enviromental variable or a variable that can be changed during runtime
+        
+        //guild.channels.get('826895001446645800') ???
         
         let images: string[];
         images = [null, null, null]; //make an array of size 3

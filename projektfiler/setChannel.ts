@@ -1,36 +1,48 @@
 import Discord from 'discord.js';
 import { TestAccess } from 'TestAccess';
-//import { TextChannel } from 'discord.js';
+import { TextChannel } from 'discord.js';
 
 export class setChannel {
     
-    static outputChannel: string = '826895001446645800';
+    private static outputChannel: string;
+
+    constructor(){
+    }
 
     doIt(message: Discord.Message, newChannel: string, accesscontrol: TestAccess, client:Discord.Client): void{
+        //fråga gruppen om denna: får error när botten inte har tillgång till den nya kanalen. Är detta att catcha erroret? https://stackoverflow.com/questions/65557039/discord-js-client-onerror-not-being-called
+        process.on('unhandledRejection', error => {
+            console.log('Test error:', error);
+            message.channel.send('Error! Possible cause: setting a channel which the bot does not have access to. Please try again.');
+        });
 
-        if(message.guild.channels.cache.get(newChannel) === undefined){ //if input channel is undefined (not in guild/incorrect input)
+        if(setChannel.outputChannel === newChannel)
+        {
+            message.channel.send('The input channel ID is already set as the !art apply receiver channel.');
+            return;
+        }
+
+        if(message.guild.channels.cache.get(newChannel) === undefined){ //if input channel is undefined (e.g. not in guild/incorrect input)
             message.channel.send('Incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
             return;
         }
-        //console.log(message.guild.channels.cache.get(newChannel).permissionsFor(client.user));
-        //channels.cache.get(newChannel).me.hasPermission("MUTE_MEMBERS");
-        
-        //vi vill kolla om boten har tillgång till kanalen som skickas in för att undvika error i bakgrunden och missförstånd
-        //kolla på att catcha exceptionet missing access
-        
-
-        /* Works to check permissions (probably)
-        const botPermissionsFor = message.guild.channels.cache.get(newChannel).permissionsFor(client.user);
-        const tmpArray = botPermissionsFor.toArray();
-        console.log(tmpArray.includes("SEND_MESSAGES"));*/
-
-       /* if(client.channels.cache.get(newChannel).isText){
-        
+            
+        if(client.channels.cache.get(newChannel).type === 'text'){ //sets outputChannel to the newChannel, if the newChannel is textchannel
             setChannel.outputChannel = newChannel;
-        //client.channels.cache.get(setChannel.outputChannel).send('Channel has been set as !art apply receiver channel.');
-        //client.channels.get(setChannel.outputChannel as TextChannel).send('Channel has been set as !art apply receiver channel.');
-        //if(client.channels.cache.get(setChannel.outputChannel).type === ChannelType.text){
-            (client.channels.cache.get(setChannel.outputChannel) as TextChannel).send('bla');
-         }*/
+            console.log('Output channel set! ' + setChannel.outputChannel);
+            (client.channels.cache.get(setChannel.outputChannel) as TextChannel).send('This channel has been set as !art apply receiver channel.');
+        }else{
+            message.channel.send('The input channel is not a text channel. Please try again using a text channel ID.');
+        }
+    }
+
+    public static getOutputChannel(): string{
+        console.log(this.outputChannel);
+        if (this.getOutputChannel){
+            return (this as any).outputChannel;
+        }
+        else{
+            return null;
+        }
     }
 }
