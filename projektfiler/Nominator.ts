@@ -36,7 +36,7 @@ export class Nominator {
             console.log('section does not exist'); //section has not been created or at least does not exist in sectionlist
             return false;
         }
-        let guild = this.client.guilds.cache.get('823518625062977626');
+        let guild = this.client.guilds.cache.get('823518625062977626'); //settings guildId
         if (!guild.member(user)) {
             console.log('user not in server');
             return false;
@@ -55,7 +55,7 @@ export class Nominator {
     }
 
     static displayCandidates(arg: string, client: Discord.Client, message: Discord.Message) {
-        let guild = client.guilds.cache.get('823518625062977626');
+        let guild = client.guilds.cache.get('823518625062977626'); //settings guildId
         if (CommandAddSection.sectionList.has(arg))
             this.displayCandidatesForSection(arg, client);
         else if (guild.member(arg)) {
@@ -66,7 +66,7 @@ export class Nominator {
     }
 
     private static displaySectionsForCandidate(arg: string, client: Discord.Client): void {
-        let outputChannel: any = client.channels.cache.get('826895001446645800');
+        let outputChannel: any = client.channels.cache.get('826895001446645800'); //settings channelId
         let embed: Discord.MessageEmbed;
         let iterator = Nominator.sectionsForUser.get(arg).entries();
         let i = 1;
@@ -92,8 +92,8 @@ export class Nominator {
     }
 
     private static displayCandidatesForSection(arg: string, client: Discord.Client): void {
-        let outputChannel: any = client.channels.cache.get('826895001446645800');
-        let guild = client.guilds.cache.get('823518625062977626');
+        let outputChannel: any = client.channels.cache.get('826895001446645800'); //settings channelId
+        let guild = client.guilds.cache.get('823518625062977626'); //settings guild id
         let embed: Discord.MessageEmbed;
         let iterator = Nominator.usersForSection.get(arg).entries();
         let i = 1;

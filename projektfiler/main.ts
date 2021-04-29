@@ -60,7 +60,7 @@ client.on('message', message => {
             Nominator.displayCandidates(args.shift(), client, message);
             break;
         case 'sections':
-            Sections.doIt(message);
+            Sections.viewSections(message);
             break;
         case 'removesection':
             Sections.removesection(args, message);
