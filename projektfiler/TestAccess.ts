@@ -1,67 +1,97 @@
-import Discord from 'discord.js';
+import Discord from "discord.js";
+import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class TestAccess {
-    modset = new Set();
-
-    constructor(role: string) {
-        this.modset.add(role);
+    constructor() {
+        DatabaseFunctions.getInstance().db.run("CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"); //Creates a new table if it doesn't exist
     }
 
-    public doIt(message: Discord.Message, accessLevel: string): boolean {
-        // let modlist : Set<string>;
-        this.isMod(message);
+    public async doIt(message: Discord.Message, accessLevel: string): Promise<boolean> {
         switch (accessLevel) {
-            case 'mod':
-                return (message.author.id === message.member.guild.ownerID || this.isMod(message));
-                break;
-            case 'owner':
-                return (message.author.id === message.member.guild.ownerID);
-                break;
-            case 'member':
-                return true;
-                break;
+            case "mod": //Checks if the member has a mod role
+                return (
+                    message.author.id === message.member.guild.ownerID ||
+                    (await this.hasAccessLevel(message, 'mod')) || (await this.hasAccessLevel(message, 'owner'))
+                );
+            case "owner": //Checks if the member has a owner role
+                return (
+                    message.author.id === message.member.guild.ownerID ||
+                    (await this.hasAccessLevel(message, 'owner'))
+                );
+            case "gowner": //Checks if the member is guild(server) owner
+                return message.author.id === message.member.guild.ownerID;
             default:
                 return false;
-                break;
         }
     }
 
-    public setMod(message: Discord.Message, command: string): void {
-        if (!command) {
-            message.channel.send('please provide a role');
+    public async setMod(message: Discord.Message, command: string): Promise<void> {
+        if (!command) { //Checks if there is a command after the prefix
+            message.channel.send("please provide a role");
         } else {
-            if (this.doIt(message, 'owner')) {
-                this.modset.add(command);
-                message.channel.send('OK');
+            if (await this.doIt(message, "owner")) { //Make sure only people with owner role can access
+                DatabaseFunctions.getInstance().db.prepare(
+                    "INSERT INTO access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                ).run("mod", command, "mod", command); //Sets mod status fom the specified role
+                message.channel.send("OK");
             } else {
-                message.channel.send('Must be owner');
+                message.channel.send("Must be owner");
             }
         }
     }
 
-    public unMod(message: Discord.Message, command: string): void {
-        if (!command) {
-            message.channel.send('please provide a role');
+    public async setOwner(message: Discord.Message, command: string): Promise<void> {
+        if (!command) { //Checks if there is a command after the prefix
+            message.channel.send("please provide a role");
         } else {
-            if (this.doIt(message, 'owner')) {
-                this.modset.delete(command);
-                message.channel.send('OK');
+            if (await this.doIt(message, "gowner")) { //Make sure only guild owner can access
+                DatabaseFunctions.getInstance().db.prepare(
+                    "DELETE FROM access WHERE accessLVL =?"
+                ).run("owner");//Deletes the old owner role
+                DatabaseFunctions.getInstance().db.prepare(
+                    "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                ).run("owner", command, "owner", command); //Adds the owner status for the specified role
+                message.channel.send("OK");
             } else {
-                message.channel.send('Must be owner');
+                message.channel.send("Must be owner");
             }
         }
     }
 
-    private isMod(message: Discord.Message): boolean {
-        let value: boolean = false;
-        this.modset.forEach(function (role: any) {
-            if (message.member.roles.cache.has(role)) {
-                value = true;
-                return;
-            };
+    public async unMod(message: Discord.Message, command: string): Promise<void> {
+        if (!command) { //Checks if there is a command after the prefix
+            message.channel.send("please provide a role");
+        } else {
+            if (await this.doIt(message, "owner")) { //Make sure only people with owner role can access
+                DatabaseFunctions.getInstance().db.prepare(
+                    "DELETE FROM access WHERE accessLVL =? AND role =?"
+                ).run("mod", command); //Deletes the mod status from the specified role
+                message.channel.send("OK");
+            } else {
+                message.channel.send("Must be owner");
+            }
+        }
+    }
 
+    private hasAccessLevel(message: Discord.Message, accessLevel: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let query = "SELECT * FROM access WHERE accessLVL = ?"; //Query to check the access level 
+            let value: boolean = false;
+            DatabaseFunctions.getInstance().db.all(query, accessLevel, (err, row) => { //Returns all rows from the query
+                if (err) { //If there is an error with the query
+                    console.log(err);
+                    reject(err);
+                }
+                row?.forEach((element) => { //loops throw all roles that meet the criteria
+                    //console.log(element.role);
+                    if (message.member.roles.cache.has(element.role)) { //Checks if the member has the requested role
+                        //console.log(element.role);
+                        value = true;
+                        return;
+                    }
+                });
+                resolve(value); //true if member has specified role, otherwise false
+            });
         });
-        return value;
     }
 }
-
