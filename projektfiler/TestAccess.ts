@@ -3,20 +3,26 @@ import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class TestAccess {
     constructor() {
-        DatabaseFunctions.getInstance().db.run("CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"); //Creates a new table if it doesn't exist
+        DatabaseFunctions.getInstance().db.run(
+            "CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"
+        ); //Creates a new table if it doesn't exist
     }
 
-    public async doIt(message: Discord.Message, accessLevel: string): Promise<boolean> {
+    public async doIt(
+        message: Discord.Message,
+        accessLevel: string
+    ): Promise<boolean> {
         switch (accessLevel) {
             case "mod": //Checks if the member has a mod role
                 return (
                     message.author.id === message.member.guild.ownerID ||
-                    (await this.hasAccessLevel(message, 'mod')) || (await this.hasAccessLevel(message, 'owner'))
+                    (await this.hasAccessLevel(message, "mod")) ||
+                    (await this.hasAccessLevel(message, "owner"))
                 );
             case "owner": //Checks if the member has a owner role
                 return (
                     message.author.id === message.member.guild.ownerID ||
-                    (await this.hasAccessLevel(message, 'owner'))
+                    (await this.hasAccessLevel(message, "owner"))
                 );
             case "gowner": //Checks if the member is guild(server) owner
                 return message.author.id === message.member.guild.ownerID;
@@ -25,14 +31,80 @@ export class TestAccess {
         }
     }
 
-    public async setMod(message: Discord.Message, command: string): Promise<void> {
-        if (!command) { //Checks if there is a command after the prefix
+    public async setMod(
+        message: Discord.Message,
+        command: string
+    ): Promise<void> {
+        if (!command) {
+            //Checks if there is a command after the prefix
             message.channel.send("please provide a role");
         } else {
-            if (await this.doIt(message, "owner")) { //Make sure only people with owner role can access
-                DatabaseFunctions.getInstance().db.prepare(
-                    "INSERT INTO access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
-                ).run("mod", command, "mod", command); //Sets mod status fom the specified role
+            command = this.toRole(command);
+            if (
+                (await this.doIt(message, "owner")) &&
+                this.isguild(message, command)
+            ) {
+                //Make sure only people with owner role can access
+                DatabaseFunctions.getInstance()
+                    .db.prepare(
+                        "INSERT INTO access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                    )
+                    .run("mod", command, "mod", command); //Sets mod status fom the specified role
+                message.channel.send("OK");
+            } else {
+                message.channel.send("Must be owner or Invalid role");
+            }
+        }
+    }
+
+    public async setOwner(
+        message: Discord.Message,
+        command: string
+    ): Promise<void> {
+        if (!command) {
+            //Checks if there is a command after the prefix
+            message.channel.send("please provide a role");
+        } else {
+            command = this.toRole(command);
+            if (
+                (await this.doIt(message, "gowner")) &&
+                this.isguild(message, command)
+            ) {
+                //Make sure only guild owner can access
+                DatabaseFunctions.getInstance()
+                    .db.prepare("DELETE FROM access WHERE accessLVL =?")
+                    .run("owner"); //Deletes the old owner role
+                DatabaseFunctions.getInstance()
+                    .db.prepare(
+                        "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                    )
+                    .run("owner", command, "owner", command); //Adds the owner status for the specified role
+                message.channel.send("OK");
+            } else {
+                message.channel.send("Must be owner or Invalid role");
+            }
+        }
+    }
+
+    public async unMod(
+        message: Discord.Message,
+        command: string
+    ): Promise<void> {
+        if (!command) {
+            //Checks if there is a command after the prefix
+            message.channel.send("please provide a role");
+        } else {
+            command = this.toRole(command);
+            if (
+                (await this.doIt(message, "owner")) &&
+                this.isguild(message, command)
+            ) {
+                //Make sure only people with owner role can access
+                DatabaseFunctions.getInstance()
+                    .db.prepare(
+                        "DELETE FROM access WHERE accessLVL =? AND role =?"
+                    )
+                    .run("mod", command); //Deletes the mod status from the specified role
                 message.channel.send("OK");
             } else {
                 message.channel.send("Must be owner");
@@ -40,58 +112,54 @@ export class TestAccess {
         }
     }
 
-    public async setOwner(message: Discord.Message, command: string): Promise<void> {
-        if (!command) { //Checks if there is a command after the prefix
-            message.channel.send("please provide a role");
-        } else {
-            if (await this.doIt(message, "gowner")) { //Make sure only guild owner can access
-                DatabaseFunctions.getInstance().db.prepare(
-                    "DELETE FROM access WHERE accessLVL =?"
-                ).run("owner");//Deletes the old owner role
-                DatabaseFunctions.getInstance().db.prepare(
-                    "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
-                ).run("owner", command, "owner", command); //Adds the owner status for the specified role
-                message.channel.send("OK");
-            } else {
-                message.channel.send("Must be owner");
-            }
-        }
-    }
-
-    public async unMod(message: Discord.Message, command: string): Promise<void> {
-        if (!command) { //Checks if there is a command after the prefix
-            message.channel.send("please provide a role");
-        } else {
-            if (await this.doIt(message, "owner")) { //Make sure only people with owner role can access
-                DatabaseFunctions.getInstance().db.prepare(
-                    "DELETE FROM access WHERE accessLVL =? AND role =?"
-                ).run("mod", command); //Deletes the mod status from the specified role
-                message.channel.send("OK");
-            } else {
-                message.channel.send("Must be owner");
-            }
-        }
-    }
-
-    private hasAccessLevel(message: Discord.Message, accessLevel: string): Promise<boolean> {
+    private hasAccessLevel(
+        message: Discord.Message,
+        accessLevel: string
+    ): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            let query = "SELECT * FROM access WHERE accessLVL = ?"; //Query to check the access level 
+            let query = "SELECT * FROM access WHERE accessLVL = ?"; //Query to check the access level
             let value: boolean = false;
-            DatabaseFunctions.getInstance().db.all(query, accessLevel, (err, row) => { //Returns all rows from the query
-                if (err) { //If there is an error with the query
-                    console.log(err);
-                    reject(err);
-                }
-                row?.forEach((element) => { //loops throw all roles that meet the criteria
-                    //console.log(element.role);
-                    if (message.member.roles.cache.has(element.role)) { //Checks if the member has the requested role
-                        //console.log(element.role);
-                        value = true;
-                        return;
+            DatabaseFunctions.getInstance().db.all(
+                query,
+                accessLevel,
+                (err, row) => {
+                    //Returns all rows from the query
+                    if (err) {
+                        //If there is an error with the query
+                        console.log(err);
+                        reject(err);
                     }
-                });
-                resolve(value); //true if member has specified role, otherwise false
-            });
+                    row?.forEach((element) => {
+                        //loops throw all roles that meet the criteria
+                        //console.log(element.role);
+                        if (message.member.roles.cache.has(element.role)) {
+                            //Checks if the member has the requested role
+                            //console.log(element.role);
+                            value = true;
+                            return;
+                        }
+                    });
+                    resolve(value); //true if member has specified role, otherwise false
+                }
+            );
         });
+    }
+
+    private isguild(message: Discord.Message, command: string): boolean {
+        console.log(command);
+
+        if (
+            message.guild.roles.cache.find((role) => role.name == command) ||
+            message.guild.roles.cache.has(command)
+        )
+            return true;
+        return false;
+    }
+
+    private toRole(command): string {
+        if (command.indexOf("@") == 1) {
+            command = command.substring(3, command.length - 1);
+        }
+        return command;
     }
 }

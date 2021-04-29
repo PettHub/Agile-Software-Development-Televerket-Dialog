@@ -1,16 +1,25 @@
-import sqlite from 'sqlite3';
+import sqlite from "sqlite3";
 sqlite.verbose();
 
 export class DatabaseFunctions {
-    db: sqlite.Database;
+    db;
+    name: string = "database.db";
     private static me: DatabaseFunctions;
 
     private constructor() {
-        this.db = new sqlite.Database('database.db', sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
+        new sqlite.Database(
+            this.name,
+            sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE
+        );
+        this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE);
     }
 
     public static getInstance(): DatabaseFunctions {
-        if (!this.me) this.me = new DatabaseFunctions();
-        return this.me;
+        if (this.me) {
+            return this.me;
+        } else {
+            this.me = new DatabaseFunctions();
+            return this.me;
+        }
     }
 }
