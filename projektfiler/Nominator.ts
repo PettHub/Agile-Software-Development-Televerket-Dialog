@@ -94,25 +94,29 @@ export class Nominator {
             "826895001446645800"
         ); //settings channelId
         let embed: Discord.MessageEmbed;
-        let iterator = Nominator.sectionsForUser.get(arg).entries();
+        let setString = Nominator.sectionsForUser.get(arg);
+        let iterator: Iterator<[string, string], any>;
+        if (setString)
+            iterator = Nominator.sectionsForUser.get(arg).entries();
         let i = 1;
         let section: string;
         let next: IteratorResult<[string, string], any>;
         embed = new Discord.MessageEmbed();
-        while (true) {
-            if (i++ % 100 == 0) {
-                //in case someone have been nominated for every section
-                embed
-                    .setAuthor("sections " + arg + " is nominated for")
-                    .setColor("#ff0000");
-                outputChannel.send(embed);
-                embed = new Discord.MessageEmbed();
+        if (iterator)
+            while (true) {
+                if (i++ % 100 == 0) {
+                    //in case someone have been nominated for every section
+                    embed
+                        .setAuthor("sections " + arg + " is nominated for")
+                        .setColor("#ff0000");
+                    outputChannel.send(embed);
+                    embed = new Discord.MessageEmbed();
+                }
+                next = iterator.next();
+                if (next.done) break;
+                section = next.value[0];
+                embed.addField(section, "placeholder", false);
             }
-            next = iterator.next();
-            if (next.done) break;
-            section = next.value[0];
-            embed.addField(section, "placeholder", false);
-        }
         if (embed.fields.length > 0) {
             //if there are remaining fields in the embed
             embed
@@ -131,23 +135,27 @@ export class Nominator {
         ); //settings channelId
         let guild = client.guilds.cache.get("823518625062977626"); //settings guild id
         let embed: Discord.MessageEmbed;
-        let iterator = Nominator.usersForSection.get(arg).entries();
+        let setString = Nominator.sectionsForUser.get(arg);
+        let iterator: Iterator<[string, string], any>;
+        if (setString)
+            iterator = Nominator.sectionsForUser.get(arg).entries();
         let i = 1;
         let user: string;
         let next: IteratorResult<[string, string], any>;
         embed = new Discord.MessageEmbed();
-        while (true) {
-            if (i++ % 100 == 0) {
-                //in case there are more than 100 users for a section
-                embed.setAuthor("nominations for " + arg).setColor("#ff0000");
-                outputChannel.send(embed);
-                embed = new Discord.MessageEmbed();
+        if (iterator)
+            while (true) {
+                if (i++ % 100 == 0) {
+                    //in case there are more than 100 users for a section
+                    embed.setAuthor("nominations for " + arg).setColor("#ff0000");
+                    outputChannel.send(embed);
+                    embed = new Discord.MessageEmbed();
+                }
+                next = iterator.next();
+                if (next.done) break;
+                user = next.value[0];
+                embed.addField(guild.member(user).displayName, user);
             }
-            next = iterator.next();
-            if (next.done) break;
-            user = next.value[0];
-            embed.addField(guild.member(user).displayName, user);
-        }
         if (embed.fields.length > 0) {
             embed.setAuthor("nominations for " + arg).setColor("#ff0000");
             outputChannel.send(embed);
