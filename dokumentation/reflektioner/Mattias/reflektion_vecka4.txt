@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+Ytterligare typescrift, och även Discord-specifika saker. Längre fram kommer lagring av information behöva göras och inför det behöver jag sätta in mig mer i hur det fungerar beroende på vilken lagring som väljs.
+
+how can I help someone else, or the entire team, to learn something new?
+Försöka bidra där behov finns. Ofta diskuteras problem i grupp, och delaktighet i dessa diskussioner brukar leda till en bra lösning där en eller flera lär sig nya saker.
+
+what is my contribution towards the team’s use of Scrum?
+Användning av scrumboard, stor delaktighet i sprintutvärdering. 
+
+what is my contribution towards the team’s deliveries?
+Hittills TestAccess, som gjorts tillsammans med Emil och Markus. Där finns metoder för att testa och tilldela moderatorrättigheter på servern, och vissa metoder har jag gjort och de andra har gjorts tillsammans med de andra. Jag har varit delaktig i allt som rör TestAccess, och Markus har hjälpt väldigt bra med de saker som det funnits oklarheter kring.
