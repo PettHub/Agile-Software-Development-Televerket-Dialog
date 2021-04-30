@@ -39,7 +39,7 @@ export class sayTest {
                     let insertdata = db.prepare("UPDATE data SET said =? WHERE user =?");
                     insertdata.run(msg, message.author.id);
                     insertdata.finalize();
-                    db.close();
+                    //db.close();
                     console.log("data logged");
                     return;
                 } else {

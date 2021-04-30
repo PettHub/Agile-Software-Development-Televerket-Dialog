@@ -43,7 +43,12 @@ client.on("message", (message) => {
             new PMHandler().doIt(message, message.author, client);
             break;
         case 'setchannel':
-            new setChannel().doIt(message, args[0], accesscontrol, client);
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? new setChannel().doIt(message, args[0], accesscontrol, client)
+                    : message.channel.send("Access level mod needed");
+            });
+
             break;
         case "addsection":
             accesscontrol.doIt(message, "mod").then((res) => {
