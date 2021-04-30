@@ -17,8 +17,7 @@ export class PMHandler {
         let repostChannel;
         repostChannel = client.channels.cache.get(setChannel.getOutputChannel());
         if(repostChannel === undefined) {
-            firstmessage.channel.send('No !art apply receiver channel has been set.') //ev. kan man @:a moderators här
-            console.log('repostChannel is undefined');
+            firstmessage.channel.send('Application not possible. No !art apply receiver channel has been set.') //ev. kan man @:a moderators här
             return;
         }
         
