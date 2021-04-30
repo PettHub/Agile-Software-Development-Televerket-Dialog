@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "set NODE_ENV=development&& ts-node-dev main.ts",
     "prod": "set NODE_ENV=production&& ts-node-dev main.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "ldev": "NODE_ENV=development ts-node-dev main.ts",
+    "lprod": "NODE_ENV=production ts-node-dev main.ts"
+  },
   },
   "author": "televerket dialog",
   "license": "ISC",
