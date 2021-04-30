@@ -42,7 +42,7 @@ export class Nominator {
     }
 
     nominate(user: string, section: string): boolean {
-        console.log(CommandAddSection.sectionList);
+        //console.log(CommandAddSection.sectionList);
         if (!CommandAddSection.sectionList.has(section)) {
             console.log("section does not exist"); //section has not been created or at least does not exist in sectionlist
             return false;
@@ -135,13 +135,13 @@ export class Nominator {
         ); //settings channelId
         let guild = client.guilds.cache.get("823518625062977626"); //settings guild id
         let embed: Discord.MessageEmbed;
-        let setString = Nominator.sectionsForUser.get(arg);
+        let setString = Nominator.usersForSection.get(arg);
         let iterator: Iterator<[string, string], any>;
         if (setString)
-            iterator = Nominator.sectionsForUser.get(arg).entries();
+            iterator = setString.entries();
         let i = 1;
         let user: string;
-        let next: IteratorResult<[string, string], any>;
+        let next;
         embed = new Discord.MessageEmbed();
         if (iterator)
             while (true) {
