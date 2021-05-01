@@ -2,7 +2,7 @@ import sqlite from "sqlite3";
 sqlite.verbose();
 
 export class DatabaseFunctions {
-    db;
+    db: sqlite.Database;
     name: string = "database.db";
     private static me: DatabaseFunctions;
 

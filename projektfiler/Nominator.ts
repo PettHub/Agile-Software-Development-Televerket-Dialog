@@ -1,16 +1,17 @@
 import { CommandAddSection } from "./CommandAddSection";
 import Discord from "discord.js";
+import { GlobalFunctions } from "./GlobalFunctions";
 export class Nominator {
     static sectionsForUser: Map<string, Set<string>> = new Map();
     static usersForSection: Map<string, Set<string>> = new Map();
     static usersThatHaveNominated: Map<string, number> = new Map();
-    outputChannel: any;
-    client: Discord.Client;
-    timeout: NodeJS.Timeout;
-    constructor(client: Discord.Client) {
-        this.client = client;
-        this.outputChannel = client.channels.cache.get("826895001446645800"); //settings for changings outputchannel should be implemented later along with pms
-    }
+    //outputChannel: any;
+    //client: Discord.Client;
+    //timeout: NodeJS.Timeout;
+    //constructor(client: Discord.Client) {
+    //this.client = client;
+    //this.outputChannel = client.channels.cache.get("826895001446645800"); //settings for changings outputchannel should be implemented later along with pms
+    // }
 
     doIt(args: string[], message: Discord.Message): void {
         if (Nominator.usersThatHaveNominated.get(message.author.id))
@@ -33,7 +34,7 @@ export class Nominator {
             message.channel.send("!nominate [member] [section]");
             return;
         }
-        if (this.nominate(nominee, section)) {
+        if (this.nominate(nominee, section, message)) {
             Nominator.usersThatHaveNominated.set(message.author.id, Date.now());
             message.channel.send(
                 "nomination has been registered, type !nominations [section] too see all nominations"
@@ -41,14 +42,17 @@ export class Nominator {
         }
     }
 
-    nominate(user: string, section: string): boolean {
+    nominate(user: string, section: string, message: Discord.Message): boolean {
+        user = GlobalFunctions.toId(user);
         //console.log(CommandAddSection.sectionList);
         if (!CommandAddSection.sectionList.has(section)) {
             console.log("section does not exist"); //section has not been created or at least does not exist in sectionlist
             return false;
         }
-        let guild = this.client.guilds.cache.get("823518625062977626"); //settings guildId
-        if (!guild.member(user)) {
+        let guild = message.guild;
+        //let guild = this.client.guilds.cache.get("823518625062977626"); //settings guildId
+        //console.log(guild);
+        if (!guild.members.fetch(user)) {
             console.log("user not in server");
             return false;
         }
@@ -67,7 +71,6 @@ export class Nominator {
 
     static displayCandidates(
         args: string[],
-        client: Discord.Client,
         message: Discord.Message
     ) {
         let arg = '';
@@ -75,11 +78,11 @@ export class Nominator {
             arg = arg.concat(args[i] + " ");
         } //display uses concatination for double word inputs. Still only expects one argument, either user or section
         arg = arg.slice(0, -1);
-        let guild = client.guilds.cache.get("823518625062977626"); //settings guildId
+        //let guild = client.guilds.cache.get("823518625062977626"); //settings guildId
         if (CommandAddSection.sectionList.has(arg))
-            this.displayCandidatesForSection(arg, client);
-        else if (guild.member(arg)) {
-            this.displaySectionsForCandidate(arg, client);
+            this.displayCandidatesForSection(arg, message);
+        else if (message.guild.member(arg)) {
+            this.displaySectionsForCandidate(arg, message);
         } else
             message.reply(
                 "please use correct input values, !nominations [section]/[userId]"
@@ -88,11 +91,11 @@ export class Nominator {
 
     private static displaySectionsForCandidate(
         arg: string,
-        client: Discord.Client
+        message: Discord.Message
     ): void {
-        let outputChannel: any = client.channels.cache.get(
-            "826895001446645800"
-        ); //settings channelId
+        //let outputChannel: any = client.channels.cache.get(
+        //  "826895001446645800"
+        //); //settings channelId
         let embed: Discord.MessageEmbed;
         let setString = Nominator.sectionsForUser.get(arg);
         let iterator: Iterator<[string, string], any>;
@@ -109,7 +112,7 @@ export class Nominator {
                     embed
                         .setAuthor("sections " + arg + " is nominated for")
                         .setColor("#ff0000");
-                    outputChannel.send(embed);
+                    message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
                 next = iterator.next();
@@ -122,18 +125,18 @@ export class Nominator {
             embed
                 .setAuthor("sections " + arg + " is nominated for")
                 .setColor("#ff0000");
-            outputChannel.send(embed);
+            message.channel.send(embed);
         }
     }
 
     private static displayCandidatesForSection(
         arg: string,
-        client: Discord.Client
+        message: Discord.Message
     ): void {
-        let outputChannel: any = client.channels.cache.get(
-            "826895001446645800"
-        ); //settings channelId
-        let guild = client.guilds.cache.get("823518625062977626"); //settings guild id
+        // let outputChannel: any = client.channels.cache.get(
+        //     "826895001446645800"
+        // ); //settings channelId
+        //let guild = client.guilds.cache.get("823518625062977626"); //settings guild id
         let embed: Discord.MessageEmbed;
         let setString = Nominator.usersForSection.get(arg);
         let iterator: Iterator<[string, string], any>;
@@ -141,24 +144,24 @@ export class Nominator {
             iterator = setString.entries();
         let i = 1;
         let user: string;
-        let next;
+        let next: IteratorResult<[string, string], any>;
         embed = new Discord.MessageEmbed();
         if (iterator)
             while (true) {
                 if (i++ % 100 == 0) {
                     //in case there are more than 100 users for a section
                     embed.setAuthor("nominations for " + arg).setColor("#ff0000");
-                    outputChannel.send(embed);
+                    message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
                 next = iterator.next();
                 if (next.done) break;
                 user = next.value[0];
-                embed.addField(guild.member(user).displayName, user);
+                embed.addField(message.guild.member(user).displayName, user);
             }
         if (embed.fields.length > 0) {
             embed.setAuthor("nominations for " + arg).setColor("#ff0000");
-            outputChannel.send(embed);
+            message.channel.send(embed);
         }
     }
 }
