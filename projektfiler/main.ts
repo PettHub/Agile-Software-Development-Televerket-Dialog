@@ -78,10 +78,10 @@ client.on("message", (message) => {
             new sayTest().doIt(message, args);
             break;
         case "nominate":
-            new Nominator(client).doIt(args, message);
+            new Nominator().doIt(args, message);
             break;
         case "nominations":
-            Nominator.displayCandidates(args, client, message);
+            Nominator.displayCandidates(args, message);
             break;
         case "sections":
             Sections.viewSections(message);
