@@ -5,10 +5,10 @@ DROP TABLE IF EXISTS Nominations;
 DROP TABLE IF EXISTS Votes;
 DROP VIEW IF EXISTS winnersPerSection;
 DROP VIEW IF EXISTS totalVotesPerSectionAndVotee;
-DELETE FROM Votes;
-DELETE FROM Sections;
-DELETE FROM Users;
-DELETE FROM Nominations;
+--DELETE FROM Votes;
+--DELETE FROM Sections;
+--DELETE FROM Users;
+--DELETE FROM Nominations;
 --create tables
 CREATE TABLE "Sections" (
     "section" TEXT PRIMARY KEY
@@ -60,3 +60,5 @@ INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '8235
 CREATE VIEW totalVotesPerSectionAndVotee AS SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee; --groups votes by sections and votee
 CREATE VIEW winnersPerSection AS SELECT section, votee, MAX(votes) as winner FROM totalVotesPerSectionAndVotee GROUP BY section; --takes the highest voted from above
 SELECT * FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24);--takes all the votes from the latest 24 hours, strftime converts timestamps, %s turns it into seconds
+--SELECT COUNT(votes) FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == $USERID) GROUP BY voter; --USERID being the variable in this query, returns the number of votes submitted the latest 24 hours by USERID
+--INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, $VOTER, $VOTEE, $SECTION); --the default for registering a vote
