@@ -1,8 +1,26 @@
+--making sure we can rerun this
 DROP VIEW IF EXISTS winnersPerSection;
 DROP VIEW IF EXISTS totalVotesPerSectionAndVotee;
 DELETE FROM Votes;
 DELETE FROM Sections;
 DELETE FROM Users;
+--create tables
+CREATE TABLE Sections(
+    "section" TEXT PRIMARY KEY
+);
+CREATE TABLE Users(
+    "user" CHAR(20) PRIMARY KEY
+);
+CREATE TABLE "Votes" (
+	"id"	INTEGER,
+	"stamp"	TIMESTAMP NOT NULL,
+	"voter"	CHAR(20) NOT NULL,
+	"votee"	CHAR(20) NOT NULL,
+	"section"	TEXT NOT NULL,
+	FOREIGN KEY("votee") REFERENCES "Users"("user"),
+	FOREIGN KEY("voter") REFERENCES "Users"("user"),
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
 --users in out channel
 INSERT INTO Users VALUES ('219842729239248897');
 INSERT INTO Users VALUES ('120209876625522690');
