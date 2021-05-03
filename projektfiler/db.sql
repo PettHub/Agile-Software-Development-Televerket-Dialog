@@ -1,4 +1,8 @@
 --making sure we can rerun this
+DROP TABLE IF EXISTS Sections;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Nominations;
+DROP TABLE IF EXISTS Votes;
 DROP VIEW IF EXISTS winnersPerSection;
 DROP VIEW IF EXISTS totalVotesPerSectionAndVotee;
 DELETE FROM Votes;
