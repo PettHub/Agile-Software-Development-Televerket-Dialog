@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "set NODE_ENV=development&& ts-node-dev main.ts",
     "prod": "set NODE_ENV=production&& ts-node-dev main.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "ldev": "NODE_ENV=development ts-node-dev main.ts",
+    "lprod": "NODE_ENV=production ts-node-dev main.ts"
   },
   "author": "televerket dialog",
   "license": "ISC",
@@ -15,11 +17,13 @@
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.7",
+    "sqlite3": "^5.0.2",
     "ts-node-dev": "^1.1.6",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   },
   "devDependencies": {
-    "@types/node": "^14.14.37"
+    "@types/node": "^14.14.37",
+    "@types/sqlite3": "^3.1.7"
   }
 }
