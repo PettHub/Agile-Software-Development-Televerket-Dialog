@@ -4,6 +4,7 @@ DROP VIEW IF EXISTS totalVotesPerSectionAndVotee;
 DELETE FROM Votes;
 DELETE FROM Sections;
 DELETE FROM Users;
+DELETE FROM Nominations;
 --create tables
 CREATE TABLE "Sections" (
     "section" TEXT PRIMARY KEY
