@@ -5,11 +5,18 @@ DELETE FROM Votes;
 DELETE FROM Sections;
 DELETE FROM Users;
 --create tables
-CREATE TABLE Sections(
+CREATE TABLE "Sections" (
     "section" TEXT PRIMARY KEY
 );
-CREATE TABLE Users(
+CREATE TABLE "Users" (
     "user" CHAR(20) PRIMARY KEY
+);
+CREATE TABLE "Nominations" (
+    "user"  CHAR(20) NOT NULL,
+    "section"   TEXT NOT NULL,
+    FOREIGN KEY("user") REFERENCES "Users"("user"),
+    FOREIGN KEY("section") REFERENCES "Sections"("section"),
+    PRIMARY KEY("user", "section");
 );
 CREATE TABLE "Votes" (
 	"id"	INTEGER,
@@ -17,7 +24,7 @@ CREATE TABLE "Votes" (
 	"voter"	CHAR(20) NOT NULL,
 	"votee"	CHAR(20) NOT NULL,
 	"section"	TEXT NOT NULL,
-	FOREIGN KEY("votee") REFERENCES "Users"("user"),
+    FOREIGN KEY ("votee","section") REFERENCES "Nominations"("user", "section"),
 	FOREIGN KEY("voter") REFERENCES "Users"("user"),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
@@ -32,6 +39,9 @@ INSERT INTO Users VALUES ('823540261170839582');
 --testing with best dude/dudettes
 INSERT INTO Sections VALUES('best dude');
 INSERT INTO Sections VALUES('best dudette');
+--inserting nominations in order to vote
+INSERT INTO Nominations VALUES ('219842729239248897','best dude');
+INSERT INTO Nominations VALUES ('823540261170839582','best dude');
 --testing voting for 2 different candidates for one section
 INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '219842729239248897', '823540261170839582', 'best dude');
 INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '120209876625522690', '823540261170839582', 'best dude');
