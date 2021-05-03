@@ -59,3 +59,4 @@ INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '8235
 --views for querying
 CREATE VIEW totalVotesPerSectionAndVotee AS SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee; --groups votes by sections and votee
 CREATE VIEW winnersPerSection AS SELECT section, votee, MAX(votes) as winner FROM totalVotesPerSectionAndVotee GROUP BY section; --takes the highest voted from above
+SELECT * FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24);--takes all the votes from the latest 24 hours, strftime converts timestamps, %s turns it into seconds
