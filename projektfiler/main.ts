@@ -5,6 +5,7 @@ import { TestAccess } from "./TestAccess";
 import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
 import { Sections } from "./Sections";
+import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
@@ -93,7 +94,9 @@ client.on("message", (message) => {
                     ? Sections.removesection(args, message)
                     : message.channel.send("Access level mod needed");
             });
-
+            break;
+        case "vote":
+            Voter.vote(message, args);
             break;
     }
 });
