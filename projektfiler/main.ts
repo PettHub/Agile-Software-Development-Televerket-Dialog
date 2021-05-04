@@ -5,10 +5,12 @@ import { TestAccess } from "./TestAccess";
 import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
 import { Sections } from "./Sections";
+import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
+import { isBreakStatement } from "typescript";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -92,7 +94,9 @@ client.on("message", (message) => {
                     ? Sections.removesection(args, message)
                     : message.channel.send("Access level mod needed");
             });
-
+            break;
+        case "vote":
+            Voter.vote(message, args);
             break;
     }
 });
