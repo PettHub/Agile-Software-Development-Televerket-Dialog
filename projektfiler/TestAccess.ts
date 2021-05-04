@@ -3,11 +3,6 @@ import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class TestAccess {
-    constructor() {
-        DatabaseFunctions.getInstance().db.run(
-            "CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"
-        ); //Creates a new table if it doesn't exist
-    }
 
     public async doIt(
         message: Discord.Message,
