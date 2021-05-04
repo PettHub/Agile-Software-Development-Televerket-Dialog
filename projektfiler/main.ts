@@ -10,6 +10,7 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
+import { ArtDecision} from './ArtDecision';
 import { isBreakStatement } from "typescript";
 
 if (process.env.NODE_ENV) {
@@ -53,7 +54,7 @@ client.on("message", (message) => {
 
             break;
         case "addsection":
-            accesscontrol.doIt(message, "mod").then((res) => {
+            accesscontrol.doIt(message, "mod").then((res) => { 
                 res
                     ? new CommandAddSection().doIt(message, args, accesscontrol)
                     : message.channel.send("Access level mod needed");
@@ -94,6 +95,19 @@ client.on("message", (message) => {
                     ? Sections.removesection(args, message)
                     : message.channel.send("Access level mod needed");
             });
+            break;
+        case "art":
+            let sub: string = args.shift();
+            if(sub === 'accept' || sub === 'deny'){
+                accesscontrol.doIt(message, "mod").then((res) => {
+                    res
+                        ? new ArtDecision().doIt(message, args, sub)
+                        : message.channel.send("Access level mod needed");
+                });
+            }
+            break;
+        case "setart":
+            new ArtDecision().setArt(message, args.shift());
             break;
         case "vote":
             Voter.vote(message, args);
