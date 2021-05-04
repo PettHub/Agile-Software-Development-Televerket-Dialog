@@ -19,8 +19,8 @@ CREATE TABLE "Users" (
 CREATE TABLE "Nominations" (
     "user"  CHAR(20) NOT NULL,
     "section"   TEXT NOT NULL,
-    FOREIGN KEY("user") REFERENCES "Users"("user"),
-    FOREIGN KEY("section") REFERENCES "Sections"("section"),
+    FOREIGN KEY("user") REFERENCES "Users"("user") ON DELETE CASCADE,
+    FOREIGN KEY("section") REFERENCES "Sections"("section") ON DELETE CASCADE,
     PRIMARY KEY("user", "section");
 );
 CREATE TABLE "Votes" (
@@ -29,8 +29,8 @@ CREATE TABLE "Votes" (
 	"voter"	CHAR(20) NOT NULL,
 	"votee"	CHAR(20) NOT NULL,
 	"section"	TEXT NOT NULL,
-    FOREIGN KEY ("votee","section") REFERENCES "Nominations"("user", "section"),
-	FOREIGN KEY("voter") REFERENCES "Users"("user"),
+    FOREIGN KEY ("votee","section") REFERENCES "Nominations"("user", "section") ON DELETE CASCADE,
+	FOREIGN KEY("voter") REFERENCES "Users"("user") ON DELETE CASCADE,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 --users in out channel
