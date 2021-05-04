@@ -9,6 +9,7 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
+import { ArtDecision} from './ArtDecision';
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -51,7 +52,7 @@ client.on("message", (message) => {
 
             break;
         case "addsection":
-            accesscontrol.doIt(message, "mod").then((res) => {
+            accesscontrol.doIt(message, "mod").then((res) => { 
                 res
                     ? new CommandAddSection().doIt(message, args, accesscontrol)
                     : message.channel.send("Access level mod needed");
@@ -93,6 +94,19 @@ client.on("message", (message) => {
                     : message.channel.send("Access level mod needed");
             });
 
+            break;
+        case "art":
+            let sub: string = args.shift();
+            if(sub === 'accept' || sub === 'deny'){
+                accesscontrol.doIt(message, "mod").then((res) => {
+                    res
+                        ? new ArtDecision().doIt(message, args, sub)
+                        : message.channel.send("Access level mod needed");
+                });
+            }
+            break;
+        case "setart":
+            new ArtDecision().setArt(message, args.shift());
             break;
     }
 });
