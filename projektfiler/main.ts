@@ -54,7 +54,7 @@ client.on("message", (message) => {
 
             break;
         case "addsection":
-            accesscontrol.doIt(message, "mod").then((res) => { 
+            accesscontrol.doIt(message, "mod").then((res) => {
                 res
                     ? new CommandAddSection().doIt(message, args, accesscontrol)
                     : message.channel.send("Access level mod needed");
@@ -98,7 +98,7 @@ client.on("message", (message) => {
             break;
         case "art":
             let sub: string = args.shift();
-            if(sub === 'accept' || sub === 'deny' || 0 === 0){
+            if (sub === 'accept' || sub === 'deny' || 0 === 0) {
                 accesscontrol.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, sub)
@@ -109,10 +109,10 @@ client.on("message", (message) => {
         case "setart":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ?  new ArtDecision().setArt(message, args.shift())
+                    ? new ArtDecision().setArt(message, args.shift())
                     : message.channel.send("Access level mod needed");
             });
-           
+
             break;
         case "vote":
             Voter.vote(message, args);
