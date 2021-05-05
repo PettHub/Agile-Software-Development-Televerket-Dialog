@@ -26,12 +26,16 @@ export class DatabaseFunctions {
 
     private createTables() {
         this.db.run(
-            "CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS Access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"
         ); //Creates a table for TestAccess
 
         this.db.run(
+            "CREATE TABLE IF NOT EXISTS ArtChannel(artchannel CHAR(18) PRIMARY KEY)"
+        ); //Creates a table for artchannel
+
+        this.db.run(
             "CREATE TABLE IF NOT EXISTS Sections(section TEXT PRIMARY KEY)"
-        ); //Creates a table for Sections
+        ); //Creates a table for Sections 
 
         this.db.run(
             "CREATE TABLE IF NOT EXISTS Users(user CHAR(20) PRIMARY KEY)"
