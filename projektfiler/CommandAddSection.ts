@@ -12,27 +12,22 @@ export class CommandAddSection {
         let formattedString: string = '';
 
         //Check message sender role
-        if (!accesscontrol.doIt(message, 'member')) //If sender is not a moderator: 
-        {
-            message.channel.send('You are not a moderator!');
-            return;
-        }
-        else //If sender is a moderator: 
-        {
-
+        if (args[0]){
             for(let a of args){ //Restores input args to include the spaces between the words
                 if(args.indexOf(a) == (args.length - 1)){
                     tempString = tempString.concat(a);
                 } else {
-                    tempString = tempString.concat(a, ' ');
+                        tempString = tempString.concat(a, ' ');
                 }
-            }
+        }
 
 
-            tempList = tempString.split(/, +/); //Splits where there are commas, to distinguish section-names (tempList consists of section names)
+            tempList = tempString.split(/, +|,+/); //Splits where there are commas, to distinguish section-names (tempList consists of section names)
 
             for (let a of tempList) {
-                if (CommandAddSection.sectionList.has(a))
+                if (a === ''){
+                    message.channel.send(a + ' isnt a valid name')
+                } else if (CommandAddSection.sectionList.has(a))
                     message.channel.send('Section ' + a + ' has already been added earlier.'); //If the section has been added, inform user
                 else {
                     CommandAddSection.sectionList.add(a)
@@ -51,6 +46,10 @@ export class CommandAddSection {
             message.channel.send('The current added sections are: ' + formattedString); //Prints the formatted list
 
             return;
+        }else {
+            message.channel.send("Usage: *!addsection [section name]*, you can provide several sections as a comma separated list");
+
         }
+        
     }
 }
