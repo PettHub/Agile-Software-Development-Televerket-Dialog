@@ -19,6 +19,7 @@ export class DatabaseFunctions {
             return this.me;
         } else {
             this.me = new DatabaseFunctions();
+            this.me.db.get("PRAGMA foreign_keys = ON");
             return this.me;
         }
     }
