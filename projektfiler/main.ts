@@ -10,7 +10,6 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
-import { isBreakStatement } from "typescript";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
