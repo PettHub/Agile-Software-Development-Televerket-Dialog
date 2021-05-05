@@ -1,10 +1,13 @@
 import { DatabaseFunctions } from './DatabaseFunctions';
 import Discord from 'discord.js';
 import { TextChannel } from 'discord.js';
+import { GlobalFunctions } from './GlobalFunctions';
 
 export class setChannel {
 
     doIt(message: Discord.Message, newChannel: string, client: Discord.Client): void {
+        newChannel = GlobalFunctions.toId(newChannel);
+        console.log(newChannel);
 
         if (message.guild.channels.cache.get(newChannel) === undefined) { //if input channel is undefined (e.g. not in guild/incorrect input)
             message.channel.send('Incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
