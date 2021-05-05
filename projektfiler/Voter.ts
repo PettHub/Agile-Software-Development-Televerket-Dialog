@@ -30,10 +30,9 @@ export class Voter {
         let value = await Voter.queryDB(voter.id, db, queryVotes)
         switch (value) {
             case result.passed:
-                console.log('before insert');
                 let insert = db.prepare(insertVote); //prepare the vote
-                insert.run(voter.id, votee, section); //insert it
-                console.log('after insert');
+                let insertResult = insert.run(voter.id, votee, section); //insert it
+                insertResult.finalize((err) => { voter.send('vote did actually not go through, check arguments') });
                 voter.send('vote for ' + votee + ' went through.');
                 break;
             case result.outOfVotes:
@@ -51,7 +50,7 @@ export class Voter {
             let votesByVoter = 0;
             db.get(queryVotes, voter, (err, row) => {
                 if (err) {
-                    console.log(err);
+                    console.log(err + ' this should not be happening');
                     reject(err);// if we get an unknown error we return this
                 }
                 if (row) {
@@ -60,7 +59,7 @@ export class Voter {
                     if (votesByVoter >= 3) { //if user has voted more than 3 times the last 24 hours
                         let queryAllVotes = "SELECT strftime('%s',MIN(stamp)) as earliest FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter;";
                         db.get(queryAllVotes, voter, (err, row) => {
-                            if (err) { console.log(err); }
+                            if (err) { console.log(err + ' this is a simulation, wake up'); }
                             if (row) {//sql dates and javascript dates might not match up, please be aware
                                 let nextElligableVote = Date.now() + 1000 * (24 * 60 * 60 - (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
                                 Voter.timedOutUsers.set(voter, nextElligableVote); //caches that the user is timed out in order to save the db some load

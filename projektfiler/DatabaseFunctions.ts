@@ -20,6 +20,9 @@ export class DatabaseFunctions {
         } else {
             this.me = new DatabaseFunctions();
             this.me.db.get("PRAGMA foreign_keys = ON");
+            this.me.db.on("error", function (error) {
+                console.log("Getting an error : ", error);
+            });
             return this.me;
         }
     }
