@@ -64,10 +64,12 @@ export class ArtDecision {
             message.channel.send("please provide a role");
         } else {
             command = GlobalFunctions.toId(command);
-
-                DatabaseFunctions.getInstance()
+            DatabaseFunctions.getInstance()
+            .db.prepare("DELETE FROM access WHERE accessLVL =?")
+            .run("art");
+                DatabaseFunctions.getInstance() 
                     .db.prepare(
-                        "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM artrole WHERE accessLVL =? AND role =?);"
+                        "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
                     )
                     .run("art", command, "art", command); //Adds the owner status for the specified role
                 message.channel.send("OK");
@@ -84,7 +86,6 @@ export class ArtDecision {
 
     // adds the art role to the user who has been approved.
     private addArtRole(user, msg:  Discord.Message){
-        console.log('a');
         let querry = 'SELECT * FROM access WHERE accessLVL = ?';
         this.db.get(querry, "art", (err, row) => {
             if (err) { 

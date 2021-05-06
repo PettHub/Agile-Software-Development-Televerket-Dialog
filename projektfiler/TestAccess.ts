@@ -3,11 +3,6 @@ import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class TestAccess {
-    constructor() {
-        DatabaseFunctions.getInstance().db.run(
-            "CREATE TABLE IF NOT EXISTS access(accessLVL TEXT NOT NULL, role TEXT NOT NULL)"
-        ); //Creates a new table if it doesn't exist
-    }
 
     public async doIt(
         message: Discord.Message,
@@ -48,7 +43,7 @@ export class TestAccess {
                 //Make sure only people with owner role can access
                 DatabaseFunctions.getInstance()
                     .db.prepare(
-                        "INSERT INTO access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                        "INSERT INTO Access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM Access WHERE accessLVL =? AND role =?);"
                     )
                     .run("mod", command, "mod", command); //Sets mod status fom the specified role
                 message.channel.send("OK");
@@ -73,11 +68,11 @@ export class TestAccess {
             ) {
                 //Make sure only guild owner can access
                 DatabaseFunctions.getInstance()
-                    .db.prepare("DELETE FROM access WHERE accessLVL =?")
+                    .db.prepare("DELETE FROM Access WHERE accessLVL =?")
                     .run("owner"); //Deletes the old owner role
                 DatabaseFunctions.getInstance()
                     .db.prepare(
-                        "INSERT INTO access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM access WHERE accessLVL =? AND role =?);"
+                        "INSERT INTO Access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM Access WHERE accessLVL =? AND role =?);"
                     )
                     .run("owner", command, "owner", command); //Adds the owner status for the specified role
                 message.channel.send("OK");
@@ -103,7 +98,7 @@ export class TestAccess {
                 //Make sure only people with owner role can access
                 DatabaseFunctions.getInstance()
                     .db.prepare(
-                        "DELETE FROM access WHERE accessLVL =? AND role =?"
+                        "DELETE FROM Access WHERE accessLVL =? AND role =?"
                     )
                     .run("mod", command); //Deletes the mod status from the specified role
                 message.channel.send("OK");
@@ -118,7 +113,7 @@ export class TestAccess {
         accessLevel: string
     ): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            let query = "SELECT * FROM access WHERE accessLVL = ?"; //Query to check the access level
+            let query = "SELECT * FROM Access WHERE accessLVL = ?"; //Query to check the access level
             let value: boolean = false;
             DatabaseFunctions.getInstance().db.all(
                 query,
