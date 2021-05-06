@@ -9,6 +9,7 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
+import { DatabaseFunctions } from "./DatabaseFunctions";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -18,7 +19,7 @@ if (process.env.NODE_ENV) {
     dotenv.config({ path: path.join(__dirname, `.env`) });
 }
 const client = new Discord.Client();
-
+DatabaseFunctions.getInstance();
 let prefix = process.env.DISCORD_PREFIX;
 
 client.once("ready", () => {
@@ -45,7 +46,7 @@ client.on("message", (message) => {
         case 'setchannel':
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? new setChannel().doIt(message, args[0], accesscontrol, client)
+                    ? new setChannel().doIt(message, args[0], client)
                     : message.channel.send("Access level mod needed");
             });
 
@@ -78,10 +79,10 @@ client.on("message", (message) => {
             new sayTest().doIt(message, args);
             break;
         case "nominate":
-            new Nominator(client).doIt(args, message);
+            new Nominator().doIt(args, message);
             break;
         case "nominations":
-            Nominator.displayCandidates(args, client, message);
+            Nominator.displayCandidates(args, message);
             break;
         case "sections":
             Sections.viewSections(message);
