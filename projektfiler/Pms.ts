@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import { setChannel } from './setChannel';
+import { DatabaseFunctions } from './DatabaseFunctions';
 
 export class PMHandler {
 
@@ -15,7 +16,7 @@ export class PMHandler {
         var regex = new RegExp(expression);
 
         let repostChannel;
-        setChannel.getValue().then((res) => {
+        setChannel.getValue().then(async (res) => {
             repostChannel = client.channels.cache.get(res);
 
 
@@ -25,7 +26,8 @@ export class PMHandler {
                 return;
             }
 
-            if (firstmessage.member.roles.cache.has('836598304140820500')) { //checks if author already is Artist, if so they cannot apply again
+            let art = await this.getrole();
+            if (firstmessage.member.roles.cache.has(art)) { //checks if author already is Artist, if so they cannot apply again
                 author.send('You already have the Artist role and can therefore not apply for it.');
             }
             else {
@@ -37,14 +39,23 @@ export class PMHandler {
                             if (content.match(regex)) { //checks that content is a link, if so add to images-array
                                 numberOfImages--;    //if attachment exists, decrament remaining
                                 images[numberOfImages] = content; //get the url from the attachments (what an image would be in a message)
-                                if (numberOfImages === 0) {
-                                    clearTimeout(timeout);  //once we have 3, stop the clock
-                                    images.forEach(function (image) {
-                                        repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
-                                    })
-                                    author.send('Your application has been sent, you will get a response within 24 hours.'); //notify applicant that application has been sent
-                                    client.removeListener('message', listener); //remove the listener from memory
-                                }
+                            }   else if (message.attachments){
+                                message.attachments.forEach(attachment => {
+                                    console.log('a')
+                                    numberOfImages--
+                                    let image = attachment.proxyURL;
+                                    images[numberOfImages] = image;
+                                })
+                                // numberOfImages--;
+                                // images[numberOfImages] = message.attachments;
+                            }
+                            if (numberOfImages === 0) {
+                                clearTimeout(timeout);  //once we have 3, stop the clock
+                                images.forEach(function (image) {
+                                    repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
+                                })
+                                author.send('Your application has been sent, you will get a response within 24 hours.'); //notify applicant that application has been sent
+                                client.removeListener('message', listener); //remove the listener from memory
                             }
                         })
                     }
@@ -64,6 +75,21 @@ export class PMHandler {
 
             }
         });
+
+        
+    }
+
+    private getrole(): Promise<string>{
+           return new Promise((resolve, reject) => {
+               let query = 'SELECT * FROM access WHERE accessLVL =?';
+               DatabaseFunctions.getInstance().db.get(query, 'art', (err, row) => {
+                   if(err){
+                       console.log(err);
+                       reject(undefined);
+                   }
+                   row ? resolve(row.role) : resolve(undefined);
+               });
+           })
     }
 
 }
