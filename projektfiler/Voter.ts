@@ -15,32 +15,35 @@ export class Voter {
         section = section.slice(0, -1);
         message.delete(); //removes the message before the queries in order to delete it as fast as possible
         if (votee == voter.id) {
-            voter.send("you can't vote for yourself");
+            voter.send("You can't vote for yourself");
             return;
         }
         let db = DatabaseFunctions.getInstance().db;
-        let queryVotes = "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter";
+        let queryVotes = "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"; //amount of votes from a person the last 24 hours
         let insertVote = "INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, ?, ?, ?);";
         let timeout = Voter.timedOutUsers.get(voter.id);
         if (timeout)    //if user is timed out in the cache
             if (timeout > Date.now()) {
-                voter.send('you are out of votes, please try again ' + new Date(timeout).toString());
+                voter.send('You are out of votes, please try again ' + new Date(timeout).toString()); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
             }
         let value = await Voter.queryDB(voter.id, db, queryVotes)
         switch (value) {
             case result.passed:
                 let insert = db.prepare(insertVote); //prepare the vote
-                let insertResult = insert.run(voter.id, votee, section); //insert it
-                insertResult.finalize((err) => { voter.send('vote did actually not go through, check arguments') });
-                voter.send('vote for ' + votee + ' went through.');
+                insert.run(voter.id, votee, section, (err, res) => {
+                    if (err)
+                        voter.send('Vote did not get through, please try again and check your arguments :)');
+                    else
+                        voter.send('Vote for ' + votee + ' went through.');
+                }); //insert it
                 break;
             case result.outOfVotes:
                 let timeout = Voter.timedOutUsers.get(voter.id)
                 if (timeout)
-                    voter.send('you are out of votes, please try again ' + new Date(timeout).toString());
+                    voter.send('You are out of votes, please try again ' + new Date(timeout).toString());
                 else
-                    voter.send('you are out of votes'); //should only run once per instance and user
+                    voter.send('You are out of votes'); //should only run once per instance and user
                 break;
         }
     }
