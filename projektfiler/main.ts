@@ -1,15 +1,15 @@
 import { CommandPing } from "./CommandPing";
-import { CommandAddSection } from "./CommandAddSection";
+//import { CommandAddSection } from "./CommandAddSection";
 import { TestAccess } from "./TestAccess";
 import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
-import { Sections } from "./Sections"; 
+import { Sections } from "./Sections";
 import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { setChannel } from './setChannel';
-import { ArtDecision} from './ArtDecision';
+import { ArtDecision } from './ArtDecision';
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { ApplyHandeler } from "./ApplyHandeler";
 
@@ -57,7 +57,7 @@ client.on("message", (message) => {
         case "addsection":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? new CommandAddSection().doIt(message, args, accesscontrol)
+                    ? Sections.addsection(message, args)
                     : message.channel.send("Access level mod needed");
             });
 
@@ -93,7 +93,7 @@ client.on("message", (message) => {
         case "removesection":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? Sections.removesection(args, message)
+                    ? Sections.removeSection(message, args)
                     : message.channel.send("Access level mod needed");
             });
             break;

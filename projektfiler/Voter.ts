@@ -31,19 +31,19 @@ export class Voter {
             else {
                 Voter.timedOutUsers.delete(voter.id); //clean up the ram
             }
-        let value = await Voter.queryDB(voter.id, db, queryVotes)
-        switch (value) {
+        let value = await Voter.queryDB(voter.id, db, queryVotes);
+        switch (value[0]) {
             case result.passed:
                 let insert = db.prepare(insertVote); //prepare the vote
                 insert.run(voter.id, votee, section, (err, res) => {
                     if (err)
                         voter.send('Vote did not get through, please try again and check your arguments :)');
                     else
-                        voter.send('Vote for ' + votee + ' went through.');
+                        voter.send('Vote went through. You have ' + (2 - value[1]) + ' votes remaining');
                 }); //insert it
                 break;
             case result.outOfVotes:
-                let timeout = Voter.timedOutUsers.get(voter.id)
+                let timeout = Voter.timedOutUsers.get(voter.id);
                 if (timeout)
                     voter.send('You are out of votes, please try again ' + new Date(timeout).toString());
                 else
@@ -52,7 +52,7 @@ export class Voter {
         }
     }
 
-    private static queryDB(voter: string, db: Database, queryVotes: string): Promise<result> {
+    private static queryDB(voter: string, db: Database, queryVotes: string): Promise<[result: number, votes: number]> {
         return new Promise((resolve, reject) => {
             let votesByVoter = 0;
             db.get(queryVotes, voter, (err, row) => {
@@ -72,10 +72,10 @@ export class Voter {
                                 Voter.timedOutUsers.set(voter, nextElligableVote); //caches that the user is timed out in order to save the db some load
                             }
                         });
-                        resolve(result.outOfVotes);
+                        resolve([result.outOfVotes, votesByVoter]);//out of votes
                     }
                 }
-                resolve(result.passed);
+                resolve([result.passed, votesByVoter]);//passed
             });
         });
     }

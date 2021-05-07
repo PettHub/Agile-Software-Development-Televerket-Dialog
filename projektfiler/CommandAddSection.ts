@@ -1,3 +1,4 @@
+/*
 import Discord from 'discord.js';
 import { TestAccess } from 'TestAccess';
 
@@ -35,7 +36,7 @@ export class CommandAddSection {
                 }
             }
 
-            //Creates a formatted string from the sectionList, to make printing look good 
+            //Creates a formatted string from the sectionList, to make printing look good
             //Should probably be refactored into a common nominations-class, to make it accessible for !removesections and possibly !viewsections
             for (let s of CommandAddSection.sectionList) {
                 formattedString = formattedString.concat(s, ', ');
@@ -50,6 +51,7 @@ export class CommandAddSection {
             message.channel.send("Usage: *!addsection [section name]*, you can provide several sections as a comma separated list");
 
         }
-        
+
     }
 }
+*/

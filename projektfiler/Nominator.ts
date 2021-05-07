@@ -1,4 +1,4 @@
-import { CommandAddSection } from "./CommandAddSection";
+//import { CommandAddSection } from "./CommandAddSection";
 import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
@@ -90,13 +90,25 @@ export class Nominator {
                     done = true;
                 }
             });
-
-
+            let runnable = DatabaseFunctions.getInstance().db.prepare("SELECT COUNT(section) as count FROM Sections WHERE (section == ?) GROUP BY SECTION");
+            await runnable.run(section, (err, res) => {
+                if (err) {
+                    resolve(false);
+                    return;
+                }
+                if (res.count == 0) {
+                    message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
+                    resolve(false);
+                    return;
+                }
+            })
+            /*
             if (!CommandAddSection.sectionList.has(section) && !done) {
                 message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
                 resolve(false);
                 return;
             }
+            */
 
             await message.guild.members.fetch(user).catch(e => {//Catches errors that discord js may throw so the bot wont die
                 if (done) return;
@@ -122,7 +134,7 @@ export class Nominator {
         });
     }
 
-    public static displayCandidates(
+    public static async displayCandidates(
         args: string[],
         message: Discord.Message
     ) {
@@ -131,14 +143,26 @@ export class Nominator {
             arg = arg.concat(args[i] + " ");
         }
         arg = arg.slice(0, -1);
-        if (CommandAddSection.sectionList.has(arg))
-            this.displayCandidatesForSection(arg, message);
-        else if (message.guild.member(arg)) {
-            this.displaySectionsForCandidate(arg, message);
-        } else
-            message.reply(
-                "please use correct input values, !nominations [section]/[userId]"
-            );
+        arg = GlobalFunctions.toId(arg);
+        let runnable = await DatabaseFunctions.getInstance().db.prepare('SELECT * FROM Sections WHERE (section == ?)');
+        runnable.all(arg, (err, rows) => {
+            if (err) {
+                console.log('crashes first run');
+                console.log(err);
+                return;
+            }
+            if (rows)
+                if (rows[0])
+                    this.displayCandidatesForSection(arg, message);
+                else {
+                    if (message.guild.member(arg)) {
+                        this.displaySectionsForCandidate(arg, message);
+                    }
+                    else {
+                        message.reply('please use correct input values, !nominations [section]/[userId]');
+                    }
+                }
+        });
     }
 
     private static displaySectionsForCandidate(
