@@ -1,10 +1,9 @@
 import { CommandPing } from "./CommandPing";
-import { PMHandler } from "./Pms";
 import { CommandAddSection } from "./CommandAddSection";
 import { TestAccess } from "./TestAccess";
 import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
-import { Sections } from "./Sections";
+import { Sections } from "./Sections"; 
 import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
@@ -12,6 +11,7 @@ import path from "path";
 import { setChannel } from './setChannel';
 import { ArtDecision} from './ArtDecision';
 import { DatabaseFunctions } from "./DatabaseFunctions";
+import { ApplyHandeler } from "./ApplyHandeler";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -28,6 +28,7 @@ client.once("ready", () => {
     console.log("bot is now online");
 });
 let accesscontrol = new TestAccess();
+let applyHandeler = new ApplyHandeler();
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -43,7 +44,7 @@ client.on("message", (message) => {
             message.channel.send("me");
             break;
         case 'apply':
-            new PMHandler().doIt(message, message.author, client);
+            applyHandeler.doIt(message, client);
             break;
         case 'setchannel':
             accesscontrol.doIt(message, "mod").then((res) => {

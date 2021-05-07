@@ -51,8 +51,35 @@ export class PMHandler {
                             }
                             if (numberOfImages === 0) {
                                 clearTimeout(timeout);  //once we have 3, stop the clock
+                                let i:number = 0;
                                 images.forEach(function (image) {
-                                    repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
+                                    i++
+                                    let embed = new Discord.MessageEmbed();
+                                    embed.setColor('#09CDDA')
+                                    .setTitle('image'+i)
+                                    .setAuthor(author.username)
+                                    .setDescription(author.id)
+                                    .setThumbnail(author.avatarURL())
+                                    .setImage(image)
+                                    .setTimestamp()
+                                    .setURL(image);
+                                    // const data = {
+                                    //     "title": "image:" + i,
+                                    //     "description": author.id,
+                                    //     "color": 4367031,
+                                    //     "timestamp": Date.now(),
+                                    //     "image": {
+                                    //       "url": image
+                                    //     },
+                                    //     "author": {
+                                    //       "name": author.toString(),
+                                    //       "icon_url": author.avatarURL
+                                    //     }
+                                    // };
+
+
+                                      repostChannel.send(embed);
+                                    //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
                                 })
                                 author.send('Your application has been sent, you will get a response within 24 hours.'); //notify applicant that application has been sent
                                 client.removeListener('message', listener); //remove the listener from memory
@@ -60,8 +87,8 @@ export class PMHandler {
                         })
                     }
                 }
-                author.send('Please send 3 images (as attachements and/or links), you have 5 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered.'); //send initial message asking for images. Could include rules if Matt has some.
-                let timeout = setTimeout(function () { author.send('Timed out, please'); client.removeListener('message', listener); }, 1000 * 60 * 5); //create a timeout to relieve the bot in case of spam
+                author.send('Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered.'); //send initial message asking for images. Could include rules if Matt has some.
+                let timeout = setTimeout(function () { author.send('Timed out, please'); client.removeListener('message', listener); }, 1000 * 60 * 15); //create a timeout to relieve the bot in case of spam
                 let numberOfImages = 3;
 
 
