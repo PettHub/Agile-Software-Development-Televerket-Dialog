@@ -51,7 +51,7 @@ export class Nominator {
     }
 
     private static canNominate(nominator: string): Promise<boolean> { //function name
-        let queryNominations = "SELECT COUNT(nominator) as nominator FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND nominator == ?) GROUP BY nominator";
+        let queryNominations = "SELECT COUNT(nominator) as nominator FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND nominator == ?) GROUP BY nominator"; //querynominations contains the number of nominations made the past 24h
         return new Promise((resolve, reject) => {
             let nominationsByUser = 0;
             DatabaseFunctions.getInstance().db.get(queryNominations, nominator, (err, row) => {
@@ -79,31 +79,37 @@ export class Nominator {
     }
 
     private async nominate(user: string, section: string, message: Discord.Message): Promise<boolean> {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve) => {
             let returnValue = false;
             user = GlobalFunctions.toId(user);
-            if (!Nominator.canNominate(message.author.id)) {
-                message.channel.send("You have already nominated");
-                resolve(false);
-            }
+            await Nominator.canNominate(message.author.id).then((res) => {
+                if (!res) {
+                    message.channel.send("You have already nominated once in the last 24 hours: ");
+                    resolve(false);
+                }
+            });
+
             if (!CommandAddSection.sectionList.has(section)) {
                 message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
                 resolve(false);
             }
-            if (!message.guild.members.fetch(user)) {
+            if (!(await message.guild.members.fetch(user))) {
                 message.channel.send("user not in server");
                 resolve(false);
             }
-            Nominator.getIfUserInSection(section, user).then((res) => {
+            await Nominator.getIfUserInSection(section, user).then((res) => {
+                console.log("inner function before: " + returnValue);
                 if (!res) {
                     message.channel.send("This user has already been nominated");
                     return;
                 } else {
                     returnValue = true;
+                    console.log("inner function after: " + returnValue);
                     DatabaseFunctions.getInstance().db.prepare("INSERT INTO Nominations (nominator,user,section) VALUES(?, ?, ?)").run(message.author.id, user, section);
                     return;
                 }
             });
+            console.log("outer function: " + returnValue);
             resolve(returnValue);
         });
     }
@@ -131,6 +137,7 @@ export class Nominator {
         user: string,
         message: Discord.Message
     ): void {
+        console.log(user);
         Nominator.displayCandidatesBySearchword(user, message, "SELECT section FROM Nominations WHERE user=?");
     }
 
@@ -156,7 +163,9 @@ export class Nominator {
                     .setAuthor(searchWord + " nominations")
                     .setColor("#ff0000");
                 await message.channel.send(embed);
-
+            } else {
+                message.channel.send("This person hasnt been nominated");
+                return;
             }
         }
         );
@@ -164,18 +173,25 @@ export class Nominator {
 
     private static forEachRow(row: any[], message: Discord.Message, embed: Discord.MessageEmbed, searchWord: string): Promise<void> {
         return new Promise(async resolve => {
+
             let i = 1;
             row.forEach(async (element) => {
                 if (i++ % 100 == 0) {
                     embed
-                        .setAuthor(searchWord + " nominations:")
+                        .setAuthor(searchWord + " nominations:") //searchword bör bli username istället för userid när searchword är användare
                         .setColor("#ff0000");
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
-                await message.guild.members.fetch(element.user).then((res) => {
-                    embed.addField(res.user.username, res.id, false);
-                });
+                //console.log(element.user);
+                if (element.user) {
+                    await message.guild.members.fetch(element.user).then((res) => {
+                        embed.addField(res.user.username, res.id, false);
+                    });
+                } else {
+                    embed.addField(element.section, "random", false);
+                }
+
                 resolve();
             });
 

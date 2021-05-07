@@ -3,8 +3,6 @@ import { TestAccess } from './TestAccess';
 import Discord from 'discord.js';
 
 export class Sections {
-
-
     static viewSections(message: Discord.Message): void {
         if (CommandAddSection.sectionList.size == 0) return;
         else {
@@ -16,7 +14,6 @@ export class Sections {
             formattedString = formattedString.concat('.');
 
             message.channel.send('The current added sections are: ' + formattedString); //Prints the formatted list
-
         }
     }
 
