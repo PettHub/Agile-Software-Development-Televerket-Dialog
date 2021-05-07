@@ -81,35 +81,43 @@ export class Nominator {
     private async nominate(user: string, section: string, message: Discord.Message): Promise<boolean> {
         return new Promise(async (resolve) => {
             let returnValue = false;
+            let done = false;
             user = GlobalFunctions.toId(user);
             await Nominator.canNominate(message.author.id).then((res) => {
                 if (!res) {
                     message.channel.send("You have already nominated once in the last 24 hours: ");
                     resolve(false);
+                    done = true;
                 }
             });
 
-            if (!CommandAddSection.sectionList.has(section)) {
+
+            if (!CommandAddSection.sectionList.has(section) && !done) {
                 message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
                 resolve(false);
+                return;
             }
-            if (!(await message.guild.members.fetch(user))) {
+
+            await message.guild.members.fetch(user).catch(e => {//Catches errors that discord js may throw so the bot wont die
+                if (done) return;
                 message.channel.send("user not in server");
                 resolve(false);
-            }
+                done = true;
+            });
+
             await Nominator.getIfUserInSection(section, user).then((res) => {
-                console.log("inner function before: " + returnValue);
-                if (!res) {
+                //console.log("inner function before: " + returnValue);
+                if (!res && !done) {
                     message.channel.send("This user has already been nominated");
                     return;
-                } else {
+                } else if (!done) {
                     returnValue = true;
-                    console.log("inner function after: " + returnValue);
+                    //console.log("inner function after: " + returnValue);
                     DatabaseFunctions.getInstance().db.prepare("INSERT INTO Nominations (nominator,user,section) VALUES(?, ?, ?)").run(message.author.id, user, section);
                     return;
                 }
             });
-            console.log("outer function: " + returnValue);
+            //console.log("outer function: " + returnValue);
             resolve(returnValue);
         });
     }
