@@ -8,10 +8,7 @@ export class Voter {
 
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
         let voter = message.author;
-        let votee = args[0];
-        let voteeProcessed = GlobalFunctions.toId(votee);
-        if (votee != voteeProcessed) //if user inputs raw id or @ someone, they should become id either way
-            votee = voteeProcessed;
+        let votee = GlobalFunctions.toId(args[0]);
         let section: string = "";
         for (let i = 1; i < args.length; i++) {
             section = section.concat(args[i] + " "); //turns section into a string
