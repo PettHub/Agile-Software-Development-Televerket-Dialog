@@ -1,0 +1,13 @@
+what do I want to learn or understand better?
+Discord.js api
+
+how can I help someone else, or the entire team, to learn something new?
+By learning said thing first in order to be able to answer questions.
+
+what is my contribution towards the team’s use of Scrum?
+Dividing the work to be done.
+
+what is my contribution towards the team’s deliveries?
+Making the bot be able to manipulate images
+https://trello.com/c/xphp7r7h/19-pinga-botten-med-filer
+https://trello.com/c/dC1qT8xh/20-make-the-discord-bot-start-a-conversation-on-command

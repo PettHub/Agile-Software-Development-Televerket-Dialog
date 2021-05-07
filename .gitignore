@@ -148,3 +148,6 @@ dist
 projektfiler/package-lock.json
 projektfiler/dotenv/types/test.js.map
 projektfiler/dotenv/types/test.js
+projektfiler/database.sqbpro
+projektfiler/database.db
+projektfiler/database.db
