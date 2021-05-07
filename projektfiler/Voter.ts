@@ -1,4 +1,5 @@
 import { DatabaseFunctions } from "./DatabaseFunctions";
+import { GlobalFunctions } from "./GlobalFunctions";
 import Discord from "discord.js";
 import { Database } from "sqlite3";
 
@@ -8,6 +9,9 @@ export class Voter {
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
         let voter = message.author;
         let votee = args[0];
+        let voteeProcessed = GlobalFunctions.toId(votee);
+        if (votee != voteeProcessed) //if user inputs raw id or @ someone, they should become id either way
+            votee = voteeProcessed;
         let section: string = "";
         for (let i = 1; i < args.length; i++) {
             section = section.concat(args[i] + " "); //turns section into a string
@@ -26,6 +30,9 @@ export class Voter {
             if (timeout > Date.now()) {
                 voter.send('You are out of votes, please try again ' + new Date(timeout).toString()); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
+            }
+            else {
+                Voter.timedOutUsers.delete(voter.id); //clean up the ram
             }
         let value = await Voter.queryDB(voter.id, db, queryVotes)
         switch (value) {
