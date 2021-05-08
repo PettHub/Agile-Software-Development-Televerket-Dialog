@@ -1,0 +1,19 @@
+•what do I want to learn or understand better?
+När jag jobbat med databaser så är ett problem async och att olika funktioner kan köra samtidigt.
+För att lösa detta problem behöver man använda await och Promise<> vilket jag fortfarande har svårt att
+greppa till 100%.
+
+•how can I help someone else, or the entire team, to learn something new?
+Denna veckan satt vi i tre nya grupper där jag hamnade med två andra, där vi skulle göra om från ram till att lägga
+variabler på databasen istället, eftersom det bara var jag som hade jobbat med databaser innan (både detta projekt och kursen)
+så var det jag som försökte att lära dem andra hur det funkar. Detta gick sisådär då det för mig känns som vissa saker var förstådda
+medan jag inte kunde förklara andra saker tillräckligt bra.
+
+•what is my contribution towards the team’s use of Scrum?
+Det är alltid svårt att veta vilka user stories man ska välja och denna veckan var det en del misstag vi gjorde. Vi borde ha valt att
+göra databasen till sections istället för nominator då nominator är beroende av sections, vi löste detta ändå även om det inte var optimalt.
+Annars så fungerade det bra och denna veckan fick vi även många nya ideér att implementera från PO.
+
+•what is my contribution towards the team’s deliveries?
+Som sagts tidigare känns det som att jag mycket fick agera lärare när vi satt och kodade tillsammans, och då fick jag inte så mycket
+annat gjort under denna tiden, utan det tog jag igen när jag jobbade själv, så att jag också bidrog med min del till projektet.
