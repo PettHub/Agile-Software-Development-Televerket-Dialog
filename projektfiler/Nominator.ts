@@ -90,7 +90,7 @@ export class Nominator {
                     done = true;
                 }
             });
-            let runnable = DatabaseFunctions.getInstance().db.prepare("SELECT COUNT(section) as count FROM Sections WHERE (section == ?) GROUP BY SECTION");
+            let runnable = DatabaseFunctions.getInstance().prepare("SELECT COUNT(section) as count FROM Sections WHERE (section == ?) GROUP BY SECTION");
             await runnable.run(section, (err, res) => {
                 if (err) {
                     resolve(false);
@@ -144,7 +144,7 @@ export class Nominator {
         }
         arg = arg.slice(0, -1);
         arg = GlobalFunctions.toId(arg);
-        let runnable = await DatabaseFunctions.getInstance().db.prepare('SELECT * FROM Sections WHERE (section == ?)');
+        let runnable = await DatabaseFunctions.getInstance().prepare('SELECT * FROM Sections WHERE (section == ?)');
         runnable.all(arg, (err, rows) => {
             if (err) {
                 console.log('crashes first run');
