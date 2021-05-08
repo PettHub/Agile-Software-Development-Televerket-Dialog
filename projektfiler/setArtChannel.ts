@@ -5,43 +5,41 @@ import { GlobalFunctions } from './GlobalFunctions';
 
 export class setChannel {
 
-    doIt(message: Discord.Message, newChannel: string, client: Discord.Client): void {
+    async doIt(message: Discord.Message, newChannel: string, client: Discord.Client): Promise<void> {
         newChannel = GlobalFunctions.toId(newChannel);
-        console.log(newChannel);
+        //console.log(newChannel);
 
         if (message.guild.channels.cache.get(newChannel) === undefined) { //if input channel is undefined (e.g. not in guild/incorrect input)
             message.channel.send('Incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
             return;
         }
+        if (!(client.channels.cache.get(newChannel) instanceof TextChannel)) {
+            message.channel.send('The input channel is not a text channel. Please try again using a text channel ID.');
+            return;
+        }
 
-        if (client.channels.cache.get(newChannel).type === 'text') { //checks if the new channel is a textchannel
-            let tmp: string;
-            setChannel.getValue().then((res) => {
-                tmp = res;
-            });
+
+        try {
+            await (client.channels.cache.get(newChannel) as TextChannel).send('This channel has been set as !art apply receiver channel.');
             DatabaseFunctions.getInstance()
                 .db.prepare(
                     "DELETE FROM Artchannel"
                 )
                 .run();
-            DatabaseFunctions.getInstance()
-                .db.prepare(
-                    "INSERT INTO ArtChannel VALUES(?);"
-                )
+            DatabaseFunctions.getInstance().db.prepare(
+                "INSERT INTO ArtChannel VALUES(?);"
+            )
                 .run(newChannel);
-
-            setChannel.getValue().then((res) => {
-                (client.channels.cache.get(res) as TextChannel).send('This channel has been set as !art apply receiver channel.').catch(e => {
-                    DatabaseFunctions.getInstance().db.prepare(
-                        "INSERT INTO ArtChannel VALUES(?);"
-                    )
-                        .run(tmp);
-                    message.channel.send('Error! Possible cause: bot does not have access to the input channel. Please try again with a new ID or after giving bot access.');
-                });
+        } catch {
+            message.channel.send("The bot has no access to this channel")
+            /*let tmp: string;
+            await setChannel.getValue().then((res) => {
+                tmp = res;
             });
-
-        } else {
-            message.channel.send('The input channel is not a text channel. Please try again using a text channel ID.');
+            DatabaseFunctions.getInstance().db.prepare(
+                "INSERT INTO ArtChannel VALUES(?);"
+            )
+                .run(tmp);*/
         }
     }
 
