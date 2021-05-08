@@ -7,21 +7,21 @@ export class DatabaseFunctions {
     private static me: DatabaseFunctions;
 
     private constructor() {
-        new sqlite.Database(
+        /*new sqlite.Database(
             this.name,
             sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE
-        );
-        this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE);
+        );*/
+        this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
         this.createTables();
     }
 
-    public static getInstance(): DatabaseFunctions {
+    public static getInstance(): sqlite.Database {
         if (this.me) {
-            return this.me;
+            return DatabaseFunctions.me.db;
         } else {
             this.me = new DatabaseFunctions();
             this.me.db.get("PRAGMA foreign_keys = ON");
-            return this.me;
+            return DatabaseFunctions.me.db;
         }
     }
 

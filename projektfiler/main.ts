@@ -8,7 +8,7 @@ import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
-import { setChannel } from './setChannel';
+import { setChannel } from './setArtChannel';
 import { ArtDecision } from './ArtDecision';
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { ApplyHandeler } from "./ApplyHandeler";
@@ -46,8 +46,8 @@ client.on("message", (message) => {
         case 'apply':
             applyHandeler.doIt(message, client);
             break;
-        case 'setchannel':
-            accesscontrol.doIt(message, "mod").then((res) => {
+        case 'artchannel':
+            accesscontrol.doIt(message, "owner").then((res) => {
                 res
                     ? new setChannel().doIt(message, args[0], client)
                     : message.channel.send("Access level mod needed");
