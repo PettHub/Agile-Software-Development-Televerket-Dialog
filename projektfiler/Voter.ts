@@ -35,8 +35,9 @@ export class Voter {
         switch (value[0]) {
             case result.passed:
                 db.prepare(insertVote).run(voter.id, votee, section, (err: any, res: any) => {
-                    if (err)
+                    if (err) {
                         voter.send('Vote did not get through, please try again and check your arguments :)');
+                    }
                     else
                         voter.send('Vote went through. You have ' + (2 - value[1]) + ' votes remaining');
                 }); //insert it

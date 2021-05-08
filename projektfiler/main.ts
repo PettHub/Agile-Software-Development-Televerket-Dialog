@@ -50,9 +50,8 @@ client.on("message", (message) => {
             accesscontrol.doIt(message, "owner").then((res) => {
                 res
                     ? new setChannel().doIt(message, args[0], client)
-                    : message.channel.send("Access level mod needed");
+                    : message.channel.send("Access level owner needed");
             });
-
             break;
         case "addsection":
             accesscontrol.doIt(message, "mod").then((res) => {

@@ -90,25 +90,23 @@ export class Nominator {
                     done = true;
                 }
             });
-            let runnable = DatabaseFunctions.getInstance().prepare("SELECT COUNT(section) as count FROM Sections WHERE (section == ?) GROUP BY SECTION");
-            await runnable.run(section, (err, res) => {
-                if (err) {
-                    resolve(false);
-                    return;
-                }
-                if (res.count == 0) {
-                    message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
-                    resolve(false);
-                    return;
-                }
-            })
-            /*
-            if (!CommandAddSection.sectionList.has(section) && !done) {
-                message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
-                resolve(false);
-                return;
-            }
-            */
+
+            DatabaseFunctions.getInstance().prepare("SELECT COUNT(section) as count FROM Sections WHERE (section == ?) GROUP BY SECTION")
+                .run(section, (err: any, res: { count: number; }) => {
+
+                    if (done) return;
+                    if (err) {
+                        resolve(false);
+                        done = true;
+                        return;
+                    }
+                    if (res.count == 0) {
+                        message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
+                        done = true;
+                        resolve(false);
+                        return;
+                    }
+                });
 
             await message.guild.members.fetch(user).catch(e => {//Catches errors that discord js may throw so the bot wont die
                 if (done) return;
@@ -118,18 +116,15 @@ export class Nominator {
             });
 
             await Nominator.getIfUserInSection(section, user).then((res) => {
-                //console.log("inner function before: " + returnValue);
                 if (!res && !done) {
                     message.channel.send("This user has already been nominated");
                     return;
                 } else if (!done) {
                     returnValue = true;
-                    //console.log("inner function after: " + returnValue);
                     DatabaseFunctions.getInstance().prepare("INSERT INTO Nominations (nominator,user,section) VALUES(?, ?, ?)").run(message.author.id, user, section);
                     return;
                 }
             });
-            //console.log("outer function: " + returnValue);
             resolve(returnValue);
         });
     }
@@ -144,25 +139,26 @@ export class Nominator {
         }
         arg = arg.slice(0, -1);
         arg = GlobalFunctions.toId(arg);
-        let runnable = await DatabaseFunctions.getInstance().prepare('SELECT * FROM Sections WHERE (section == ?)');
-        runnable.all(arg, (err, rows) => {
-            if (err) {
-                console.log('crashes first run');
-                console.log(err);
-                return;
-            }
-            if (rows)
-                if (rows[0])
-                    this.displayCandidatesForSection(arg, message);
-                else {
-                    if (message.guild.member(arg)) {
-                        this.displaySectionsForCandidate(arg, message);
+        DatabaseFunctions.getInstance().prepare('SELECT * FROM Sections WHERE (section == ?)')
+            .all(arg, async (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (rows) {
+                    if (rows[0]) {
+                        this.displayCandidatesForSection(arg, message);
                     }
                     else {
-                        message.reply('please use correct input values, !nominations [section]/[userId]');
+                        if (await message.guild.members.fetch(arg)) {
+                            this.displaySectionsForCandidate(arg, message);
+                        }
+                        else {
+                            message.reply('please use correct input values, !nominations [section]/[userId]');
+                        }
                     }
                 }
-        });
+            });
     }
 
     private static displaySectionsForCandidate(
@@ -170,19 +166,54 @@ export class Nominator {
         message: Discord.Message
     ): void {
         console.log(user);
-        Nominator.displayCandidatesBySearchword(user, message, "SELECT section FROM Nominations WHERE user=?");
+        DatabaseFunctions.getInstance().all("SELECT section FROM Nominations WHERE user=?", user, async (err, row) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (row) {
+                let embed = new Discord.MessageEmbed();
+                await Nominator.forEachRowCandidate(row, message, embed, user);
+                await message.guild.members.fetch(user).then((res) => {
+                    embed
+                        .setAuthor("nominations for " + res.user.username) //searchword bör bli username istället för userid när searchword är användare
+                        .setColor("#ff0000");
+                });
+                message.channel.send(embed);
+            } else {
+                message.channel.send("This person hasn't been nominated");
+                return;
+            }
+        });
+    }
+
+    private static forEachRowCandidate(row: any[], message: Discord.Message, embed: Discord.MessageEmbed, user: string): Promise<void> {
+        return new Promise(async resolve => {
+            let i = 1;
+            row.forEach(async (element) => {
+                if (i++ % 100 == 0) {
+                    await message.guild.members.fetch(element.user).then((res) => {
+                        embed
+                            .setAuthor("nominations for " + res.user.username) //searchword bör bli username istället för userid när searchword är användare
+                            .setColor("#ff0000");
+                    });
+
+                    message.channel.send(embed);
+                    embed = new Discord.MessageEmbed();
+                }
+                embed.addField(element.section, "random", false);
+
+                resolve();
+            });
+
+        });
     }
 
     private static displayCandidatesForSection(
-        user: string,
+        section: string,
         message: Discord.Message
     ): void {
-        Nominator.displayCandidatesBySearchword(user, message, "SELECT user FROM Nominations WHERE section=?");
-    }
-
-    private static displayCandidatesBySearchword(searchWord: string,
-        message: Discord.Message, query: string): void {
-        DatabaseFunctions.getInstance().all(query, searchWord, async (err, row) => {
+        DatabaseFunctions.getInstance().all("SELECT user FROM Nominations WHERE section=?", section, async (err, row) => {
             if (err) {
                 console.log(err);
                 return;
@@ -190,40 +221,32 @@ export class Nominator {
             if (row) {
 
                 let embed = new Discord.MessageEmbed();
-                await Nominator.forEachRow(row, message, embed, searchWord);
+                await Nominator.forEachRowSection(row, message, embed, section);
                 embed
-                    .setAuthor(searchWord + " nominations")
+                    .setAuthor("nominations for " + section)
                     .setColor("#ff0000");
                 await message.channel.send(embed);
             } else {
-                message.channel.send("This person hasnt been nominated");
+                message.channel.send("This person hasn't been nominated");
                 return;
             }
-        }
-        );
+        });
     }
 
-    private static forEachRow(row: any[], message: Discord.Message, embed: Discord.MessageEmbed, searchWord: string): Promise<void> {
+    private static forEachRowSection(row: any[], message: Discord.Message, embed: Discord.MessageEmbed, section: string): Promise<void> {
         return new Promise(async resolve => {
-
             let i = 1;
             row.forEach(async (element) => {
                 if (i++ % 100 == 0) {
                     embed
-                        .setAuthor(searchWord + " nominations:") //searchword bör bli username istället för userid när searchword är användare
+                        .setAuthor("nominations for " + section) //searchword bör bli username istället för userid när searchword är användare
                         .setColor("#ff0000");
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
-                //console.log(element.user);
-                if (element.user) {
-                    await message.guild.members.fetch(element.user).then((res) => {
-                        embed.addField(res.user.username, res.id, false);
-                    });
-                } else {
-                    embed.addField(element.section, "random", false);
-                }
-
+                await message.guild.members.fetch(element.user).then((res) => {
+                    embed.addField(res.user.username, "random", false);
+                });
                 resolve();
             });
 
@@ -246,5 +269,7 @@ export class Nominator {
 
 
 }
+
+
 
 

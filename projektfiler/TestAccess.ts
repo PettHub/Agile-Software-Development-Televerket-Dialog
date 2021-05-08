@@ -128,10 +128,8 @@ export class TestAccess {
                     if (row)
                         row.forEach((element) => {
                             //loops throw all roles that meet the criteria
-                            //console.log(element.role);
                             if (message.member.roles.cache.has(element.role)) {
                                 //Checks if the member has the requested role
-                                //console.log(element.role);
                                 value = true;
                                 return;
                             }

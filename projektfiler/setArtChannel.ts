@@ -7,7 +7,6 @@ export class setChannel {
 
     async doIt(message: Discord.Message, newChannel: string, client: Discord.Client): Promise<void> {
         newChannel = GlobalFunctions.toId(newChannel);
-        //console.log(newChannel);
 
         if (message.guild.channels.cache.get(newChannel) === undefined) { //if input channel is undefined (e.g. not in guild/incorrect input)
             message.channel.send('Incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
@@ -32,14 +31,6 @@ export class setChannel {
                 .run(newChannel);
         } catch {
             message.channel.send("The bot has no access to this channel")
-            /*let tmp: string;
-            await setChannel.getValue().then((res) => {
-                tmp = res;
-            });
-            DatabaseFunctions.getInstance().db.prepare(
-                "INSERT INTO ArtChannel VALUES(?);"
-            )
-                .run(tmp);*/
         }
     }
 
@@ -57,4 +48,4 @@ export class setChannel {
         });
     }
 
-} //class end
+}
