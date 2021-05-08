@@ -7,11 +7,11 @@ export class DatabaseFunctions {
     private static me: DatabaseFunctions;
 
     private constructor() {
-        new sqlite.Database(
+        /*new sqlite.Database(
             this.name,
             sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE
-        );
-        this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE);
+        );*/
+        this.db = new sqlite.Database(this.name, sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE);
         this.createTables();
     }
 
