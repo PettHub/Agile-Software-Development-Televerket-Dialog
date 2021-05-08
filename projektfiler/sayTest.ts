@@ -9,7 +9,7 @@ export class sayTest {
         if (data) {
             console.log("nice");
         }
-        let db = DatabaseFunctions.getInstance().db;
+        let db = DatabaseFunctions.getInstance();
         db.run(
             "CREATE TABLE IF NOT EXISTS data(user INTEGER PRIMARY KEY, said TEXT NOT NULL)"
         );
@@ -23,11 +23,7 @@ export class sayTest {
             }
             if (row === undefined) {
                 let insertdata = db.prepare("INSERT INTO data VALUES (?,?)");
-                if ((msg = args.shift())) {
-                    insertdata.run(message.author.id, msg);
-                } else {
-                    insertdata.run(message.author.id, "nothing so far");
-                }
+                (msg = args.shift()) ? insertdata.run(message.author.id, msg) : insertdata.run(message.author.id, "nothing so far");
 
                 insertdata.finalize();
                 console.log("data logged");

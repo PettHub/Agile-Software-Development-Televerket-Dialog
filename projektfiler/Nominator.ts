@@ -54,7 +54,7 @@ export class Nominator {
         let queryNominations = "SELECT COUNT(nominator) as nominator FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND nominator == ?) GROUP BY nominator"; //querynominations contains the number of nominations made the past 24h
         return new Promise((resolve, reject) => {
             let nominationsByUser = 0;
-            DatabaseFunctions.getInstance().db.get(queryNominations, nominator, (err, row) => {
+            DatabaseFunctions.getInstance().get(queryNominations, nominator, (err, row) => {
                 if (err) {
                     console.log(err + ' this should not be happening');
                     reject(err);// if we get an unknown error we return this
@@ -113,7 +113,7 @@ export class Nominator {
                 } else if (!done) {
                     returnValue = true;
                     //console.log("inner function after: " + returnValue);
-                    DatabaseFunctions.getInstance().db.prepare("INSERT INTO Nominations (nominator,user,section) VALUES(?, ?, ?)").run(message.author.id, user, section);
+                    DatabaseFunctions.getInstance().prepare("INSERT INTO Nominations (nominator,user,section) VALUES(?, ?, ?)").run(message.author.id, user, section);
                     return;
                 }
             });
@@ -158,7 +158,7 @@ export class Nominator {
 
     private static displayCandidatesBySearchword(searchWord: string,
         message: Discord.Message, query: string): void {
-        DatabaseFunctions.getInstance().db.all(query, searchWord, async (err, row) => {
+        DatabaseFunctions.getInstance().all(query, searchWord, async (err, row) => {
             if (err) {
                 console.log(err);
                 return;
@@ -166,7 +166,7 @@ export class Nominator {
             if (row) {
 
                 let embed = new Discord.MessageEmbed();
-                await Nominator.forEachRow(row, message, embed, searchWord)
+                await Nominator.forEachRow(row, message, embed, searchWord);
                 embed
                     .setAuthor(searchWord + " nominations")
                     .setColor("#ff0000");
@@ -209,7 +209,7 @@ export class Nominator {
     private static getIfUserInSection(section: string, user: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let query = "SELECT * FROM Nominations WHERE user=? AND section=?";
-            DatabaseFunctions.getInstance().db.get(query, user, section, (err, row) => {
+            DatabaseFunctions.getInstance().get(query, user, section, (err, row) => {
                 if (err) {
                     console.log(err);
                     reject(err);

@@ -15,13 +15,13 @@ export class DatabaseFunctions {
         this.createTables();
     }
 
-    public static getInstance(): DatabaseFunctions {
+    public static getInstance(): sqlite.Database {
         if (this.me) {
-            return this.me;
+            return DatabaseFunctions.me.db;
         } else {
             this.me = new DatabaseFunctions();
             this.me.db.get("PRAGMA foreign_keys = ON");
-            return this.me;
+            return DatabaseFunctions.me.db;
         }
     }
 

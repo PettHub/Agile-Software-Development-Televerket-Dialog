@@ -22,11 +22,11 @@ export class setChannel {
         try {
             await (client.channels.cache.get(newChannel) as TextChannel).send('This channel has been set as !art apply receiver channel.');
             DatabaseFunctions.getInstance()
-                .db.prepare(
+                .prepare(
                     "DELETE FROM Artchannel"
                 )
                 .run();
-            DatabaseFunctions.getInstance().db.prepare(
+            DatabaseFunctions.getInstance().prepare(
                 "INSERT INTO ArtChannel VALUES(?);"
             )
                 .run(newChannel);
@@ -46,7 +46,7 @@ export class setChannel {
     public static getValue(): Promise<string> {
         return new Promise((resolve, reject) => {
             let query = "SELECT * FROM ArtChannel";
-            DatabaseFunctions.getInstance().db.get(query, (err, row) => {
+            DatabaseFunctions.getInstance().get(query, (err, row) => {
                 if (err) {
                     console.log(err);
                     reject(err);

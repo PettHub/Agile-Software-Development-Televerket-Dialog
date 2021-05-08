@@ -4,7 +4,7 @@ import Discord from "discord.js";
 import { Database } from "sqlite3";
 
 export class Voter {
-    static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for hte database
+    static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
 
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
         let voter = message.author;
@@ -19,7 +19,7 @@ export class Voter {
             voter.send("You can't vote for yourself");
             return;
         }
-        let db = DatabaseFunctions.getInstance().db;
+        let db = DatabaseFunctions.getInstance();
         let queryVotes = "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"; //amount of votes from a person the last 24 hours
         let insertVote = "INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, ?, ?, ?);";
         let timeout = Voter.timedOutUsers.get(voter.id);
@@ -31,11 +31,9 @@ export class Voter {
             else {
                 Voter.timedOutUsers.delete(voter.id); //clean up the ram
             }
-        let value = await Voter.queryDB(voter.id, db, queryVotes)
-        switch (value) {
+        switch (await Voter.queryDB(voter.id, db, queryVotes)) {
             case result.passed:
-                let insert = db.prepare(insertVote); //prepare the vote
-                insert.run(voter.id, votee, section, (err, res) => {
+                db.prepare(insertVote).run(voter.id, votee, section, (err: any, res: any) => {
                     if (err)
                         voter.send('Vote did not get through, please try again and check your arguments :)');
                     else

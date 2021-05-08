@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import { setChannel } from './setChannel';
+import { setChannel } from './setArtChannel';
 import { DatabaseFunctions } from './DatabaseFunctions';
 
 export class PMHandler {
@@ -39,7 +39,7 @@ export class PMHandler {
                             if (content.match(regex)) { //checks that content is a link, if so add to images-array
                                 numberOfImages--;    //if attachment exists, decrament remaining
                                 images[numberOfImages] = content; //get the url from the attachments (what an image would be in a message)
-                            }   else if (message.attachments){
+                            } else if (message.attachments) {
                                 message.attachments.forEach(attachment => {
                                     console.log('a')
                                     numberOfImages--
@@ -51,18 +51,18 @@ export class PMHandler {
                             }
                             if (numberOfImages === 0) {
                                 clearTimeout(timeout);  //once we have 3, stop the clock
-                                let i:number = 0;
+                                let i: number = 0;
                                 images.forEach(function (image) {
                                     i++
                                     let embed = new Discord.MessageEmbed();
                                     embed.setColor('#09CDDA')
-                                    .setTitle('image'+i)
-                                    .setAuthor(author.username)
-                                    .setDescription(author.id)
-                                    .setThumbnail(author.avatarURL())
-                                    .setImage(image)
-                                    .setTimestamp()
-                                    .setURL(image);
+                                        .setTitle('image' + i)
+                                        .setAuthor(author.username)
+                                        .setDescription(author.id)
+                                        .setThumbnail(author.avatarURL())
+                                        .setImage(image)
+                                        .setTimestamp()
+                                        .setURL(image);
                                     // const data = {
                                     //     "title": "image:" + i,
                                     //     "description": author.id,
@@ -78,7 +78,7 @@ export class PMHandler {
                                     // };
 
 
-                                      repostChannel.send(embed);
+                                    repostChannel.send(embed);
                                     //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
                                 })
                                 author.send('Your application has been sent, you will get a response within 24 hours.'); //notify applicant that application has been sent
@@ -103,20 +103,20 @@ export class PMHandler {
             }
         });
 
-        
+
     }
 
-    private getrole(): Promise<string>{
-           return new Promise((resolve, reject) => {
-               let query = 'SELECT * FROM access WHERE accessLVL =?';
-               DatabaseFunctions.getInstance().db.get(query, 'art', (err, row) => {
-                   if(err){
-                       console.log(err);
-                       reject(undefined);
-                   }
-                   row ? resolve(row.role) : resolve(undefined);
-               });
-           })
+    private getrole(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            let query = 'SELECT * FROM access WHERE accessLVL =?';
+            DatabaseFunctions.getInstance().get(query, 'art', (err, row) => {
+                if (err) {
+                    console.log(err);
+                    reject(undefined);
+                }
+                row ? resolve(row.role) : resolve(undefined);
+            });
+        })
     }
 
 }
