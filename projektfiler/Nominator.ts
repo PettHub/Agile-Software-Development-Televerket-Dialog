@@ -147,9 +147,9 @@ export class Nominator {
                         .setAuthor("nominations for " + res.user.username) //searchword bör bli username istället för userid när searchword är användare
                         .setColor("#ff0000");
                 });
-                message.channel.send(embed);
+                message.author.send(embed);
             } else {
-                message.channel.send("This person hasn't been nominated");
+                message.author.send("This person hasn't been nominated");
                 return;
             }
         });
@@ -193,9 +193,9 @@ export class Nominator {
                 embed
                     .setAuthor("nominations for " + section)
                     .setColor("#ff0000");
-                await message.channel.send(embed);
+                await message.author.send(embed);
             } else {
-                message.channel.send("This person hasn't been nominated");
+                message.author.send("This person hasn't been nominated");
                 return;
             }
         });
@@ -237,7 +237,3 @@ export class Nominator {
 
 
 }
-
-
-
-

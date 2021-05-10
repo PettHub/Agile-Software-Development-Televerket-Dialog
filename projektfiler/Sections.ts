@@ -12,7 +12,7 @@ export class Sections {
                 let message = new Discord.MessageEmbed();
                 message.setTitle('Current Sections');
                 rows.forEach(row => {
-                    message.addField(row.section, '_', true);
+                    message.addField(row.section, '_', false);
                 })
                 author.send(message);
             }
