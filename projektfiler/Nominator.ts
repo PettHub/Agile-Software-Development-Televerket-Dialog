@@ -3,33 +3,9 @@ import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 export class Nominator {
-    //private static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for hte database
+
 
     public async doIt(args: string[], message: Discord.Message): Promise<void> {
-        //let nominator = message.author;
-        //let nominatorTimeoutEnds = Nominator.timedOutUsers.get(nominator.id);
-
-        /*if (nominatorTimeoutEnds) {
-            if (nominatorTimeoutEnds > Date.now()) { //if nominator in map  and if date and time now has not passed the next time they are allowed to vote 
-                nominator.send("You have already nominated someone within 24h. Please try again at: " + new Date(nominatorTimeoutEnds).toString());
-                return;
-            }
-        }*/
-        //let value = await Nominator.getTimeout(nominator.id);
-
-        /*switch (value) {
-            case true: //todo: acutlaly call for nominatorthingys
-                let insert = db.prepare(insertVote); //prepare the vote
-                 let insertResult = insert.run(voter.id, votee, section); //insert it
-                 insertResult.finalize(() => { voter.send('vote did actually not go through, check arguments') });
-                 nominatorId.send('vote for ' + votee + ' went through.');
-                break;
-            case false:
-                let nominatorTimeoutEnds = Nominator.timedOutUsers.get(nominator.id);
-                if (nominatorTimeoutEnds)
-                    nominator.send("You have already nominated someone within 24h. Please try again at: " + new Date(nominatorTimeoutEnds).toString());
-                break;
-        }*/
 
         let nominee = args[0];
         let section: string = "";
@@ -61,15 +37,7 @@ export class Nominator {
                 }
                 if (row) {
                     nominationsByUser = row.nominator;
-                    if (nominationsByUser >= 1) { //if user has nominated 1 time the last 24 hours
-                        /*let queryAllNominations = "SELECT strftime('%s',MIN(stamp)) as earliest FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY user;";
-                        DatabaseFunctions.getInstance().db.get(queryAllNominations, nominator, (err, row) => {
-                            if (err) { console.log(err + ' this is a simulation, wake up'); }
-                            if (row) {//sql dates and javascript dates might not match up, please be aware
-                                let nextElligableNomination = Date.now() + 1000 * (24 * 60 * 60 - (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
-                                Nominator.timedOutUsers.set(nominator, nextElligableNomination); //caches that the user is timed out in order to save the db some load
-                            }
-                        });*/
+                    if (nominationsByUser >= 1) {
                         resolve(false);
                     }
                 }
