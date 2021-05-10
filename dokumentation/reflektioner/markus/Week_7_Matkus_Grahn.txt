@@ -1,0 +1,11 @@
+1. what do I want to learn or understand better?
+Not too much right now, I feel like I am starting to get a hang of most of it. The only thing I can think of is that I want to learn how you are supposed to properly use git with merges to main and such as I feel like we are doing it in a different way then what is common. But I dont mind that. 
+
+2. how can I help someone else, or the entire team, to learn something new?
+I can offer my help during our meetings if other members feel like they aren't as productive as other pairs as I trust my partner to be able to handle the code by themself for a little while.
+
+3. what is my contribution towards the team’s use of Scrum?
+Again I have helped with multiple userstories that me and my partner have tackled and moved them along in the process. 
+
+4. what is my contribution towards the team’s deliveries?
+I help with multiple userstories and help those who have had issues with coding or aren't that familiar with all concepts we have used for our code. Mostly database and promises. 
