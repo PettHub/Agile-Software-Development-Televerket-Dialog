@@ -1,7 +1,6 @@
 import { CommandPing } from "./CommandPing";
 //import { CommandAddSection } from "./CommandAddSection";
 import { TestAccess } from "./TestAccess";
-import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
 import { Sections } from "./Sections";
 import { Voter } from "./Voter";
@@ -76,9 +75,6 @@ client.on("message", (message) => {
             break;
         case "setowner":
             accesscontrol.setOwner(message, args.shift());
-            break;
-        case "say":
-            new sayTest().doIt(message, args);
             break;
         case "nominate":
             new Nominator().doIt(args, message);
