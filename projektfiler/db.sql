@@ -1,4 +1,3 @@
---making sure we can rerun this
 DROP TABLE IF EXISTS Sections;
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Nominations;
@@ -10,20 +9,20 @@ DROP VIEW IF EXISTS totalVotesPerSectionAndVotee;
 --DELETE FROM Users;
 --DELETE FROM Nominations;
 --create tables
-CREATE TABLE "Sections" (
+CREATE TABLE IF NOT EXISTS "Sections" (
     "section" TEXT PRIMARY KEY
 );
-CREATE TABLE "Users" (
+CREATE TABLE IF NOT EXISTS "Users" (
     "user" CHAR(20) PRIMARY KEY
 );
-CREATE TABLE "Nominations" (
+CREATE TABLE IF NOT EXISTS "Nominations" (
     "user"  CHAR(20) NOT NULL,
     "section"   TEXT NOT NULL,
     FOREIGN KEY("user") REFERENCES "Users"("user") ON DELETE CASCADE,
     FOREIGN KEY("section") REFERENCES "Sections"("section") ON DELETE CASCADE,
-    PRIMARY KEY("user", "section");
+    PRIMARY KEY("user", "section")
 );
-CREATE TABLE "Votes" (
+CREATE TABLE IF NOT EXISTS "Votes" (
 	"id"	INTEGER,
 	"stamp"	TIMESTAMP NOT NULL,
 	"voter"	CHAR(20) NOT NULL,
@@ -31,6 +30,8 @@ CREATE TABLE "Votes" (
 	"section"	TEXT NOT NULL,
     FOREIGN KEY ("votee","section") REFERENCES "Nominations"("user", "section") ON DELETE CASCADE,
 	FOREIGN KEY("voter") REFERENCES "Users"("user") ON DELETE CASCADE,
+    FOREIGN KEY("votee") REFERENCES "Users"("user") ON DELETE CASCADE,
+    FOREIGN KEY("section") REFERENCES "Sections"("section") ON DELETE CASCADE,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 --users in out channel
@@ -45,8 +46,8 @@ INSERT INTO Users VALUES ('823540261170839582');
 INSERT INTO Sections VALUES('best dude');
 INSERT INTO Sections VALUES('best dudette');
 --inserting nominations in order to vote
-INSERT INTO Nominations VALUES ('219842729239248897','best dude');
-INSERT INTO Nominations VALUES ('823540261170839582','best dude');
+INSERT INTO Nominations VALUES ('120209876625522690','219842729239248897','best dude');
+INSERT INTO Nominations VALUES ('496748730855456779','823540261170839582','best dude');
 --testing voting for 2 different candidates for one section
 --CURRENT_TIMESTAMP ger en sträng med strukturen YYYY-MM-DD-HH:MM:SS, verkar vara 2 timmar bakom vår tidzon, 13:00 ger 11:00 t.ex
 INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '219842729239248897', '823540261170839582', 'best dude');
