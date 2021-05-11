@@ -45,6 +45,17 @@ export class ArtDecision {
                 }
                 this.deny(user, reason, message);
                 break;
+            case 'remove':
+                let removeReason: string = args[0];
+                if (removeReason === undefined) { //Makes sure there is a reason provided 
+                    message.channel.send('Please provide a reason');
+                    return;
+                    }
+                while (args.shift() && args[0]) { //Compiles all remaining args into a string
+                    removeReason = removeReason + ' ' + args[0];
+                    }
+                this.remove(user, removeReason, message);
+                break;
         }
     }
 
@@ -97,6 +108,51 @@ export class ArtDecision {
 
             }
         })
+
+    }
+
+    //Sends the 'artist' the reason they were rejected and a confirming message so the mods know that the command worked and logs it. 
+    private remove(user: Discord.GuildMember, reason: string, message: Discord.Message) {
+        console.log('Inne i remove!');
+        let querry = 'SELECT * FROM Access WHERE accessLVL = ?';
+        DatabaseFunctions.getInstance().get(querry, "art", (err, row) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (row === undefined) {
+                message.channel.send('There is no art role set. Use *!setart [role]* to set role'); //borde aldrig hända. ska vi ha kvar?
+            }
+            if (row) {
+                let role = row.role;
+                console.log('Artist role in database: ' + role);
+                user.roles.remove(role);
+                user.send('Your artist role has been revoked.');
+                message.channel.send("user: " + user + " is not an artist anymore.");
+
+            }
+        })
+
+        user.send('The Artist role has been removed from you for the following reason:\n' + reason)
+        message.channel.send('User:' + user + '\'s artist role has been removed with the reason: ' + reason);
+
+    }
+
+    public removeArtRole(msg: Discord.Message, args: any[]) { //bör denna ligga i denna klassen?
+        console.log('Inne i removeArtRole!');
+        let userID = args.shift();
+        console.log('UserID: ' + userID);
+        if (userID === undefined) { //Checks if a user has been given
+            msg.channel.send('Please provide a user ID');
+            return;
+        }
+        msg.guild.members.fetch(GlobalFunctions.toId(userID)).catch(e => {
+            msg.channel.send('please provide a valid username'); //Catches errors that discord js may throw so the bot wont die
+        }).then((user) => {
+            user
+                ?  this.switch(msg, args, 'remove', user) //Runs the switch function if the user is a valid guild member 
+                : console.log('error, invalid user provided'); //Logs that a discord error has occored
+        });
 
     }
 

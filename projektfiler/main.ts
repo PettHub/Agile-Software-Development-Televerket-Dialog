@@ -100,7 +100,13 @@ client.on("message", (message) => {
                         ? new ArtDecision().doIt(message, args, sub)
                         : message.channel.send("Access level mod needed");
                 });
-            }
+            }break;
+        case "artremove":
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? new ArtDecision().removeArtRole(message, args)
+                    : message.channel.send("Access level mod needed");
+            });
             break;
         case "setart":
             accesscontrol.doIt(message, "mod").then((res) => {
