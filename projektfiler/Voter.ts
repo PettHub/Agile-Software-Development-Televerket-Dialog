@@ -66,7 +66,7 @@ export class Voter {
                 }
                 if (row) {
                     votesByVoter = row.votes;
-                    console.log(votesByVoter);
+                    //console.log(votesByVoter);
                     if (votesByVoter >= 3) { //if user has voted more than 3 times the last 24 hours
                         let queryAllVotes = "SELECT strftime('%s',MIN(stamp)) as earliest FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter;";
                         db.get(queryAllVotes, voter, (err, row) => {

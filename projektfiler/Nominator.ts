@@ -1,10 +1,67 @@
-//import { CommandAddSection } from "./CommandAddSection";
 import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 export class Nominator {
 
 
+    static removeNomineeFromSection(message: Discord.Message, args: string[]) {
+        if (!args[0] || !args[1]) {
+            message.channel.send('please provide an user and section');
+            return;
+        }
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "DELETE FROM Nominations WHERE user = ? AND section = ?"
+            ).run(GlobalFunctions.toId(args[0]), args[1]);
+        message.channel.send('User: ' + args[0] + ' has been removed from section: ' + args[1]);
+    }
+
+    public static nomUnBan(message: Discord.Message, args: string[]) {
+        if (!args[0]) {
+            message.channel.send('please provide an user');
+            return;
+        }
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "DELETE FROM NominatorBanned WHERE banned=?"
+            ).run(GlobalFunctions.toId(args[0]));
+    }
+
+    public static nomBan(message: Discord.Message, args: string[]) {
+        if (!args[0]) {
+            message.channel.send('please provide an user');
+            return;
+        }
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "DELETE FROM Nominations WHERE user = ?"
+            ).run(GlobalFunctions.toId(args[0]));
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "INSERT INTO NominatorBanned (banned) VALUES (?)"
+            ).run(GlobalFunctions.toId(args[0]), (err) => {
+                if (err) {
+                    console.log(err);
+                    message.channel.send('An error occurred, user might already be banned');
+                }
+            });
+
+    }
+
+    private isNomBanned(nominee: string) {
+        return new Promise((resolve, reject) => {
+            let query = 'SELECT * FROM NominatorBanned WHERE banned = ?';
+            DatabaseFunctions.getInstance().get(query, nominee, (err, row) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                row
+                    ? resolve(true)
+                    : resolve(false);
+            });
+        });
+    }
 
     public static openNominations() {
         DatabaseFunctions.getInstance()
@@ -48,6 +105,10 @@ export class Nominator {
         }
         if (!(args.shift() && args.shift())) {
             message.channel.send("!nominate [member] [section]");
+            return;
+        }
+        if (await this.isNomBanned(nominee)) {
+            message.channel.send("Cannot nominate this user");
             return;
         }
         this.nominate(nominee, section, message).then((res) => {
@@ -97,6 +158,7 @@ export class Nominator {
                         done = true;
                         return;
                     }
+                    if (!res) { return; }
                     if (res.count == 0) {
                         message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
                         done = true;
@@ -266,3 +328,5 @@ export class Nominator {
 
 
 }
+
+

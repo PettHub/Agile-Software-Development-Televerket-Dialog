@@ -141,6 +141,27 @@ client.on("message", (message) => {
                     : message.channel.send('votes are currently closed');
             });
             break;
+        case "nomban":
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? Nominator.nomBan(message, args)
+                    : message.channel.send("Access level mod needed");
+            });
+            break;
+        case "nomunban":
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? Nominator.nomUnBan(message, args)
+                    : message.channel.send("Access level mod needed");
+            });
+            break;
+        case "removenominee": //user, section
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? Nominator.removeNomineeFromSection(message, args)
+                    : message.channel.send("Access level mod needed");
+            });
+            break;
     }
 });
 
