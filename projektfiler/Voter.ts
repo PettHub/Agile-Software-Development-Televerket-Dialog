@@ -3,6 +3,8 @@ import { GlobalFunctions } from "./GlobalFunctions";
 import Discord from "discord.js";
 import { Database } from "sqlite3";
 
+
+
 export class Voter {
     static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
 
@@ -79,6 +81,60 @@ export class Voter {
             });
         });
     }
+    
+    public static tallyVotes(message: Discord.Message, section?: string): void {
+        
+        let query: string;
+        if (section)
+            query = "SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee;";
+        else
+            query = "SELECT section, votee, COUNT(votee) as votes FROM Votes WHERE section = ? GROUP BY section, votee;";
+        let db = DatabaseFunctions.getInstance();
+        let embed = new Discord.MessageEmbed();
+        let runnable = db.prepare(query);
+        if (section)
+            runnable.all(section, (err, res) => {
+                if (err)
+                    console.log(err);
+                if (!res) return;
+                let result = this.sortQuery(res);
+                let iterator = result.keys();
+                let next = iterator.next();
+                while (!next.done) {
+                    //userid to username needed here
+                    embed.addField(next.value, result.get(next.value).length + "nominees", false);
+                    result.get(next.value).forEach(row => {
+                        embed.addField(row[0], "UserId: " + row[1] + " Votes: " + row[2], true);
+                    });
+                    next = iterator.next();
+                }
+                message.author.send(embed);
+})              
+    }
+
+    private static sortQuery(queryResult: [section: string, votee: string, votes: number][]): Map<string, [section: string, votee: string, votes: number][]> {
+        let sections: Map<string, [section: string, votee: string, votes: number][]>;
+        sections = new Map();
+        queryResult.forEach(row => {
+            if (!sections.has(row[0])) //if row is of new section
+                sections.set(row[0], []); //create new
+            sections.get(row[0]).push(row); //add row to set of other rows where section is the same
+        });
+        let iterator = sections.keys(); //with sorted map of arrays of rows
+        let key = iterator.next();
+        while(!key.done) {
+            sections.set(key.value, sectionSort(sections.get(key.value))); //use section sort to trim it down to the highest 5 voted in each section
+            key = iterator.next();    
+        }
+    return sections; //return a Map of every section linked to the top 5 votee for each section
+    }
+    
+    private sectionSort(section : [section: string, votee: string, votes: number] []){// take arry of rows sort by votes and give five highest 
+           section.sort((a,b)=> a[2] > b[2] ? -1:1 );
+           let result = section.slice(0, 5); 
+           return result;
+    }
+
 }
 
 enum result {
