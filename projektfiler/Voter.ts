@@ -7,6 +7,10 @@ export class Voter {
     static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
 
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
+        if (!args[0]) {
+            message.channel.send('please use correct input values, !vote [userId] [section]');
+            return;
+        }
         let voter = message.author;
         let votee = GlobalFunctions.toId(args[0]);
         let section: string = "";

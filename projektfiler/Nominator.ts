@@ -5,6 +5,35 @@ import { DatabaseFunctions } from "./DatabaseFunctions";
 export class Nominator {
 
 
+
+    public static openNominations() {
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "INSERT INTO NominatorOpen (isOpen) VALUES (?)"
+            ).run(1);
+    }
+    public static closeNominations() {
+        DatabaseFunctions.getInstance()
+            .prepare(
+                "DELETE FROM NominatorOpen"
+            ).run();
+    }
+    public static isOpen(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let query = 'SELECT * FROM NominatorOpen';
+            DatabaseFunctions.getInstance().get(query, (err, row) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                row
+                    ? resolve(true)
+                    : resolve(false);
+            });
+        });
+    }
+
+
     public async doIt(args: string[], message: Discord.Message): Promise<void> {
 
         let nominee = args[0];

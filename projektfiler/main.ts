@@ -77,10 +77,34 @@ client.on("message", (message) => {
             accesscontrol.setOwner(message, args.shift());
             break;
         case "nominate":
-            new Nominator().doIt(args, message);
+            Nominator.isOpen().then((res) => {
+                res
+                    ? new Nominator().doIt(args, message)
+                    : message.channel.send('Nominations are currently closed');
+            });
             break;
         case "nominations":
-            Nominator.displayCandidates(args, message);
+            Nominator.isOpen().then((res) => {
+                res
+                    ? Nominator.displayCandidates(args, message)
+                    : message.channel.send('Nominations are currently closed');
+            });
+
+            break;
+        case "opennominations":
+            accesscontrol.doIt(message, "owner").then((res) => {
+                res
+                    ? Nominator.openNominations()
+                    : message.channel.send("Access level owner needed");
+            });
+            break;
+        case "closenominations":
+            accesscontrol.doIt(message, "owner").then((res) => {
+                res
+                    ? Nominator.closeNominations()
+                    : message.channel.send("Access level owner needed");
+            });
+
             break;
         case "sections":
             Sections.viewSections(message);
@@ -111,7 +135,11 @@ client.on("message", (message) => {
 
             break;
         case "vote":
-            Voter.vote(message, args);
+            Nominator.isOpen().then((res) => {
+                res
+                    ? Voter.vote(message, args)
+                    : message.channel.send('votes are currently closed');
+            });
             break;
     }
 });
