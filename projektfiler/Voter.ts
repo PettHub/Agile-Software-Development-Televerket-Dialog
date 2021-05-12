@@ -83,62 +83,72 @@ export class Voter {
         });
     }
 
-    public static async tallyVotes(message: Discord.Message, args?: string[]): Promise<void> {
-
-        let query: string;
-        let section: string = "";
-        for (let i = 0; i < args.length; i++) {
-            section = section.concat(args[i] + " "); //turns section into a string
-        }
-        section = section.slice(0, -1);
-        console.log(section.length + " " + section);
-        if (section.length == 0)
-            query = "SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee;";
-        else
-            query = "SELECT section, votee, COUNT(votee) as votes FROM Votes WHERE section = ? GROUP BY section, votee;";
-        let db = DatabaseFunctions.getInstance();
-        let embed = new Discord.MessageEmbed();
-        let runnable = db.prepare(query);
-        let handler = async (err, res) => {
-            if (err)
-                console.log(err);
-            if (!res) return;
-            let result = await this.sortQuery(res);
-            let iterator = result.entries();
-            let next = iterator.next();
-            while (!next.done) {
-                let section = next.value[0];
-                let values = next.value[1];
-                embed.addField(section, values.length + " nominees", false);
-                /*
-                await values.forEach(row => {
-                    GlobalFunctions.idToUsername(message, row.votee).then(user => {
-                        embed.addField(row.section, "Username: " + user.username + " Votes: " + row.votes, true);
-                    });
-                });
-                */
-                values.forEach(row => {
-                    embed.addField(row.section, "Used ID: " + row.votee + " Votes: " + row.votes, true);
-                });
-                next = iterator.next();
+    public static async tallyVotes(client: Discord.Client, message: Discord.Message, args?: string[]): Promise<void> {
+        return new Promise((resolve) => {
+            if (GlobalFunctions.messageIsDirectMessage(message)) {
+                message.author.send("this command can not be sent through direct messages. Please type in a channel");
+                resolve();
+                return;
             }
-            message.author.send(embed);
-            /*
-            result.forEach(next => {
-                //embed.addField(next[0].section, next.length + " nominees", false);
-                console.log(next.length);
-                next.forEach(row => {
-                    GlobalFunctions.idToUsername(message, row.votee).then(user => {
-                        embed.addField(row.section, "Username: " + user.username + " Votes: " + row.votes, true);
-                    });
+            let query: string;
+            let section: string = "";
+            for (let i = 0; i < args.length; i++) {
+                section = section.concat(args[i] + " "); //turns section into a string
+            }
+            section = section.slice(0, -1);
+            console.log(section.length + " " + section);
+            if (section.length == 0)
+                query = "SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee;";
+            else
+                query = "SELECT section, votee, COUNT(votee) as votes FROM Votes WHERE section = ? GROUP BY section, votee;";
+            let db = DatabaseFunctions.getInstance();
+            let runnable = db.prepare(query);
+            let handler = async (err, res) => {
+                if (err)
+                    console.log(err);
+                if (!res) return;
+                this.sortQuery(res).then((result) => {
+                    let iterator = result.entries();
+                    let next = iterator.next();
+                    while (!next.done) {
+                        this.addSectionToEmbed(client, next.value, message);
+                        next = iterator.next();
+                        console.log("added subsection");
+                    }
                 });
-            });*/
-            message.author.send(embed);
-        };
-        if (section.length > 0)
-            runnable.all(section, handler);
-        else
-            runnable.all(handler);
+            };
+            if (section.length > 0)
+                runnable.all(section, handler);
+            else
+                runnable.all(handler);
+            resolve();
+        })
+    }
+
+    private static async delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
+    private static async addSectionToEmbed(client: Discord.Client, value: [section: string, rows: { section: string, votee: string, votes: number }[]], message: Discord.Message): Promise<void> {
+        return new Promise((resolve) => {
+            let embed = new Discord.MessageEmbed().setTitle(value[0]).setColor("#00EF00"); //Created an embed with the title of the section as well as the color green
+            this.addAllSubToEmbed(client, value[1], embed).then(() => { this.delay(2000).then(() => { message.channel.send(embed) }) }) //delay amount is dependant on hardware and has to be hardcoded
+            resolve(); //since the amount of nominees per section is maxed out at 5 we have an upper bound for time at least
+        })
+    }
+
+    private static async addAllSubToEmbed(client: Discord.Client, rows: { section: string, votee: string, votes: number }[], embed: Discord.MessageEmbed): Promise<void> {
+        return new Promise((resolve) => {
+            rows.forEach((row) => { //for each votee
+                GlobalFunctions.idToUsernameClient(client, row.votee).then(user => { //get username from id
+                    embed.addField(user.username, "Votes: " + row.votes, true); //add name and votes in row
+                    console.log("added"); //debugging purposes, should all be after "added subsection"
+                    resolve();
+                });
+            });
+            resolve();
+        });
     }
 
     private static async sortQuery(queryResult: { section: string, votee: string, votes: number }[]): Promise<Map<string, { section: string, votee: string, votes: number }[]>> {

@@ -14,4 +14,12 @@ export class GlobalFunctions {
     public static async idToUsername(message: Discord.Message, id: string): Promise<Discord.User> {
         return (await message.guild.members.fetch(id)).user;
     }
+
+    public static async idToUsernameClient(client: Discord.Client, id: string): Promise<Discord.User> {
+        return client.users.fetch(id);
+    }
+
+    public static messageIsDirectMessage(message: Discord.Message): boolean {
+        return (message.guild === null);
+    }
 }

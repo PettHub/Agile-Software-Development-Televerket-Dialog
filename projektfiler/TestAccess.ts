@@ -8,6 +8,7 @@ export class TestAccess {
         message: Discord.Message,
         accessLevel: string
     ): Promise<boolean> {
+        if (GlobalFunctions.messageIsDirectMessage(message)) return false; //since the bot will crash if message.guild === null, and guild does not exist in dm
         switch (accessLevel) {
             case "mod": //Checks if the member has a mod role
                 return (

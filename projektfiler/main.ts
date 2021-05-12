@@ -113,11 +113,11 @@ client.on("message", (message) => {
             Voter.vote(message, args);
             break;
         case "tallyvotes":
-            accesscontrol.doIt(message, "mod").then((res) => {
+            accesscontrol.doIt(message, "mod").then(async (res) => {
                 res
-                    ? Voter.tallyVotes(message, args)
+                    ? await Voter.tallyVotes(client, message, args)
                     : message.channel.send("Access level mod needed");
-            });
+            }).then(() => { console.log("completed task") });
             break;
     }
 });
