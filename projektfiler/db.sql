@@ -46,8 +46,8 @@ INSERT INTO Users VALUES ('823540261170839582');
 INSERT INTO Sections VALUES('best dude');
 INSERT INTO Sections VALUES('best dudette');
 --inserting nominations in order to vote
-INSERT INTO Nominations VALUES ('219842729239248897','best dude');
-INSERT INTO Nominations VALUES ('823540261170839582','best dude');
+INSERT INTO Nominations VALUES ('120209876625522690','219842729239248897','best dude');
+INSERT INTO Nominations VALUES ('496748730855456779','823540261170839582','best dude');
 --testing voting for 2 different candidates for one section
 --CURRENT_TIMESTAMP ger en sträng med strukturen YYYY-MM-DD-HH:MM:SS, verkar vara 2 timmar bakom vår tidzon, 13:00 ger 11:00 t.ex
 INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '219842729239248897', '823540261170839582', 'best dude');

@@ -1,13 +1,14 @@
 import { DatabaseFunctions } from "./DatabaseFunctions";
+import { GlobalFunctions } from "./GlobalFunctions";
 import Discord from "discord.js";
 import { Database } from "sqlite3";
 
 export class Voter {
-    static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for hte database
+    static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
 
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
         let voter = message.author;
-        let votee = args[0];
+        let votee = GlobalFunctions.toId(args[0]);
         let section: string = "";
         for (let i = 1; i < args.length; i++) {
             section = section.concat(args[i] + " "); //turns section into a string
@@ -15,37 +16,43 @@ export class Voter {
         section = section.slice(0, -1);
         message.delete(); //removes the message before the queries in order to delete it as fast as possible
         if (votee == voter.id) {
-            voter.send("you can't vote for yourself");
+            voter.send("You can't vote for yourself");
             return;
         }
-        let db = DatabaseFunctions.getInstance().db;
-        let queryVotes = "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter";
+        let db = DatabaseFunctions.getInstance();
+        let queryVotes = "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"; //amount of votes from a person the last 24 hours
         let insertVote = "INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, ?, ?, ?);";
         let timeout = Voter.timedOutUsers.get(voter.id);
         if (timeout)    //if user is timed out in the cache
             if (timeout > Date.now()) {
-                voter.send('you are out of votes, please try again ' + new Date(timeout).toString());
+                voter.send('You are out of votes, please try again ' + new Date(timeout).toString()); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
             }
-        let value = await Voter.queryDB(voter.id, db, queryVotes)
-        switch (value) {
+            else {
+                Voter.timedOutUsers.delete(voter.id); //clean up the ram
+            }
+        let value = await Voter.queryDB(voter.id, db, queryVotes);
+        switch (value[0]) {
             case result.passed:
-                let insert = db.prepare(insertVote); //prepare the vote
-                let insertResult = insert.run(voter.id, votee, section); //insert it
-                insertResult.finalize((err) => { voter.send('vote did actually not go through, check arguments') });
-                voter.send('vote for ' + votee + ' went through.');
+                db.prepare(insertVote).run(voter.id, votee, section, (err: any, res: any) => {
+                    if (err) {
+                        voter.send('Vote did not get through, please try again and check your arguments :)');
+                    }
+                    else
+                        voter.send('Vote went through. You have ' + (2 - value[1]) + ' votes remaining');
+                }); //insert it
                 break;
             case result.outOfVotes:
-                let timeout = Voter.timedOutUsers.get(voter.id)
+                let timeout = Voter.timedOutUsers.get(voter.id);
                 if (timeout)
-                    voter.send('you are out of votes, please try again ' + new Date(timeout).toString());
+                    voter.send('You are out of votes, please try again ' + new Date(timeout).toString());
                 else
-                    voter.send('you are out of votes'); //should only run once per instance and user
+                    voter.send('You are out of votes'); //should only run once per instance and user
                 break;
         }
     }
 
-    private static queryDB(voter: string, db: Database, queryVotes: string): Promise<result> {
+    private static queryDB(voter: string, db: Database, queryVotes: string): Promise<[result: number, votes: number]> {
         return new Promise((resolve, reject) => {
             let votesByVoter = 0;
             db.get(queryVotes, voter, (err, row) => {
@@ -65,10 +72,10 @@ export class Voter {
                                 Voter.timedOutUsers.set(voter, nextElligableVote); //caches that the user is timed out in order to save the db some load
                             }
                         });
-                        resolve(result.outOfVotes);
+                        resolve([result.outOfVotes, votesByVoter]);//out of votes
                     }
                 }
-                resolve(result.passed);
+                resolve([result.passed, votesByVoter]);//passed
             });
         });
     }

@@ -1,16 +1,17 @@
 import { CommandPing } from "./CommandPing";
-import { PMHandler } from "./Pms";
-import { CommandAddSection } from "./CommandAddSection";
+//import { CommandAddSection } from "./CommandAddSection";
 import { TestAccess } from "./TestAccess";
-import { sayTest } from "./sayTest";
 import { Nominator } from "./Nominator";
 import { Sections } from "./Sections";
 import { Voter } from "./Voter";
 import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
-import { setChannel } from './setChannel';
+import { setChannel } from './setArtChannel';
 import { ArtDecision } from './ArtDecision';
+import { DatabaseFunctions } from "./DatabaseFunctions";
+import { ApplyHandeler } from "./ApplyHandeler";
+import { RemoveArtist } from "./RemoveArtist";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -20,13 +21,14 @@ if (process.env.NODE_ENV) {
     dotenv.config({ path: path.join(__dirname, `.env`) });
 }
 const client = new Discord.Client();
-
+DatabaseFunctions.getInstance();
 let prefix = process.env.DISCORD_PREFIX;
 
 client.once("ready", () => {
     console.log("bot is now online");
 });
 let accesscontrol = new TestAccess();
+let applyHandeler = new ApplyHandeler();
 
 client.on("message", (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -42,20 +44,19 @@ client.on("message", (message) => {
             message.channel.send("me");
             break;
         case 'apply':
-            new PMHandler().doIt(message, message.author, client);
+            applyHandeler.doIt(message, client);
             break;
-        case 'setchannel':
-            accesscontrol.doIt(message, "mod").then((res) => {
+        case 'artchannel':
+            accesscontrol.doIt(message, "owner").then((res) => {
                 res
-                    ? new setChannel().doIt(message, args[0], accesscontrol, client)
-                    : message.channel.send("Access level mod needed");
+                    ? new setChannel().doIt(message, args[0], client)
+                    : message.channel.send("Access level owner needed");
             });
-
             break;
         case "addsection":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? new CommandAddSection().doIt(message, args, accesscontrol)
+                    ? Sections.addsection(message, args)
                     : message.channel.send("Access level mod needed");
             });
 
@@ -76,9 +77,6 @@ client.on("message", (message) => {
         case "setowner":
             accesscontrol.setOwner(message, args.shift());
             break;
-        case "say":
-            new sayTest().doIt(message, args);
-            break;
         case "nominate":
             new Nominator().doIt(args, message);
             break;
@@ -91,7 +89,7 @@ client.on("message", (message) => {
         case "removesection":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? Sections.removesection(args, message)
+                    ? Sections.removeSection(message, args)
                     : message.channel.send("Access level mod needed");
             });
             break;
@@ -103,7 +101,13 @@ client.on("message", (message) => {
                         ? new ArtDecision().doIt(message, args, sub)
                         : message.channel.send("Access level mod needed");
                 });
-            }
+            }break;
+        case "artremove":
+            accesscontrol.doIt(message, "mod").then((res) => {
+                res
+                    ? new RemoveArtist().doIt(message, args)
+                    : message.channel.send("Access level mod needed");
+            });
             break;
         case "setart":
             accesscontrol.doIt(message, "mod").then((res) => {
