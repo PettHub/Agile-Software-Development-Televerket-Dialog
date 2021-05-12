@@ -108,10 +108,12 @@ client.on("message", (message) => {
                     ? new ArtDecision().setArt(message, args.shift())
                     : message.channel.send("Access level mod needed");
             });
-
             break;
         case "vote":
             Voter.vote(message, args);
+            break;
+        case "tallyvotes":
+            Voter.tallyVotes(message, args.shift());
             break;
     }
 });
