@@ -1,3 +1,4 @@
+import Discord from "discord.js";
 
 export class GlobalFunctions {
 
@@ -8,5 +9,9 @@ export class GlobalFunctions {
             command = command.substring(2, command.length - 1);
         }
         return command;
+    }
+
+    public static async idToUsername(message: Discord.Message, id: string): Promise<Discord.User> {
+        return (await message.guild.members.fetch(id)).user;
     }
 }

@@ -102,20 +102,17 @@ export class Voter {
             if (err)
                 console.log(err);
             if (!res) return;
-            let result;
-            result = await this.sortQuery(res);
-            let iterator = result.keys();
-            let next = iterator.next();
-            while (!next.done) {
-                //userid to username needed here
-                embed.addField(next.value, result.get(next.value).length + " nominees", false);
-                result.get(next.value).forEach(row => {
-                    embed.addField(row.section, "UserId: " + row.votee + " Votes: " + row.votes, true);
+            let result = await this.sortQuery(res);
+            result.forEach(next => {
+                //embed.addField(next[0].section, next.length + " nominees", false);
+                console.log(next.length);
+                next.forEach(row => {
+                    GlobalFunctions.idToUsername(message, row.votee).then(user => {
+                        embed.addField(row.section, "Username: " + user.username + " Votes: " + row.votes, true);
+                    });
                 });
-                next = iterator.next();
-            }
-            if (embed.fields.length > 0)
-                message.author.send(embed);
+            });
+            message.author.send(embed);
         };
         if (section.length > 0)
             runnable.all(section, handler);
