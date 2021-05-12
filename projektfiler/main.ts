@@ -11,6 +11,7 @@ import { setChannel } from './setArtChannel';
 import { ArtDecision } from './ArtDecision';
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { ApplyHandeler } from "./ApplyHandeler";
+import { RemoveArtist } from "./RemoveArtist";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -104,7 +105,7 @@ client.on("message", (message) => {
         case "artremove":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
-                    ? new ArtDecision().removeArtRole(message, args)
+                    ? new RemoveArtist().doIt(message, args)
                     : message.channel.send("Access level mod needed");
             });
             break;
