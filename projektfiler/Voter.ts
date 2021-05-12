@@ -7,6 +7,7 @@ import { Database } from "sqlite3";
 
 export class Voter {
     static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
+    static usernameIndex: Map<string, string> = new Map();
 
     static async vote(message: Discord.Message, args: string[]): Promise<void> {
         let voter = message.author;
@@ -103,6 +104,26 @@ export class Voter {
                 console.log(err);
             if (!res) return;
             let result = await this.sortQuery(res);
+            let iterator = result.entries();
+            let next = iterator.next();
+            while (!next.done) {
+                let section = next.value[0];
+                let values = next.value[1];
+                embed.addField(section, values.length + " nominees", false);
+                /*
+                await values.forEach(row => {
+                    GlobalFunctions.idToUsername(message, row.votee).then(user => {
+                        embed.addField(row.section, "Username: " + user.username + " Votes: " + row.votes, true);
+                    });
+                });
+                */
+                values.forEach(row => {
+                    embed.addField(row.section, "Used ID: " + row.votee + " Votes: " + row.votes, true);
+                });
+                next = iterator.next();
+            }
+            message.author.send(embed);
+            /*
             result.forEach(next => {
                 //embed.addField(next[0].section, next.length + " nominees", false);
                 console.log(next.length);
@@ -111,7 +132,7 @@ export class Voter {
                         embed.addField(row.section, "Username: " + user.username + " Votes: " + row.votes, true);
                     });
                 });
-            });
+            });*/
             message.author.send(embed);
         };
         if (section.length > 0)
