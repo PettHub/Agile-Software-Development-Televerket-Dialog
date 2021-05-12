@@ -115,10 +115,16 @@ client.on("message", (message) => {
                     ? new ArtDecision().setArt(message, args.shift())
                     : message.channel.send("Access level mod needed");
             });
-
             break;
         case "vote":
             Voter.vote(message, args);
+            break;
+        case "tallyvotes":
+            accesscontrol.doIt(message, "mod").then(async (res) => {
+                res
+                    ? await Voter.tallyVotes(client, message, args)
+                    : message.channel.send("Access level mod needed");
+            }).then(() => { console.log("completed task") });
             break;
     }
 });
