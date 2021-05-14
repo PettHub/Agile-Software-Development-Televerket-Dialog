@@ -5,7 +5,7 @@ import { VoteHandeler } from "./Voter2Hadeler";
 
 export class Voter2 {
     counter: number = 0;
-    pagesize: number = 3;
+    pagesize: number = 20;
     user: string;
     listener: {
         (message2: Discord.Message): Promise<void>;
@@ -121,11 +121,7 @@ export class Voter2 {
                                     break;
                                 default:
                                     vote = Number(message2.content) - 1;
-                                    if (
-                                        !rows[vote] ||
-                                        vote < 0 ||
-                                        vote > rows.length
-                                    ) {
+                                    if (!rows[vote]) {
                                         message.author.send(
                                             "this is not a valid command"
                                         );
@@ -136,7 +132,7 @@ export class Voter2 {
                                                 vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
-                                            )} \n Type "yes" to confirm or "no" to cancel the vote`
+                                            )} \nType "yes" to confirm or "no" to cancel the vote`
                                         );
                                     }
                                     break;
