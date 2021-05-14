@@ -195,7 +195,6 @@ export class Voter2 {
         if (client) {
             clearTimeout(this.timeout);
             client.removeListener("message", this.listener);
-            console.log("ded");
         }
         VoteHandeler.remove(this.user);
     }
