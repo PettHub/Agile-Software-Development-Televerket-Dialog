@@ -109,7 +109,7 @@ export class Voter {
         }
     }
 
-    private static queryDB(
+    public static queryDB(
         voter: string,
         db: Database,
         queryVotes: string
