@@ -25,11 +25,18 @@ export class Voter2 {
                 if (err) {
                     console.log(err);
                     message.channel.send("An error has occoured");
+                    this.terminate();
                 }
                 if (rows.length === 0 || rows === undefined) {
                     message.channel.send(
                         "You can only vote for sections that have nominated members and exists"
                     );
+                    this.terminate();
+                } else if (rows.length === 1) {
+                    message.channel.send(
+                        "There must at least be at least 2 nomenees for the section to vote"
+                    );
+                    this.terminate();
                 } else {
                     let votes = await Voter.queryDB(
                         message.author.id,
@@ -37,6 +44,7 @@ export class Voter2 {
                         "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
                     );
                     if (votes[1] === 3) {
+                        //TODO
                         message.author.send("you are out of votes");
                         return;
                     }
@@ -46,9 +54,10 @@ export class Voter2 {
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name \n Replying with "cancel" will cancel the vote \n Replying with "next" will show the next page`
                         );
-                    message.author.send(voter);
+
                     this.embedder(rows, message, args[0], votes[1]).then(
                         (embed) => {
+                            message.author.send(voter);
                             message.author.send(embed);
                         }
                     );
@@ -182,9 +191,12 @@ export class Voter2 {
         return embed;
     }
 
-    terminate(client: Discord.Client) {
-        clearTimeout(this.timeout);
-        client.removeListener("message", this.listener);
+    terminate(client?: Discord.Client) {
+        if (client) {
+            clearTimeout(this.timeout);
+            client.removeListener("message", this.listener);
+            console.log("ded");
+        }
         VoteHandeler.remove(this.user);
     }
 
