@@ -7,7 +7,12 @@ export class Voter2 {
     counter: number = 0;
     pagesize: number = 20;
     user: string;
-    listener;
+    listener: {
+        (message2: Discord.Message): Promise<void>;
+        (args_0: Discord.Message): void;
+        (...args: any[]): void;
+        (...args: any[]): void;
+    };
     timeout: NodeJS.Timeout;
 
     doIt(message: Discord.Message, args: any[], client: Discord.Client): void {
