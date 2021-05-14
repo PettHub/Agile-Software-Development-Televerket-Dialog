@@ -12,6 +12,7 @@ import { ArtDecision } from "./ArtDecision";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { ApplyHandeler } from "./ApplyHandeler";
 import { RemoveArtist } from "./RemoveArtist";
+import { VoteHandeler } from "./Voter2Hadeler";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -31,7 +32,12 @@ let accesscontrol = new TestAccess();
 let applyHandeler = new ApplyHandeler();
 
 client.on("message", (message) => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (
+        !message.content.startsWith(prefix) ||
+        message.author.bot ||
+        message.guild === null
+    )
+        return;
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
@@ -125,7 +131,8 @@ client.on("message", (message) => {
                         ? new ArtDecision().doIt(message, args, sub)
                         : message.channel.send("Access level mod needed");
                 });
-            }break;
+            }
+            break;
         case "artremove":
             accesscontrol.doIt(message, "mod").then((res) => {
                 res
@@ -182,6 +189,9 @@ client.on("message", (message) => {
                     ? Voter.showVotes(message, args)
                     : message.channel.send("Access level mod needed");
             });
+            break;
+        case "newvote":
+            VoteHandeler.getinstance().doIt(message, args, client);
             break;
     }
 });

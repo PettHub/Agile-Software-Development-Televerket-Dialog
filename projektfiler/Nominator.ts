@@ -201,7 +201,7 @@ export class Nominator {
                     // }
                 });
             await Nominator.canNominate(message.author.id).then((res) => {
-                if (!res) {
+                if (!res && false) {
                     message.channel.send(
                         "You have already nominated once in the last 24 hours: "
                     );
