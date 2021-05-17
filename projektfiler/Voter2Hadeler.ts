@@ -18,7 +18,7 @@ export class VoteHandeler {
 
     public doIt(message: Discord.Message, args, client): void {
         if (!args[0]) {
-            message.channel.send("Usage !vote [section]");
+            message.channel.send("Usage !newvote [section]");
             return;
         }
         if (this.users.get(message.author.id)) {

@@ -202,6 +202,7 @@ export class Nominator {
                 });
             await Nominator.canNominate(message.author.id).then((res) => {
                 if (!res && false) {
+                    //REMOVE FALSE
                     message.channel.send(
                         "You have already nominated once in the last 24 hours: "
                     );
@@ -249,7 +250,7 @@ export class Nominator {
         arg = arg.slice(0, -1);
         arg = GlobalFunctions.toId(arg);
         DatabaseFunctions.getInstance()
-            .prepare("SELECT * FROM Sections WHERE (section == ?)")
+            .prepare("SELECT * FROM Sections WHERE section = ?")
             .all(arg, async (err, rows) => {
                 if (err) {
                     console.log(err);
@@ -293,13 +294,19 @@ export class Nominator {
                         user
                     );
                     await message.guild.members.fetch(user).then((res) => {
-                        embed
-                            .setAuthor("nominations for " + res.nickname) //searchword bör bli nickname istället för userid när searchword är användare
-                            .setColor("#ff0000");
+                        if (res) {
+                            embed
+                                .setAuthor("nominations for " + res.displayName) //searchword bör bli nickname istället för userid när searchword är användare
+                                .setColor("#ff0000");
+                            message.channel.send(embed);
+                        } else {
+                            message.channel.send(
+                                "This doesnt seem to be a valid user"
+                            );
+                        }
                     });
-                    message.author.send(embed);
                 } else {
-                    message.author.send("This person hasn't been nominated");
+                    message.channel.send("This person hasn't been nominated");
                     return;
                 }
             }
@@ -327,8 +334,7 @@ export class Nominator {
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
-                embed.addField(element.section, "random", false);
-
+                embed.addField("section", element.section);
                 resolve();
             });
         });
@@ -341,15 +347,15 @@ export class Nominator {
         DatabaseFunctions.getInstance().all(
             "SELECT user FROM Nominations WHERE section=?",
             section,
-            async (err, row) => {
+            async (err, rows) => {
                 if (err) {
                     console.log(err);
                     return;
                 }
-                if (row) {
+                if (rows) {
                     let embed = new Discord.MessageEmbed();
                     await Nominator.forEachRowSection(
-                        row,
+                        rows,
                         message,
                         embed,
                         section
@@ -359,7 +365,7 @@ export class Nominator {
                         .setColor("#ff0000");
                     await message.channel.send(embed);
                 } else {
-                    message.channel.send("This person hasn't been nominated");
+                    message.channel.send("This section has no nominattions");
                     return;
                 }
             }
@@ -374,7 +380,8 @@ export class Nominator {
     ): Promise<void> {
         return new Promise(async (resolve) => {
             let i = 1;
-            row.forEach(async (element) => {
+            message.channel.send("fetching members...");
+            for (const element of row) {
                 if (i++ % 100 == 0) {
                     embed
                         .setAuthor("nominations for " + section)
@@ -383,10 +390,22 @@ export class Nominator {
                     embed = new Discord.MessageEmbed();
                 }
                 await message.guild.members.fetch(element.user).then((res) => {
-                    embed.addField(res.nickname, "random", false);
+                    embed.addField(res.displayName, res.user.tag, true);
                 });
-                resolve();
-            });
+            }
+            // row.forEach(async (element) => {
+            //     if (i++ % 100 == 0) {
+            //         embed
+            //             .setAuthor("nominations for " + section)
+            //             .setColor("#ff0000");
+            //         message.channel.send(embed);
+            //         embed = new Discord.MessageEmbed();
+            //     }
+            //     await message.guild.members.fetch(element.user).then((res) => {
+            //         embed.addField(res.displayName, res.user.tag, true);
+            //     });
+            // });
+            resolve();
         });
     }
 
@@ -400,7 +419,7 @@ export class Nominator {
                 query,
                 user,
                 section,
-                (err, row) => {
+                (err: any, row: any) => {
                     if (err) {
                         console.log(err);
                         reject(err);

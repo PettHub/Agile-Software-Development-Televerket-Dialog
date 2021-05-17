@@ -5,7 +5,7 @@ import { VoteHandeler } from "./Voter2Hadeler";
 
 export class Voter2 {
     counter: number = 0;
-    pagesize: number = 20;
+    pagesize: number = 21;
     user: string;
     listener: {
         (message2: Discord.Message): Promise<void>;
@@ -15,7 +15,12 @@ export class Voter2 {
     };
     timeout: NodeJS.Timeout;
 
-    doIt(message: Discord.Message, args: any[], client: Discord.Client): void {
+    doIt(
+        message: Discord.Message,
+        args: any[],
+        client: Discord.Client,
+        restart?: boolean
+    ): void {
         this.user = message.author.id;
         let query = "SELECT * FROM Nominations WHERE section=?";
         DatabaseFunctions.getInstance().all(
@@ -43,9 +48,20 @@ export class Voter2 {
                         DatabaseFunctions.getInstance(),
                         "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
                     );
+                    if (!restart)
+                        message.channel.send(
+                            "Please check your dms to start voting!"
+                        );
                     if (votes[1] === 3) {
                         //TODO
-                        message.author.send("you are out of votes");
+                        message.author
+                            .send("you are out of votes")
+                            .catch((e) => {
+                                message.channel.send(
+                                    "Looks like I am unable to dm you"
+                                );
+                            });
+                        this.terminate();
                         return;
                     }
                     let voter = new Discord.MessageEmbed();
@@ -54,15 +70,26 @@ export class Voter2 {
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name \n Replying with "cancel" will cancel the vote \n Replying with "next" will show the next page`
                         );
-
-                    this.embedder(rows, message, args[0], votes[1]).then(
-                        (embed) => {
-                            message.author.send(voter);
+                    let blocked: boolean = false;
+                    await this.embedder(rows, message, args[0], votes[1]).then(
+                        async (embed) => {
+                            await message.author.send(voter).catch((e) => {
+                                message.channel.send(
+                                    "Looks like I am unable to dm you"
+                                );
+                                blocked = true;
+                            });
+                            if (blocked) return;
                             message.author.send(embed);
                         }
                     );
+                    if (blocked) {
+                        this.terminate();
+                        return;
+                    }
                     let confirm = false;
-                    let vote: number;
+                    let vote: number = undefined;
+                    let id: string = undefined;
 
                     this.listener = async (message2: Discord.Message) => {
                         if (
@@ -100,14 +127,27 @@ export class Voter2 {
                                     break;
                                 case "yes":
                                     if (confirm) {
-                                        Voter.vote(message, [
-                                            `${rows[vote].user}`,
-                                            `${args[0]}`,
-                                        ]);
-                                        this.terminate(client);
+                                        await Voter.vote(
+                                            message,
+                                            [
+                                                `${
+                                                    vote !== undefined
+                                                        ? rows[vote].user
+                                                        : id
+                                                }`,
+                                                `${args[0]}`,
+                                            ],
+                                            true
+                                        );
+                                        this.restart(
+                                            message,
+                                            args,
+                                            client,
+                                            true
+                                        );
                                     } else {
                                         message.author.send(
-                                            "You need to choose a nomenee before you can confirm"
+                                            "You need to choose a nominee before you can confirm"
                                         );
                                     }
                                     break;
@@ -121,7 +161,8 @@ export class Voter2 {
                                             )} is cancelled`
                                         );
                                         confirm = false;
-                                        vote = NaN;
+                                        vote = undefined;
+                                        id = undefined;
                                     } else {
                                         message.author.send(
                                             "There is no vote to cancel"
@@ -129,9 +170,25 @@ export class Voter2 {
                                     }
                                     break;
                                 default:
+                                    if (
+                                        rows.find(
+                                            (element) =>
+                                                element.user ===
+                                                message2.content
+                                        )
+                                    ) {
+                                        confirm = true;
+                                        message.author.send(
+                                            `You are about to vote for ${await message.guild.members.fetch(
+                                                message2.content
+                                            )} \nType "yes" to confirm or "no" to cancel the vote`
+                                        );
+                                        id = message2.content;
+                                        break;
+                                    }
                                     vote = Number(message2.content) - 1;
                                     if (!rows[vote]) {
-                                        message.author.send(
+                                        message2.author.send(
                                             "this is not a valid command"
                                         );
                                     } else {
@@ -173,7 +230,8 @@ export class Voter2 {
                 `you have ${3 - votes} votes left, page ${
                     pages - (pages - this.counter / this.pagesize) + 1
                 } of ${pages}`
-            );
+            )
+            .setColor("#7777ff");
         for (const element of rows.slice(this.counter, rows.length)) {
             this.counter++;
             let user = await message.guild.members.fetch(element.user);
@@ -199,10 +257,15 @@ export class Voter2 {
         VoteHandeler.remove(this.user);
     }
 
-    restart(message: Discord.Message, args: any[], client: Discord.Client) {
+    restart(
+        message: Discord.Message,
+        args: any[],
+        client: Discord.Client,
+        restart?: boolean
+    ) {
         clearTimeout(this.timeout);
         client.removeListener("message", this.listener);
         this.counter = 0;
-        this.doIt(message, args, client);
+        this.doIt(message, args, client, restart);
     }
 }
