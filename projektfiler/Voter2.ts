@@ -55,7 +55,18 @@ export class Voter2 {
                     if (votes[1] === 3) {
                         //TODO
                         message.author
-                            .send("you are out of votes")
+                            .send(
+                                `you are out of votes ${
+                                    Voter.timedOutUsers.get(message.author.id)
+                                        ? "you can vote again in " +
+                                          new Date(
+                                              Voter.timedOutUsers.get(
+                                                  message.author.id
+                                              )
+                                          ).toString()
+                                        : ""
+                                }`
+                            )
                             .catch((e) => {
                                 message.channel.send(
                                     "Looks like I am unable to dm you"

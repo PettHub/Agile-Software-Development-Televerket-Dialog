@@ -244,6 +244,12 @@ export class Nominator {
         message: Discord.Message
     ) {
         let arg = "";
+        if (!args[0]) {
+            message.reply(
+                "please use correct input values, !nominations [section]/[userId]"
+            );
+            return;
+        }
         for (let i = 0; i < args.length; i++) {
             arg = arg.concat(args[i] + " ");
         }
@@ -260,7 +266,11 @@ export class Nominator {
                     if (rows[0]) {
                         this.displayCandidatesForSection(arg, message);
                     } else {
-                        if (await message.guild.members.fetch(arg)) {
+                        if (
+                            await message.guild.members
+                                .fetch(arg)
+                                .catch((e) => console.log(e))
+                        ) {
                             this.displaySectionsForCandidate(arg, message);
                         } else {
                             message.reply(
@@ -327,7 +337,7 @@ export class Nominator {
                         .fetch(element.user)
                         .then((res) => {
                             embed
-                                .setAuthor("nominations for " + res.nickname) //searchword bör bli nickname istället för userid när searchword är användare
+                                .setAuthor("nominations for " + res.displayName) //searchword bör bli nickname istället för userid när searchword är användare
                                 .setColor("#ff0000");
                         });
 

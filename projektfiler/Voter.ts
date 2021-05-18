@@ -38,7 +38,7 @@ export class Voter {
         });
     }
 
-    private static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
+    static timedOutUsers: Map<string, number> = new Map(); //this is a cache of users that are timed out in order to ease the load for the database
 
     static async vote(
         message: Discord.Message,
@@ -206,9 +206,9 @@ export class Voter {
         });
     }
 
-    private static async delay(ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
+    // private static async delay(ms: number) {
+    //     return new Promise((resolve) => setTimeout(resolve, ms));
+    // }
 
     private static async addSectionToEmbed(
         client: Discord.Client,
@@ -223,9 +223,9 @@ export class Voter {
                 .setTitle(value[0])
                 .setColor("#00EF00"); //Created an embed with the title of the section as well as the color green
             this.addAllSubToEmbed(client, value[1], embed).then(() => {
-                this.delay(2000).then(() => {
-                    message.channel.send(embed);
-                });
+                // this.delay(2000).then(() => {
+                message.channel.send(embed);
+                // });
             }); //delay amount is dependant on hardware and has to be hardcoded
             resolve(); //since the amount of nominees per section is maxed out at 5 we have an upper bound for time at least
         });
@@ -236,22 +236,32 @@ export class Voter {
         rows: { section: string; votee: string; votes: number }[],
         embed: Discord.MessageEmbed
     ): Promise<void> {
-        return new Promise((resolve) => {
-            rows.forEach((row) => {
-                //for each votee
-                GlobalFunctions.idToUsernameClient(client, row.votee).then(
-                    (user) => {
-                        //get username from id
-                        embed.addField(
-                            user.username,
-                            "Votes: " + row.votes,
-                            true
-                        ); //add name and votes in row
-                        console.log("added"); //debugging purposes, should all be after "added subsection"
-                        resolve();
-                    }
-                );
-            });
+        return new Promise(async (resolve) => {
+            for (const row of rows) {
+                await GlobalFunctions.idToUsernameClient(
+                    client,
+                    row.votee
+                ).then((user) => {
+                    //get username from id
+                    embed.addField(user.username, "Votes: " + row.votes, true); //add name and votes in row
+                    console.log("added"); //debugging purposes, should all be after "added subsection"
+                });
+            }
+            // rows.forEach((row) => {
+            //     //for each votee
+            //     GlobalFunctions.idToUsernameClient(client, row.votee).then(
+            //         (user) => {
+            //             //get username from id
+            //             embed.addField(
+            //                 user.username,
+            //                 "Votes: " + row.votes,
+            //                 true
+            //             ); //add name and votes in row
+            //             console.log("added"); //debugging purposes, should all be after "added subsection"
+            //             resolve();
+            //         }
+            //     );
+            // });
             resolve();
         });
     }

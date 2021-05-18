@@ -132,6 +132,7 @@ client.on("message", (message) => {
                         : message.channel.send("Access level mod needed");
                 });
             }
+
             break;
         case "artremove":
             accesscontrol.doIt(message, "mod").then((res) => {
@@ -193,16 +194,11 @@ client.on("message", (message) => {
             VoteHandeler.getinstance().doIt(message, args, client);
             break;
         case "tallyvotes":
-            accesscontrol
-                .doIt(message, "mod")
-                .then(async (res) => {
-                    res
-                        ? await Voter.tallyVotes(client, message, args)
-                        : message.channel.send("Access level mod needed");
-                })
-                .then(() => {
-                    console.log("completed task");
-                });
+            accesscontrol.doIt(message, "mod").then(async (res) => {
+                res
+                    ? await Voter.tallyVotes(client, message, args)
+                    : message.channel.send("Access level mod needed");
+            });
             break;
     }
 });
