@@ -6,10 +6,13 @@ export class Sections {
         let db = DatabaseFunctions.getInstance();
         let query = "SELECT * FROM Sections";
         db.all(query, (err, rows) => {
-            if (err) console.log(err);
+            if (err) {
+                console.log(err)
+                return;
+            };
             if (rows) {
                 let message2 = new Discord.MessageEmbed();
-                message2.setTitle("Current Sections");
+                message2.setTitle("Current Sections").setColor("#E2C696");
                 rows.forEach((row) => {
                     message2.addField(row.section, "_", false);
                 });
@@ -26,17 +29,19 @@ export class Sections {
         let db = DatabaseFunctions.getInstance();
         let argument = "INSERT INTO Sections (section) VALUES (?)";
         let tmpString = "";
-
-        if (args[0]) {
-            for (let a of args) {
-                //Restores input args to include the spaces between the words
-                if (args.indexOf(a) == args.length - 1) {
-                    tmpString = tmpString.concat(a);
-                } else {
-                    tmpString = tmpString.concat(a, " ");
-                }
+        if (!args[0]) {
+            message.reply('please provide a section to add.')
+            return;
+        }
+        for (let a of args) {
+            //Restores input args to include the spaces between the words
+            if (args.indexOf(a) == args.length - 1) {
+                tmpString = tmpString.concat(a);
+            } else {
+                tmpString = tmpString.concat(a, " ");
             }
         }
+
 
         //Splits where there are commas, to distinguish section-names (consists of section names)
         //runs seperate inserts for each section as argument

@@ -19,29 +19,29 @@ export class Nominator {
             }
         };
         let timeout = setTimeout(function () {
-            msg.channel.send("The confirm has timed out");
+            msg.reply("The confirm has timed out");
             client.removeListener("message", listener);
         }, 1000 * 60);
         client.on("message", listener);
-        msg.channel.send('Please type "confirm" to reset all sections');
+        msg.reply('Please type "confirm" to reset all sections');
     }
 
     static removeNomineeFromSection(message: Discord.Message, args: string[]) {
         if (!args[0] || !args[1]) {
-            message.channel.send("please provide an user and section");
+            message.reply("please provide an user and section");
             return;
         }
         DatabaseFunctions.getInstance()
             .prepare("DELETE FROM Nominations WHERE user = ? AND section = ?")
             .run(GlobalFunctions.toId(args[0]), args[1]);
-        message.channel.send(
+        message.reply(
             "User: " + args[0] + " has been removed from section: " + args[1]
         );
     }
 
     public static nomUnBan(message: Discord.Message, args: string[]) {
         if (!args[0]) {
-            message.channel.send("please provide an user");
+            message.reply("please provide an user");
             return;
         }
         DatabaseFunctions.getInstance()
@@ -51,7 +51,7 @@ export class Nominator {
 
     public static nomBan(message: Discord.Message, args: string[]) {
         if (!args[0]) {
-            message.channel.send("please provide an user");
+            message.reply("please provide an user");
             return;
         }
         DatabaseFunctions.getInstance()
@@ -88,7 +88,7 @@ export class Nominator {
             .run(1, (err) => {
                 if (err) {
                     console.log(err);
-                    message.channel.send(
+                    message.reply(
                         "An error has occoured, nominations might already be open"
                     );
                 } else {
@@ -100,7 +100,7 @@ export class Nominator {
         DatabaseFunctions.getInstance()
             .prepare("DELETE FROM NominatorOpen")
             .run();
-        message.channel.send("Nominations are Closed");
+        message.reply("Nominations are Closed");
     }
     public static isOpen(): Promise<boolean> {
         return new Promise((resolve, reject) => {
@@ -123,20 +123,20 @@ export class Nominator {
         }
         section = section.slice(0, -1);
         if (message.author.id.toString() === nominee) {
-            message.channel.send("Cannot nominate yourself");
+            message.reply("Cannot nominate yourself");
             return;
         }
         if (!(args.shift() && args.shift())) {
-            message.channel.send("!nominate [member] [section]");
+            message.reply("!nominate [member] [section]");
             return;
         }
         if (await this.isNomBanned(nominee)) {
-            message.channel.send("Cannot nominate this user");
+            message.reply("Cannot nominate this user");
             return;
         }
         this.nominate(nominee, section, message).then((res) => {
             if (res) {
-                message.channel.send(
+                message.reply(
                     "nomination has been registered, type !nominations [section] too see all nominations"
                 );
             }
@@ -188,22 +188,16 @@ export class Nominator {
                         return;
                     }
                     if (res === undefined) {
-                        message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
+                        message.reply("section does not exist"); //section has not been created or at least does not exist in sectionlist
                         resolve(false);
                         done = true;
                         return;
                     }
-                    // if (res.count === 0) {
-                    //     message.channel.send("section does not exist"); //section has not been created or at least does not exist in sectionlist
-                    //     done = true;
-                    //     resolve(false);
-                    //     return;
-                    // }
                 });
             await Nominator.canNominate(message.author.id).then((res) => {
                 if (!res && false) {
                     //REMOVE FALSE
-                    message.channel.send(
+                    message.reply(
                         "You have already nominated once in the last 24 hours: "
                     );
                     resolve(false);
@@ -214,7 +208,7 @@ export class Nominator {
             await message.guild.members.fetch(user).catch((e) => {
                 //Catches errors that discord js may throw so the bot wont die
                 if (done) return;
-                message.channel.send("user not in server");
+                message.reply("user not in server");
                 resolve(false);
                 done = true;
             });
@@ -286,7 +280,6 @@ export class Nominator {
         user: string,
         message: Discord.Message
     ): void {
-        console.log(user);
         DatabaseFunctions.getInstance().all(
             "SELECT section FROM Nominations WHERE user=?",
             user,
@@ -307,7 +300,7 @@ export class Nominator {
                         if (res) {
                             embed
                                 .setAuthor("nominations for " + res.displayName) //searchword bör bli nickname istället för userid när searchword är användare
-                                .setColor("#ff0000");
+                                .setColor("#E2C696");
                             message.channel.send(embed);
                         } else {
                             message.channel.send(
@@ -338,7 +331,7 @@ export class Nominator {
                         .then((res) => {
                             embed
                                 .setAuthor("nominations for " + res.displayName) //searchword bör bli nickname istället för userid när searchword är användare
-                                .setColor("#ff0000");
+                                .setColor("#E2C696");
                         });
 
                     message.channel.send(embed);
@@ -372,7 +365,7 @@ export class Nominator {
                     );
                     embed
                         .setAuthor("nominations for " + section)
-                        .setColor("#ff0000");
+                        .setColor("#E2C696");
                     await message.channel.send(embed);
                 } else {
                     message.channel.send("This section has no nominattions");
@@ -395,7 +388,7 @@ export class Nominator {
                 if (i++ % 100 == 0) {
                     embed
                         .setAuthor("nominations for " + section)
-                        .setColor("#ff0000");
+                        .setColor("#E2C696");
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
@@ -403,18 +396,6 @@ export class Nominator {
                     embed.addField(res.displayName, res.user.tag, true);
                 });
             }
-            // row.forEach(async (element) => {
-            //     if (i++ % 100 == 0) {
-            //         embed
-            //             .setAuthor("nominations for " + section)
-            //             .setColor("#ff0000");
-            //         message.channel.send(embed);
-            //         embed = new Discord.MessageEmbed();
-            //     }
-            //     await message.guild.members.fetch(element.user).then((res) => {
-            //         embed.addField(res.displayName, res.user.tag, true);
-            //     });
-            // });
             resolve();
         });
     }

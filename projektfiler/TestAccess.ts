@@ -34,7 +34,7 @@ export class TestAccess {
     ): Promise<void> {
         if (!command) {
             //Checks if there is a command after the prefix
-            message.channel.send("please provide a role");
+            message.reply("please provide a role.");
         } else {
             command = GlobalFunctions.toId(command);
             if (
@@ -47,9 +47,9 @@ export class TestAccess {
                         "INSERT INTO Access(accessLVL,role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM Access WHERE accessLVL =? AND role =?);"
                     )
                     .run("mod", command, "mod", command); //Sets mod status fom the specified role
-                message.channel.send("OK");
+                message.reply('OK!');
             } else {
-                message.channel.send("Must be owner or Invalid role");
+                message.reply("failed. Either the input role is incorrect or you are not the server owner.");
             }
         }
     }
@@ -60,7 +60,8 @@ export class TestAccess {
     ): Promise<void> {
         if (!command) {
             //Checks if there is a command after the prefix
-            message.channel.send("please provide a role");
+            message.reply("please provide a role.");
+            return;
         } else {
             command = GlobalFunctions.toId(command);
             if (
@@ -76,9 +77,9 @@ export class TestAccess {
                         "INSERT INTO Access(accessLVL, role) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM Access WHERE accessLVL =? AND role =?);"
                     )
                     .run("owner", command, "owner", command); //Adds the owner status for the specified role
-                message.channel.send("OK");
+                message.reply('OK!');
             } else {
-                message.channel.send("Must be owner or Invalid role");
+                message.reply("failed. Either the input role is incorrect or you are not the server owner.");
             }
         }
     }
@@ -87,9 +88,10 @@ export class TestAccess {
         message: Discord.Message,
         command: string
     ): Promise<void> {
+
         if (!command) {
             //Checks if there is a command after the prefix
-            message.channel.send("please provide a role");
+            message.reply("please provide a role.");
         } else {
             command = GlobalFunctions.toId(command);
             if (
@@ -102,9 +104,9 @@ export class TestAccess {
                         "DELETE FROM Access WHERE accessLVL =? AND role =?"
                     )
                     .run("mod", command); //Deletes the mod status from the specified role
-                message.channel.send("OK");
+                message.reply('OK!');
             } else {
-                message.channel.send("Must be owner");
+                message.reply("you must be server owner.");
             }
         }
     }
@@ -142,8 +144,6 @@ export class TestAccess {
     }
 
     private isguild(message: Discord.Message, command: string): boolean {
-        console.log(command);
-
         if (
             message.guild.roles.cache.find((role) => role.name == command) ||
             message.guild.roles.cache.has(command)

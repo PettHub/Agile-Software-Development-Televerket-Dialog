@@ -37,7 +37,7 @@ export class ArtDecision {
             case 'deny':
                 let reason: string = args[0];
                 if (reason === undefined) { //Makes sure there is a reason provided 
-                    message.channel.send('Please provide a reason');
+                    message.reply('Please provide a reason');
                     return;
                 }
                 while (args.shift() && args[0]) { //Compiles all remaining args into a string

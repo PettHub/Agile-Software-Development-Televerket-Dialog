@@ -6,14 +6,18 @@ import { GlobalFunctions } from './GlobalFunctions';
 export class setChannel {
 
     async doIt(message: Discord.Message, newChannel: string, client: Discord.Client): Promise<void> {
-        newChannel = GlobalFunctions.toId(newChannel);
 
+        if (newChannel === undefined) {
+            message.reply('you need to provide a channel to set as art channel.');
+            return;
+        }
+        newChannel = GlobalFunctions.toId(newChannel);
         if (message.guild.channels.cache.get(newChannel) === undefined) { //if input channel is undefined (e.g. not in guild/incorrect input)
-            message.channel.send('Incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
+            message.reply('incorrect channel ID (possible causes: channel not on server, or misspelled ID). Please try again.');
             return;
         }
         if (!(client.channels.cache.get(newChannel) instanceof TextChannel)) {
-            message.channel.send('The input channel is not a text channel. Please try again using a text channel ID.');
+            message.reply('the input channel is not a text channel. Please try again using a text channel ID.');
             return;
         }
 
@@ -30,7 +34,7 @@ export class setChannel {
             )
                 .run(newChannel);
         } catch {
-            message.channel.send("The bot has no access to this channel")
+            message.reply("The bot has no access to this channel")
         }
     }
 

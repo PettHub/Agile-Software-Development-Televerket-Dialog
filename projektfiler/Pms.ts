@@ -3,7 +3,7 @@ import { setChannel } from "./setArtChannel";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class PMHandler {
-    constructor() {}
+    constructor() { }
 
     public doIt(
         firstmessage: Discord.Message,
@@ -19,8 +19,8 @@ export class PMHandler {
             repostChannel = client.channels.cache.get(res);
 
             if (repostChannel === undefined) {
-                firstmessage.channel.send(
-                    "Application not possible. No !art apply receiver channel has been set."
+                firstmessage.reply(
+                    "application not possible. No !art apply receiver channel has been set."
                 ); //ev. kan man @:a moderators här
                 return;
             }
@@ -29,7 +29,7 @@ export class PMHandler {
             if (firstmessage.member.roles.cache.has(art)) {
                 //checks if author already is Artist, if so they cannot apply again
                 author.send(
-                    "You already have the Artist role and can therefore not apply for it."
+                    "you already have the Artist role and can therefore not apply for it."
                 );
             } else {
                 let listener = (message) => {
@@ -62,7 +62,7 @@ export class PMHandler {
                                     i++;
                                     let embed = new Discord.MessageEmbed();
                                     embed
-                                        .setColor("#09CDDA")
+                                        .setColor("#F1EDE2")
                                         .setTitle("image" + i)
                                         .setAuthor(author.username)
                                         .setDescription(author.id)
@@ -70,19 +70,6 @@ export class PMHandler {
                                         .setImage(image)
                                         .setTimestamp()
                                         .setURL(image);
-                                    // const data = {
-                                    //     "title": "image:" + i,
-                                    //     "description": author.id,
-                                    //     "color": 4367031,
-                                    //     "timestamp": Date.now(),
-                                    //     "image": {
-                                    //       "url": image
-                                    //     },
-                                    //     "author": {
-                                    //       "name": author.toString(),
-                                    //       "icon_url": author.avatarURL
-                                    //     }
-                                    // };
 
                                     repostChannel.send(embed);
                                     //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
@@ -99,7 +86,7 @@ export class PMHandler {
                     "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered."
                 ); //send initial message asking for images. Could include rules if Matt has some.
                 let timeout = setTimeout(function () {
-                    author.send("Timed out, please");
+                    author.send("Timed out. Please start a new application if you wish to apply.");
                     client.removeListener("message", listener);
                 }, 1000 * 60 * 15); //create a timeout to relieve the bot in case of spam
                 let numberOfImages = 3;
