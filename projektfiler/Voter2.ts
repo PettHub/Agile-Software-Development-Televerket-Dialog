@@ -197,7 +197,9 @@ export class Voter2 {
                                         id = message2.content;
                                         break;
                                     }
-                                    vote = Number(message2.content) - 1;
+                                    if (!confirm) {
+                                        vote = Number(message2.content) - 1;
+                                    }
                                     if (!rows[vote]) {
                                         message2.author.send(
                                             "this is not a valid command"
