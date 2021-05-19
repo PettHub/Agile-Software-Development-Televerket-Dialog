@@ -25,9 +25,9 @@ export class Voter {
                 embed
                     .setAuthor(
                         "votes for " +
-                            (await (
-                                await message.guild.members.fetch(votee)
-                            ).nickname)
+                        (await (
+                            await message.guild.members.fetch(votee)
+                        ).nickname)
                     )
                     .setColor("#ff0000");
                 row?.forEach((element) => {
@@ -74,13 +74,13 @@ export class Voter {
                 //if user is timed out in the cache
                 voter.send(
                     "You are out of votes, please try again " +
-                        new Date(timeout).toString()
+                    new Date(timeout).toString()
                 ); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
             } else {
-                Voter.timedOutUsers.delete(voter.id); //clean up the ram
+                Voter.timedOutUsers.delete(voter.id); //clean up the ram by removing unnessescary entries in the map
             }
-        let value = await Voter.queryDB(voter.id, db, queryVotes);
+        let value = await Voter.queryDB(voter.id, db, queryVotes); // get number of votes the last 24 hours
         switch (value[0]) {
             case result.passed:
                 db.prepare(insertVote).run(
@@ -95,8 +95,8 @@ export class Voter {
                         } else
                             voter.send(
                                 "Vote went through. You have " +
-                                    (2 - value[1]) +
-                                    " votes remaining"
+                                (2 - value[1]) +
+                                " votes remaining"
                             );
                     }
                 ); //insert it
@@ -106,9 +106,9 @@ export class Voter {
                 if (timeout)
                     voter.send(
                         "You are out of votes, please try again " +
-                            new Date(timeout).toString()
+                        new Date(timeout).toString()
                     );
-                else voter.send("You are out of votes"); //should only run once per instance and user
+                else voter.send("You are out of votes"); //should only run once per instance and user due to async problems since timeout is added in a async function
                 break;
         }
     }
@@ -143,8 +143,8 @@ export class Voter {
                                 let nextElligableVote =
                                     Date.now() +
                                     1000 *
-                                        (24 * 60 * 60 -
-                                            (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
+                                    (24 * 60 * 60 -
+                                        (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
                                 Voter.timedOutUsers.set(
                                     voter,
                                     nextElligableVote
@@ -178,7 +178,6 @@ export class Voter {
                 section = section.concat(args[i] + " "); //turns section into a string
             }
             section = section.slice(0, -1);
-            console.log(section.length + " " + section);
             if (section.length == 0)
                 query =
                     "SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee;";
@@ -190,18 +189,17 @@ export class Voter {
             let handler = async (err, res) => {
                 if (err) console.log(err);
                 if (!res) return;
-                this.sortQuery(res).then((result) => {
+                this.sortQuery(res).then((result) => { //after the query is sorted for each section
                     let iterator = result.entries();
                     let next = iterator.next();
                     while (!next.done) {
-                        this.addSectionToEmbed(client, next.value, message);
+                        this.addSectionToEmbed(client, next.value, message); //create new embed for each section
                         next = iterator.next();
-                        console.log("added subsection");
                     }
                 });
             };
-            if (section.length > 0) runnable.all(section, handler);
-            else runnable.all(handler);
+            if (section.length > 0) runnable.all(section, handler);  //if section is specified in the command
+            else runnable.all(handler); //for all sections
             resolve();
         });
     }
@@ -215,7 +213,7 @@ export class Voter {
         value: [
             section: string,
             rows: { section: string; votee: string; votes: number }[]
-        ],
+        ], //this is the format from the query
         message: Discord.Message
     ): Promise<void> {
         return new Promise((resolve) => {
@@ -244,24 +242,8 @@ export class Voter {
                 ).then((user) => {
                     //get username from id
                     embed.addField(user.username, "Votes: " + row.votes, true); //add name and votes in row
-                    console.log("added"); //debugging purposes, should all be after "added subsection"
                 });
             }
-            // rows.forEach((row) => {
-            //     //for each votee
-            //     GlobalFunctions.idToUsernameClient(client, row.votee).then(
-            //         (user) => {
-            //             //get username from id
-            //             embed.addField(
-            //                 user.username,
-            //                 "Votes: " + row.votes,
-            //                 true
-            //             ); //add name and votes in row
-            //             console.log("added"); //debugging purposes, should all be after "added subsection"
-            //             resolve();
-            //         }
-            //     );
-            // });
             resolve();
         });
     }

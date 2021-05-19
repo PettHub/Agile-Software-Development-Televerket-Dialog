@@ -3,7 +3,7 @@ import { setChannel } from "./setArtChannel";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class PMHandler {
-    constructor() {}
+    constructor() { }
 
     public doIt(
         firstmessage: Discord.Message,
@@ -70,19 +70,6 @@ export class PMHandler {
                                         .setImage(image)
                                         .setTimestamp()
                                         .setURL(image);
-                                    // const data = {
-                                    //     "title": "image:" + i,
-                                    //     "description": author.id,
-                                    //     "color": 4367031,
-                                    //     "timestamp": Date.now(),
-                                    //     "image": {
-                                    //       "url": image
-                                    //     },
-                                    //     "author": {
-                                    //       "name": author.toString(),
-                                    //       "icon_url": author.avatarURL
-                                    //     }
-                                    // };
 
                                     repostChannel.send(embed);
                                     //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
