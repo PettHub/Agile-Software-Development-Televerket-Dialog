@@ -56,15 +56,14 @@ export class Voter2 {
                         //TODO
                         message.author
                             .send(
-                                `you are out of votes ${
-                                    Voter.timedOutUsers.get(message.author.id)
-                                        ? "you can vote again in " +
-                                          new Date(
-                                              Voter.timedOutUsers.get(
-                                                  message.author.id
-                                              )
-                                          ).toString()
-                                        : ""
+                                `you are out of votes ${Voter.timedOutUsers.get(message.author.id)
+                                    ? "you can vote again in " +
+                                    new Date(
+                                        Voter.timedOutUsers.get(
+                                            message.author.id
+                                        )
+                                    ).toString()
+                                    : ""
                                 }`
                             )
                             .catch((e) => {
@@ -80,12 +79,12 @@ export class Voter2 {
                         .setTitle(`You have ${3 - votes[1]} vote to spend`)
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name \n Replying with "cancel" will cancel the vote \n Replying with "next" will show the next page`
-                        );
+                        ).setColor("#6691BA");
                     let blocked: boolean = false;
                     await this.embedder(rows, message, args[0], votes[1]).then(
                         async (embed) => {
                             await message.author.send(voter).catch((e) => {
-                                message.channel.send(
+                                message.reply(
                                     "Looks like I am unable to dm you"
                                 );
                                 blocked = true;
@@ -107,7 +106,7 @@ export class Voter2 {
                             message2.author == message.author &&
                             message2.guild === null
                         ) {
-                            switch (message2.content) {
+                            switch (message2.content.toLowerCase()) {
                                 case "next":
                                     this.embedder(
                                         rows,
@@ -141,10 +140,9 @@ export class Voter2 {
                                         await Voter.vote(
                                             message,
                                             [
-                                                `${
-                                                    vote !== undefined
-                                                        ? rows[vote].user
-                                                        : id
+                                                `${vote !== undefined
+                                                    ? rows[vote].user
+                                                    : id
                                                 }`,
                                                 `${args[0]}`,
                                             ],
@@ -165,8 +163,7 @@ export class Voter2 {
                                 case "no":
                                     if (confirm) {
                                         message.author.send(
-                                            `Yor vote for ${
-                                                vote + 1
+                                            `Yor vote for ${vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} is cancelled`
@@ -207,8 +204,7 @@ export class Voter2 {
                                     } else {
                                         confirm = true;
                                         message.author.send(
-                                            `You are about to vote for ${
-                                                vote + 1
+                                            `You are about to vote for ${vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} \nType "yes" to confirm or "no" to cancel the vote`
@@ -240,11 +236,10 @@ export class Voter2 {
         embed
             .setTitle("Members nominated for: " + section)
             .setDescription(
-                `you have ${3 - votes} votes left, page ${
-                    pages - (pages - this.counter / this.pagesize) + 1
+                `you have ${3 - votes} votes left, page ${pages - (pages - this.counter / this.pagesize) + 1
                 } of ${pages}`
             )
-            .setColor("#7777ff");
+            .setColor("#6691BA");
         for (const element of rows.slice(this.counter, rows.length)) {
             this.counter++;
             let user = await message.guild.members.fetch(element.user);

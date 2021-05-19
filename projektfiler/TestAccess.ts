@@ -128,15 +128,14 @@ export class TestAccess {
                         console.log(err);
                         reject(err);
                     }
-                    if (row)
-                        row.forEach((element) => {
-                            //loops throw all roles that meet the criteria
-                            if (message.member.roles.cache.has(element.role)) {
-                                //Checks if the member has the requested role
-                                value = true;
-                                return;
-                            }
-                        });
+                    row?.forEach((element) => {
+                        //loops throw all roles that meet the criteria
+                        if (message.member.roles.cache.has(element.role)) {
+                            //Checks if the member has the requested role
+                            value = true;
+                            return;
+                        }
+                    });
                     resolve(value); //true if member has specified role, otherwise false
                 }
             );

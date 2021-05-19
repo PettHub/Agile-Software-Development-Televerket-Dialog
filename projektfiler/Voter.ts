@@ -25,11 +25,11 @@ export class Voter {
                 embed
                     .setAuthor(
                         "votes for " +
-                            (await (
-                                await message.guild.members.fetch(votee)
-                            ).nickname)
+                        (
+                            await message.guild.members.fetch(votee)
+                        ).nickname
                     )
-                    .setColor("#ff0000");
+                    .setColor("#6691BA");
                 row?.forEach((element) => {
                     embed.addField(element.section, element.votes, false);
                 });
@@ -74,7 +74,7 @@ export class Voter {
                 //if user is timed out in the cache
                 voter.send(
                     "You are out of votes, please try again " +
-                        new Date(timeout).toString()
+                    new Date(timeout).toString()
                 ); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
             } else {
@@ -95,8 +95,8 @@ export class Voter {
                         } else
                             voter.send(
                                 "Vote went through. You have " +
-                                    (2 - value[1]) +
-                                    " votes remaining"
+                                (2 - value[1]) +
+                                " votes remaining"
                             );
                     }
                 ); //insert it
@@ -106,7 +106,7 @@ export class Voter {
                 if (timeout)
                     voter.send(
                         "You are out of votes, please try again " +
-                            new Date(timeout).toString()
+                        new Date(timeout).toString()
                     );
                 else voter.send("You are out of votes"); //should only run once per instance and user
                 break;
@@ -143,8 +143,8 @@ export class Voter {
                                 let nextElligableVote =
                                     Date.now() +
                                     1000 *
-                                        (24 * 60 * 60 -
-                                            (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
+                                    (24 * 60 * 60 -
+                                        (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
                                 Voter.timedOutUsers.set(
                                     voter,
                                     nextElligableVote
@@ -221,7 +221,7 @@ export class Voter {
         return new Promise((resolve) => {
             let embed = new Discord.MessageEmbed()
                 .setTitle(value[0])
-                .setColor("#00EF00"); //Created an embed with the title of the section as well as the color green
+                .setColor("#6691BA"); //Created an embed with the title of the section as well as the color green
             this.addAllSubToEmbed(client, value[1], embed).then(() => {
                 // this.delay(2000).then(() => {
                 message.channel.send(embed);
@@ -247,21 +247,6 @@ export class Voter {
                     console.log("added"); //debugging purposes, should all be after "added subsection"
                 });
             }
-            // rows.forEach((row) => {
-            //     //for each votee
-            //     GlobalFunctions.idToUsernameClient(client, row.votee).then(
-            //         (user) => {
-            //             //get username from id
-            //             embed.addField(
-            //                 user.username,
-            //                 "Votes: " + row.votes,
-            //                 true
-            //             ); //add name and votes in row
-            //             console.log("added"); //debugging purposes, should all be after "added subsection"
-            //             resolve();
-            //         }
-            //     );
-            // });
             resolve();
         });
     }

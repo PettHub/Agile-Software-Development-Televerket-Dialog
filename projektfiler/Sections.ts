@@ -10,16 +10,16 @@ export class Sections {
                 console.log(err)
                 return;
             };
-            if (rows) {
+            if (rows[0]) {
                 let message2 = new Discord.MessageEmbed();
-                message2.setTitle("Current Sections").setColor("#E2C696");
+                message2.setTitle("Current Sections").setColor("#D3A25A");
                 rows.forEach((row) => {
                     message2.addField(row.section, "_", false);
                 });
-                message.channel.send(message2);
+                message.reply(message2);
             } else {
-                message.channel.send(
-                    "There are currently no sections, use !addsection [section name]*, you can provide several sections as a comma separated list"
+                message.reply(
+                    "there are currently no sections, please wait for the mods to add sections."
                 );
             }
         });
@@ -47,14 +47,14 @@ export class Sections {
         //runs seperate inserts for each section as argument
         tmpString.split(/, +|,+/).forEach((section) => {
             let prepared = db.prepare(argument);
-            prepared.run(section, (err, res) => {
+            prepared.run(section, (err: any, res: any) => {
                 if (err) {
                     console.log(err);
-                    message.channel.send(
+                    message.reply(
                         'Section: "' + section + '" already exists'
                     );
                 } else {
-                    message.channel.send(
+                    message.reply(
                         'Section: "' + section + '" has been added'
                     );
                 }
@@ -70,7 +70,7 @@ export class Sections {
         let argument = "DELETE FROM Sections WHERE section == ?;";
         let tmpString = "";
 
-        if (args[0]) {
+        if (args[0] && args[0] != "") {
             for (let a of args) {
                 //Restores input args to include the spaces between the words
                 if (args.indexOf(a) == args.length - 1) {
@@ -79,21 +79,24 @@ export class Sections {
                     tmpString = tmpString.concat(a, " ");
                 }
             }
+        } else {
+            message.reply("please try again with correct formatting !removesection [section]");
+            return;
         }
 
         //Splits where there are commas, to distinguish section-names (consists of section names)
         //runs seperate inserts for each section as argument
         tmpString.split(/, +|,+/).forEach((section) => {
             let statement = db.prepare(argument);
-            statement.run(section, (err, res) => {
+            statement.run(section, (err: any, res: any) => {
                 if (err) {
                     console.log(err);
-                    message.channel.send(
-                        'Section: "' + section + '" already removed'
+                    message.reply(
+                        'section: "' + section + '" already removed.'
                     );
                 } else {
-                    message.channel.send(
-                        'Section: "' + section + '" has been removed'
+                    message.reply(
+                        'section: "' + section + '" has been removed.'
                     );
                 }
             });

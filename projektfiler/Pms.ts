@@ -28,11 +28,11 @@ export class PMHandler {
             let art = await this.getrole();
             if (firstmessage.member.roles.cache.has(art)) {
                 //checks if author already is Artist, if so they cannot apply again
-                author.send(
+                firstmessage.reply(
                     "you already have the Artist role and can therefore not apply for it."
                 );
             } else {
-                let listener = (message) => {
+                let listener = (message: Discord.Message) => {
                     //saves listener to be able to remove it when it is done
                     if (
                         author === message.author &&
@@ -58,6 +58,10 @@ export class PMHandler {
                             if (numberOfImages === 0) {
                                 clearTimeout(timeout); //once we have 3, stop the clock
                                 let i: number = 0;
+                                repostChannel.send(author.username + " has applied to become an artist. Below is their application. Use !art accept or !art deny [reason] to accept or d").catch(err =>
+                                    firstmessage.reply(
+                                        "Looks like I am unable to dm you"
+                                    ));
                                 images.forEach(function (image) {
                                     i++;
                                     let embed = new Discord.MessageEmbed();
@@ -71,12 +75,18 @@ export class PMHandler {
                                         .setTimestamp()
                                         .setURL(image);
 
-                                    repostChannel.send(embed);
+                                    repostChannel.send(embed).catch(err =>
+                                        firstmessage.reply(
+                                            "Looks like I am unable to dm you"
+                                        ));;
                                     //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
                                 });
                                 author.send(
                                     "Your application has been sent, you will get a response within 24 hours."
-                                ); //notify applicant that application has been sent
+                                ).catch(err =>
+                                    firstmessage.reply(
+                                        "Looks like I am unable to dm you"
+                                    ));; //notify applicant that application has been sent
                                 client.removeListener("message", listener); //remove the listener from memory
                             }
                         });
@@ -84,7 +94,10 @@ export class PMHandler {
                 };
                 author.send(
                     "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered."
-                ); //send initial message asking for images. Could include rules if Matt has some.
+                ).catch(err =>
+                    firstmessage.reply(
+                        "Looks like I am unable to dm you"
+                    )); //send initial message asking for images. Could include rules if Matt has some.
                 let timeout = setTimeout(function () {
                     author.send("Timed out. Please start a new application if you wish to apply.");
                     client.removeListener("message", listener);
