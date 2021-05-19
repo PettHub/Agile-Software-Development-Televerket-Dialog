@@ -46,17 +46,21 @@ INSERT INTO Users VALUES ('823540261170839582');
 INSERT INTO Sections VALUES('best dude');
 INSERT INTO Sections VALUES('best dudette');
 --inserting nominations in order to vote
-INSERT INTO Nominations VALUES ('120209876625522690','219842729239248897','best dude');
-INSERT INTO Nominations VALUES ('496748730855456779','823540261170839582','best dude');
 --testing voting for 2 different candidates for one section
 --CURRENT_TIMESTAMP ger en sträng med strukturen YYYY-MM-DD-HH:MM:SS, verkar vara 2 timmar bakom vår tidzon, 13:00 ger 11:00 t.ex
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '219842729239248897', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '120209876625522690', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '260822488005476353', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '260115645696442371', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '496748730855456779', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '363008905271443457', '823540261170839582', 'best dude');
-INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, '823540261170839582', '219842729239248897', 'best dude');
+
+INSERT INTO Nominations VALUES ('120209876625522690','260822488005476353','best dude',CURRENT_TIMESTAMP);
+INSERT INTO Nominations VALUES ('496748730855456779','496748730855456779','best dude',CURRENT_TIMESTAMP);
+INSERT INTO Nominations VALUES ('496748730855456779','260115645696442371','best dude',CURRENT_TIMESTAMP);
+INSERT INTO Nominations VALUES ('496748730855456779','120209876625522690','best dudette',CURRENT_TIMESTAMP);
+INSERT INTO Nominations VALUES ('496748730855456779','363008905271443457','best dudette',CURRENT_TIMESTAMP);
+
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '260822488005476353', 'best dude');
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '496748730855456779', 'best dude');
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '496748730855456779', 'best dude');
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '260115645696442371', 'best dude');
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '120209876625522690', 'best dudette');
+INSERT INTO Votes(voter, votee, section) VALUES ('823540261170839582', '363008905271443457', 'best dudette');
 --views for querying
 CREATE VIEW totalVotesPerSectionAndVotee AS SELECT section, votee, COUNT(votee) as votes FROM Votes GROUP BY section, votee; --groups votes by sections and votee
 CREATE VIEW winnersPerSection AS SELECT section, votee, MAX(votes) as winner FROM totalVotesPerSectionAndVotee GROUP BY section; --takes the highest voted from above

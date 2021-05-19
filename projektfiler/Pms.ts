@@ -48,7 +48,6 @@ export class PMHandler {
                                 images[numberOfImages] = content; //get the url from the attachments (what an image would be in a message)
                             } else if (message.attachments) {
                                 message.attachments.forEach((attachment) => {
-                                    console.log("a");
                                     numberOfImages--;
                                     let image = attachment.proxyURL;
                                     images[numberOfImages] = image;

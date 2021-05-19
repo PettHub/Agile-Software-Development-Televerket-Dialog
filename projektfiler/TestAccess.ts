@@ -3,11 +3,11 @@ import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class TestAccess {
-
-    public async doIt(
+    public static async doIt(
         message: Discord.Message,
         accessLevel: string
     ): Promise<boolean> {
+        if (GlobalFunctions.messageIsDirectMessage(message)) return false; //since the bot will crash if message.guild === null, and guild does not exist in dm
         switch (accessLevel) {
             case "mod": //Checks if the member has a mod role
                 return (
@@ -27,7 +27,7 @@ export class TestAccess {
         }
     }
 
-    public async setMod(
+    public static async setMod(
         message: Discord.Message,
         command: string
     ): Promise<void> {
@@ -53,7 +53,7 @@ export class TestAccess {
         }
     }
 
-    public async setOwner(
+    public static async setOwner(
         message: Discord.Message,
         command: string
     ): Promise<void> {
@@ -82,7 +82,7 @@ export class TestAccess {
         }
     }
 
-    public async unMod(
+    public static async unMod(
         message: Discord.Message,
         command: string
     ): Promise<void> {
@@ -108,7 +108,7 @@ export class TestAccess {
         }
     }
 
-    private hasAccessLevel(
+    private static hasAccessLevel(
         message: Discord.Message,
         accessLevel: string
     ): Promise<boolean> {
@@ -140,7 +140,7 @@ export class TestAccess {
         });
     }
 
-    private isguild(message: Discord.Message, command: string): boolean {
+    private static isguild(message: Discord.Message, command: string): boolean {
         console.log(command);
 
         if (
