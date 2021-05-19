@@ -107,7 +107,7 @@ export class voteModule {
                 });
                 break;
             case "reset": //vote
-                TestAccess.doIt(message, "mod").then((res) => {
+                TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? Nominator.resetNominations(message, client)
                         : message.channel.send("Access level mod needed");
@@ -118,7 +118,10 @@ export class voteModule {
                 //vote
                 Nominator.isOpen().then((res) => {
                     res
-                        ? Nominator.displayCandidates([command], message)
+                        ? Nominator.displayCandidates(
+                              [command, args[0]],
+                              message
+                          )
                         : message.channel.send(
                               "Nominations are currently closed"
                           );

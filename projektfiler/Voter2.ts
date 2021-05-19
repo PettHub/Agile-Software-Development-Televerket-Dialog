@@ -21,39 +21,44 @@ export class Voter2 {
         client: Discord.Client,
         restart?: boolean
     ): void {
-        this.user = message.author.id;
+        this.user = message.author.id; //saves who started this session
         let query = "SELECT * FROM Nominations WHERE section=?";
         DatabaseFunctions.getInstance().all(
             query,
             args[0],
             async (err, rows) => {
                 if (err) {
+                    //catches any errors the database might throw
                     console.log(err);
                     message.channel.send("An error has occoured");
                     this.terminate();
                 }
                 if (rows.length === 0 || rows === undefined) {
+                    //check if there are any nomenees for the section
                     message.channel.send(
                         "You can only vote for sections that have nominated members and exists"
                     );
                     this.terminate();
                 } else if (rows.length === 1) {
+                    //checks so that there are at least 2 nomenees
                     message.channel.send(
                         "There must at least be at least 2 nomenees for the section to vote"
                     );
                     this.terminate();
                 } else {
                     let votes = await Voter.queryDB(
+                        //gets how many votes the user have left to spend
                         message.author.id,
                         DatabaseFunctions.getInstance(),
                         "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
                     );
                     if (!restart)
                         message.channel.send(
+                            //checks if the session was restarted and tells the user to check their dms to start a new session
                             "Please check your dms to start voting!"
                         );
                     if (votes[1] === 3) {
-                        //TODO
+                        //checks if the user is out of votes
                         message.author
                             .send(
                                 `you are out of votes ${
@@ -66,36 +71,47 @@ export class Voter2 {
                                           ).toString()
                                         : ""
                                 }`
-                            )
+                            ) //tells the user that they are out of votes and when they can vote again
                             .catch((e) => {
+                                //catches any errors that the bot can throw in case it has been blocked by the user
                                 message.channel.send(
                                     "Looks like I am unable to dm you"
                                 );
                             });
-                        this.terminate();
+                        this.terminate(); //terminates the session if the user was out of votes
                         return;
                     }
                     let voter = new Discord.MessageEmbed();
                     voter
                         .setTitle(`You have ${3 - votes[1]} vote to spend`)
                         .setDescription(
-                            `To vote for an user simply reply with the number listed before their name \n Replying with "cancel" will cancel the vote \n Replying with "next" will show the next page`
-                        );
+                            `To vote for an user simply reply with the number listed before their name`
+                        )
+                        .addField(
+                            "next",
+                            "reply with next to see the next page"
+                        )
+                        .addField(
+                            "cancel",
+                            "reply with cancel to cancel the voting session"
+                        ); //prepairs an embed
                     let blocked: boolean = false;
                     await this.embedder(rows, message, args[0], votes[1]).then(
+                        //creates an embed listing all the nomenees
                         async (embed) => {
                             await message.author.send(voter).catch((e) => {
+                                //catches an error if the bot is blocked
                                 message.channel.send(
                                     "Looks like I am unable to dm you"
                                 );
                                 blocked = true;
                             });
-                            if (blocked) return;
+                            if (blocked) return; //if the bot is blocked, stop
                             message.author.send(embed);
                         }
                     );
                     if (blocked) {
-                        this.terminate();
+                        this.terminate(); //terminate the session since the bot is blocked
                         return;
                     }
                     let confirm = false;
@@ -103,12 +119,13 @@ export class Voter2 {
                     let id: string = undefined;
 
                     this.listener = async (message2: Discord.Message) => {
+                        //new listener that will listen for commands during the voting session
                         if (
                             message2.author == message.author &&
-                            message2.guild === null
+                            message2.guild === null //makes sure that the bot is talking to the session host and in dms
                         ) {
                             switch (message2.content) {
-                                case "next":
+                                case "next": //displayes the next page for the voter
                                     this.embedder(
                                         rows,
                                         message,
@@ -118,26 +135,27 @@ export class Voter2 {
                                         message.author.send(embed);
                                     });
                                     break;
-                                case "prev":
-                                    this.counter =
-                                        this.counter - 2 * this.pagesize;
-                                    this.embedder(
-                                        rows,
-                                        message,
-                                        args[0],
-                                        votes[1]
-                                    ).then((embed) => {
-                                        message.author.send(embed);
-                                    });
-                                    break;
-                                case "cancel":
+                                // case "prev": //unimplemented
+                                //     this.counter =
+                                //         this.counter - 2 * this.pagesize;
+                                //     this.embedder(
+                                //         rows,
+                                //         message,
+                                //         args[0],
+                                //         votes[1]
+                                //     ).then((embed) => {
+                                //         message.author.send(embed);
+                                //     });
+                                //     break;
+                                case "cancel": //cancels the voting session if
                                     message.author.send(
                                         "the vote has been cancelled"
                                     );
-                                    this.terminate(client);
+                                    this.terminate(client); //terminates the session since it was cencelled
                                     break;
-                                case "yes":
+                                case "yes": //confirms that the voter wants to vote for the user
                                     if (confirm) {
+                                        //makes sure the voter is allowed to confirm yet
                                         await Voter.vote(
                                             message,
                                             [
@@ -149,21 +167,22 @@ export class Voter2 {
                                                 `${args[0]}`,
                                             ],
                                             true
-                                        );
+                                        ); //sends the vote to the voting system that then registers the vote
                                         this.restart(
                                             message,
                                             args,
                                             client,
                                             true
-                                        );
+                                        ); //restarts the session so the voter can vote again
                                     } else {
                                         message.author.send(
                                             "You need to choose a nominee before you can confirm"
-                                        );
+                                        ); //tells the voter that they need to choose someone to vote for
                                     }
                                     break;
                                 case "no":
                                     if (confirm) {
+                                        //if the voter is about to vote this will cancel the vote
                                         message.author.send(
                                             `Yor vote for ${
                                                 vote + 1
@@ -177,7 +196,7 @@ export class Voter2 {
                                     } else {
                                         message.author.send(
                                             "There is no vote to cancel"
-                                        );
+                                        ); //tells the user that they cant cancel a vote right now
                                     }
                                     break;
                                 default:
@@ -186,14 +205,14 @@ export class Voter2 {
                                             (element) =>
                                                 element.user ===
                                                 message2.content
-                                        )
+                                        ) // checks if the command is an user id
                                     ) {
                                         confirm = true;
                                         message.author.send(
                                             `You are about to vote for ${await message.guild.members.fetch(
                                                 message2.content
                                             )} \nType "yes" to confirm or "no" to cancel the vote`
-                                        );
+                                        ); //tells the voter who they are about to vvote for and how to confirm the vote
                                         id = message2.content;
                                         break;
                                     }
@@ -201,28 +220,30 @@ export class Voter2 {
                                         vote = Number(message2.content) - 1;
                                     }
                                     if (!rows[vote]) {
+                                        //checks so the command is valid
                                         message2.author.send(
                                             "this is not a valid command"
                                         );
                                     } else {
-                                        confirm = true;
+                                        confirm = true; //makes it possible to respond yes
                                         message.author.send(
                                             `You are about to vote for ${
                                                 vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} \nType "yes" to confirm or "no" to cancel the vote`
-                                        );
+                                        ); //tells the voter who they are about to vote for and how to confirm the vote
                                     }
                                     break;
                             }
                         }
                     };
                     this.timeout = setTimeout(() => {
+                        //sets a timeout for the listener
                         message.author.send("timed out");
                         this.terminate(client);
                     }, 1000 * 60 * 5);
-                    client.on("message", this.listener);
+                    client.on("message", this.listener); //starts the listener
                 }
             }
         );
@@ -234,9 +255,10 @@ export class Voter2 {
         section: string,
         votes: number
     ): Promise<Discord.MessageEmbed> {
-        this.counter = this.counter % rows.length;
+        //prepairs an embed with some nomenees listed
+        this.counter = this.counter % rows.length; //makes sure the counter doesnt get higher than the lenght
         let embed = new Discord.MessageEmbed();
-        let pages = Math.ceil(rows.length / this.pagesize);
+        let pages = Math.ceil(rows.length / this.pagesize); //calculates wich page is being showed
         embed
             .setTitle("Members nominated for: " + section)
             .setDescription(
@@ -246,6 +268,7 @@ export class Voter2 {
             )
             .setColor("#7777ff");
         for (const element of rows.slice(this.counter, rows.length)) {
+            //goes through a "pagesize" abouts of nomenees
             this.counter++;
             let user = await message.guild.members.fetch(element.user);
             embed.addField(
@@ -254,15 +277,16 @@ export class Voter2 {
                 true
             );
 
-            if (this.counter % this.pagesize === 0) break;
+            if (this.counter % this.pagesize === 0) break; //breaks the loop if the pagesize has been met
         }
         embed.setFooter(
             `avaliable commands: "next", "cancel", any number between: 1 through ${rows.length}`
-        );
+        ); //tells the user which commands they can use
         return embed;
     }
 
     terminate(client?: Discord.Client) {
+        //terminates the session so its cleared from the RAM
         if (client) {
             clearTimeout(this.timeout);
             client.removeListener("message", this.listener);
@@ -276,6 +300,7 @@ export class Voter2 {
         client: Discord.Client,
         restart?: boolean
     ) {
+        //restarts the session and clears the old one form the RAM
         clearTimeout(this.timeout);
         client.removeListener("message", this.listener);
         this.counter = 0;
