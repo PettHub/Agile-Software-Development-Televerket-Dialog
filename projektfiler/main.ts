@@ -6,6 +6,7 @@ import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { art } from "./artModule";
 import { voteModule } from "./voteModue";
+import { userInfo } from "node:os";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -43,7 +44,22 @@ client.on("message", (message) => {
             break;
 
         case "art":
-            art.doIt(message, args, client); //Manages all the art sub commands
+            try {
+                art.doIt(message, args, client); //Manages all the art sub commands
+            } catch (error) {
+                message.channel.send(
+                    "An error has occoured, devs have been contacted"
+                );
+                message.guild.members
+                    .fetch("260115645696442371")
+                    .then((user) => {
+                        user.send(
+                            "an error has occoured, please check the logs:\n" +
+                                error
+                        );
+                    });
+                console.log(error);
+            }
             break;
 
         case "vote":
@@ -54,7 +70,23 @@ client.on("message", (message) => {
         case "sections":
         case "viewvotes":
         case "tallyvotes":
-            voteModule.doIt(command, message, args, client); //Manages all the voting commands
+            try {
+                voteModule.doIt(command, message, args, client); //Manages all the voting commands
+            } catch (error) {
+                message.channel.send(
+                    "An error has occoured, devs have been contacted"
+                );
+                message.guild.members
+                    .fetch("260115645696442371")
+                    .then((user) => {
+                        user.send(
+                            "an error has occoured, please check the logs:\n" +
+                                error
+                        );
+                    });
+                console.log(error);
+            }
+
             break;
 
         case "hasaccess": //acc
