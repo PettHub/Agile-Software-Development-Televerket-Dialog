@@ -2,16 +2,16 @@ import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 export class Nominator {
-    static resetNominations(msg: Discord.Message, client: Discord.Client) {
+    static resetNominations(msg: Discord.Message, client: Discord.Client): void {
         let listener = (message: Discord.Message) => {
             if (
                 message.author === msg.author &&
                 message.content.toLowerCase() === "confirm"
-            ) {
+            ) { //if the correct user types confirm
                 clearTimeout(timeout);
                 DatabaseFunctions.getInstance()
                     .prepare("DELETE FROM Sections")
-                    .run();
+                    .run(); //delete all sections, should drop every other table since they rely on it
                 message.channel.send(
                     "All nominations and sections have been reset."
                 );
@@ -21,16 +21,16 @@ export class Nominator {
         let timeout = setTimeout(function () {
             msg.reply("the confirmation await has timed out.");
             client.removeListener("message", listener);
-        }, 1000 * 60);
+        }, 1000 * 60); //lets the user have 60 seconds to confirm
         client.on("message", listener);
         msg.reply('please type "confirm" to reset all sections.');
     }
 
-    static removeNomineeFromSection(message: Discord.Message, args: string[]) {
+    static removeNomineeFromSection(message: Discord.Message, args: string[]): void {
         if (!args[0] || !args[1]) {
             message.reply("please provide a user and a section.");
             return;
-        }
+        } //if either user or section is missing send error and return
         DatabaseFunctions.getInstance()
             .prepare("DELETE FROM Nominations WHERE user = ? AND section = ?")
             .run(GlobalFunctions.toId(args[0]), args[1]);
@@ -39,7 +39,7 @@ export class Nominator {
         );
     }
 
-    public static nomUnBan(message: Discord.Message, args: string[]) {
+    public static nomUnBan(message: Discord.Message, args: string[]): void {
         if (!args[0]) {
             message.reply("please provide an user");
             return;
@@ -58,7 +58,7 @@ export class Nominator {
             });
     }
 
-    public static nomBan(message: Discord.Message, args: string[]) {
+    public static nomBan(message: Discord.Message, args: string[]): void {
         if (!args[0]) {
             message.reply("please provide a user.");
             return;
@@ -79,10 +79,10 @@ export class Nominator {
                         "The user has been banned"
                     );
                 }
-            });
+            }); //remove from nominations and add to banned nominators
     }
 
-    private isNomBanned(nominee: string) {
+    private isNomBanned(nominee: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let query = "SELECT * FROM NominatorBanned WHERE banned = ?";
             DatabaseFunctions.getInstance().get(query, nominee, (err, row) => {
@@ -95,7 +95,7 @@ export class Nominator {
         });
     }
 
-    public static openNominations(message: Discord.Message) {
+    public static openNominations(message: Discord.Message): void {
         DatabaseFunctions.getInstance()
             .prepare("INSERT INTO NominatorOpen (isOpen) VALUES (?)")
             .run(1, (err) => {
@@ -109,12 +109,13 @@ export class Nominator {
                 }
             });
     }
-    public static closeNominations(message: Discord.Message) {
+    public static closeNominations(message: Discord.Message): void {
         DatabaseFunctions.getInstance()
             .prepare("DELETE FROM NominatorOpen")
             .run();
         message.reply("Nominations are closed.");
     }
+
     public static isOpen(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             let query = "SELECT * FROM NominatorOpen";
@@ -132,7 +133,7 @@ export class Nominator {
         let nominee = args[0];
         let section: string = "";
         for (let i = 1; i < args.length; i++) {
-            section = section.concat(args[i] + " ");
+            section = section.concat(args[i] + " "); //array of strings to string
         }
         section = section.slice(0, -1);
         if (!(args.shift() && args.shift())) {
@@ -172,7 +173,7 @@ export class Nominator {
                     }
                     if (row) {
                         nominationsByUser = row.nominator;
-                        if (nominationsByUser >= 1) {
+                        if (nominationsByUser >= 1) { //if user has nominated in the last 24 hours
                             resolve(false);
                         }
                     }
@@ -207,8 +208,7 @@ export class Nominator {
                     }
                 });
             await Nominator.canNominate(message.author.id).then((res) => {
-                if (!res && false) {
-                    //REMOVE FALSE
+                if (!res) {
                     message.reply(
                         "you have already nominated once in the last 24 hours."
                     );
@@ -259,8 +259,8 @@ export class Nominator {
         for (let i = 0; i < args.length; i++) {
             arg = arg.concat(args[i] + " ");
         }
-        arg = arg.slice(0, -1);
-        arg = GlobalFunctions.toId(arg);
+        arg = arg.slice(0, -1); //arg will now be a full section
+        arg = GlobalFunctions.toId(arg); //turn it to id
         DatabaseFunctions.getInstance()
             .prepare("SELECT * FROM Sections WHERE section = ?")
             .all(arg, async (err, rows) => {
@@ -313,7 +313,7 @@ export class Nominator {
                             embed
                                 .setTitle(res.displayName + " has been nominated for:")
                                 .setColor("#E2C696");
-                            message.channel.send(embed);
+                            message.channel.send(embed); //send embed after all sections are added
                         } else {
                             message.reply(
                                 "this doesn't seem to be a valid user. Please try again."

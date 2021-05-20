@@ -5,7 +5,7 @@ export class Sections {
     public static viewSections(message: Discord.Message): void {
         let db = DatabaseFunctions.getInstance();
         let query = "SELECT * FROM Sections";
-        db.all(query, (err, rows) => {
+        db.all(query, (err, rows) => { //get all sections
             if (err) {
                 console.log(err)
                 return;
@@ -14,7 +14,7 @@ export class Sections {
                 let message2 = new Discord.MessageEmbed();
                 message2.setTitle("Current Sections").setColor("#D3A25A");
                 rows.forEach((row) => {
-                    message2.addField(row.section, "_", false);
+                    message2.addField(row.section, "_", false); //"_" is needed due to discord api trash
                 });
                 message.reply(message2);
             } else {

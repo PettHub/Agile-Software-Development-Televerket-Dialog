@@ -18,26 +18,26 @@ export class VoteHandeler {
 
     public doIt(message: Discord.Message, args, client): void {
         if (!args[0]) {
-            message.channel.send("Usage !newvote [section]");
+            message.channel.send("Usage !newvote [section]"); //if newvote is called without section
             return;
         }
         if (this.users.get(message.author.id)) {
             if (
-                Date.now() - this.users.get(message.author.id).date.getTime() >
+                Date.now() - this.users.get(message.author.id).date.getTime() > //if you haven't called this in the last 30 seconds
                 1000 * 30
             ) {
                 this.users
                     .get(message.author.id)
                     .vote.restart(message, args, client);
-                this.users.get(message.author.id).date = new Date(Date.now());
+                this.users.get(message.author.id).date = new Date(Date.now()); //restart and update timestamp
             } else {
                 message.channel.send(
                     `you need to wait ${30 -
                     (Date.now() -
                         this.users.get(message.author.id).date.getTime()) /
                     1000
-                    } secounds to use this command again`
-                );
+                    } seconds to use this command again`
+                ); //wait remaining seconds of the 30 you have on you to vote
             }
         } else {
             this.users.set(message.author.id, {
