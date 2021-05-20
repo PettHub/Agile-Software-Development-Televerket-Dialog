@@ -94,39 +94,6 @@ export class HelpCommand {
     message.channel.send(embed);
     }
 
-    // Base commands
-    // ping - alla
-    // setmod [role] - owner
-    // unmod [role] - owner
-    // setowner [role] - guild owner
-    
-    // Art commands
-    // art...
-    //   apply - alla
-    //   accept [user] - mod
-    //   deny [user] [reason] - mod
-    //   remove [user] [reason] - mod
-    //   setchannel [channel] - owner
-    //   setrole [role] - owner
-    
-    // Vote commands
-    // vote [section] - alla
-    // nominate [user] [section] - alla
-    // sections - alla
-    // viewvotes [user] - mod
-    // tallyvotes [?section] - mod
-    // nom/nominate...
-    //   [user] [section] - alla
-    //   remove [user] [section] - mod
-    //   ban [user] - mod
-    //   unban [user] - mod
-    //   open - owner
-    //   close - owner
-    //   reset - owner
-    // section
-    //   add [section],[section2]... - mod
-    //   remove [section] - mod
-
     private static messageMod(message){
         let embed = new Discord.MessageEmbed();
         embed.addField('Available general commands:', '`!ping`: Trigger a pong from bot, to show it is online. \n`!setmod [role]`: Makes a role moderator. \n`!unmod [role]`: Removes mod rights from a role.', true);
