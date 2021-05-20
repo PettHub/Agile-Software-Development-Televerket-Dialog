@@ -6,7 +6,6 @@ import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { art } from "./artModule";
 import { voteModule } from "./voteModue";
-import { userInfo } from "node:os";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -64,7 +63,7 @@ client.on("message", (message) => {
 
         case "vote":
         case "nominations":
-        case "nominte":
+        case "nominate":
         case "nom":
         case "section":
         case "sections":

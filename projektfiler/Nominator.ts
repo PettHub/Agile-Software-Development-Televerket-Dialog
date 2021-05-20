@@ -2,12 +2,16 @@ import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 export class Nominator {
-    static resetNominations(msg: Discord.Message, client: Discord.Client): void {
+    static resetNominations(
+        msg: Discord.Message,
+        client: Discord.Client
+    ): void {
         let listener = (message: Discord.Message) => {
             if (
                 message.author === msg.author &&
                 message.content.toLowerCase() === "confirm"
-            ) { //if the correct user types confirm
+            ) {
+                //if the correct user types confirm
                 clearTimeout(timeout);
                 DatabaseFunctions.getInstance()
                     .prepare("DELETE FROM Sections")
@@ -26,17 +30,23 @@ export class Nominator {
         msg.reply('please type "confirm" to reset all sections.');
     }
 
-    static removeNomineeFromSection(message: Discord.Message, args: string[]): void {
+    static removeNomineeFromSection(
+        message: Discord.Message,
+        args: string[]
+    ): void {
         if (!args[0] || !args[1]) {
             message.reply("please provide a user and a section.");
             return;
         } //if either user or section is missing send error and return
+        let section: string = "";
+        for (let i = 1; i < args.length; i++) {
+            section = section.concat(args[i] + " "); //turns section into a string
+        }
+        section = section.slice(0, -1);
         DatabaseFunctions.getInstance()
             .prepare("DELETE FROM Nominations WHERE user = ? AND section = ?")
-            .run(GlobalFunctions.toId(args[0]), args[1]);
-        message.reply(
-            args[0] + " has been removed from section: " + args[1]
-        );
+            .run(GlobalFunctions.toId(args[0]), section);
+        message.reply(args[0] + " has been removed from section: " + section);
     }
 
     public static nomUnBan(message: Discord.Message, args: string[]): void {
@@ -48,13 +58,9 @@ export class Nominator {
             .prepare("DELETE FROM NominatorBanned WHERE banned=?")
             .run(GlobalFunctions.toId(args[0]), (err) => {
                 if (err) {
-
                 } else {
-                    message.reply(
-                        "The user has been unbanned"
-                    );
+                    message.reply("The user has been unbanned");
                 }
-
             });
     }
 
@@ -75,9 +81,7 @@ export class Nominator {
                         "an error occurred, user might already be banned."
                     );
                 } else {
-                    message.reply(
-                        "The user has been banned"
-                    );
+                    message.reply("The user has been banned");
                 }
             }); //remove from nominations and add to banned nominators
     }
@@ -137,7 +141,9 @@ export class Nominator {
         }
         section = section.slice(0, -1);
         if (!(args.shift() && args.shift())) {
-            message.reply("please use correct input values, !nominations [section]/[userId]");
+            message.reply(
+                "please use correct input values, !nominations [section]/[userId]"
+            );
             return;
         }
         nominee = GlobalFunctions.toId(nominee);
@@ -158,9 +164,10 @@ export class Nominator {
         });
     }
 
-    private static canNominate(nominator: string): Promise<boolean> {
+    private static canNominate(message: Discord.Message): Promise<boolean> {
+        let nominator = message.author.id;
         let queryNominations =
-            "SELECT COUNT(nominator) as nominator FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND nominator == ?) GROUP BY nominator"; //querynominations contains the number of nominations made the past 24h
+            "SELECT COUNT(nominator) as nominator, (strftime('%s',min(stamp))) as stamp FROM Nominations WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND nominator == ?) GROUP BY nominator"; //querynominations contains the number of nominations made the past 24h
         return new Promise((resolve, reject) => {
             let nominationsByUser = 0;
             DatabaseFunctions.getInstance().get(
@@ -173,7 +180,16 @@ export class Nominator {
                     }
                     if (row) {
                         nominationsByUser = row.nominator;
-                        if (nominationsByUser >= 1) { //if user has nominated in the last 24 hours
+                        if (nominationsByUser >= 1) {
+                            //if user has nominated in the last 24 hours
+                            message.reply(
+                                `you have already nominated once in the past 24 hours, you can nominate again: ${new Date(
+                                    Date.now() +
+                                        1000 *
+                                            (24 * 60 * 60 -
+                                                (Date.now() / 1000 - row.stamp))
+                                ).toString()}`
+                            );
                             resolve(false);
                         }
                     }
@@ -201,17 +217,13 @@ export class Nominator {
                         return;
                     }
                     if (res === undefined) {
-                        message.reply("section does not exist. Use !sections to see available sections."); //section has not been created or at least does not exist in sectionlist
                         resolve(false);
                         done = true;
                         return;
                     }
                 });
-            await Nominator.canNominate(message.author.id).then((res) => {
-                if (!res) {
-                    message.reply(
-                        "you have already nominated once in the last 24 hours."
-                    );
+            await Nominator.canNominate(message).then((res) => {
+                if (!res && false) {
                     resolve(false);
                     done = true;
                 }
@@ -220,16 +232,16 @@ export class Nominator {
             await message.guild.members.fetch(user).catch((e) => {
                 //Catches errors that discord js may throw so the bot wont die
                 if (done) return;
-                message.reply("user is not in server. Please try again with a correct name or ID.");
+                message.reply(
+                    "user is not in server. Please try again with a correct name or ID."
+                );
                 resolve(false);
                 done = true;
             });
 
             await Nominator.getIfUserInSection(section, user).then((res) => {
                 if (!res && !done) {
-                    message.reply(
-                        "this user has already been nominated"
-                    );
+                    message.reply("this user has already been nominated");
                     return;
                 } else if (!done) {
                     returnValue = true;
@@ -302,16 +314,14 @@ export class Nominator {
                 }
                 if (rows[0]) {
                     let embed = new Discord.MessageEmbed();
-                    await Nominator.forEachRowCandidate(
-                        rows,
-                        message,
-                        embed
-                    );
+                    await Nominator.forEachRowCandidate(rows, message, embed);
 
                     await message.guild.members.fetch(user).then((res) => {
                         if (res) {
                             embed
-                                .setTitle(res.displayName + " has been nominated for:")
+                                .setTitle(
+                                    res.displayName + " has been nominated for:"
+                                )
                                 .setColor("#E2C696");
                             message.channel.send(embed); //send embed after all sections are added
                         } else {
@@ -321,7 +331,9 @@ export class Nominator {
                         }
                     });
                 } else {
-                    message.reply("this user hasn't been nominated for any section.");
+                    message.reply(
+                        "this user hasn't been nominated for any section."
+                    );
                     return;
                 }
             }
@@ -341,7 +353,9 @@ export class Nominator {
                         .fetch(element.user)
                         .then((res) => {
                             embed
-                                .setTitle(res.displayName + " has been nominated for:")
+                                .setTitle(
+                                    res.displayName + " has been nominated for:"
+                                )
                                 .setColor("#E2C696");
                         });
 

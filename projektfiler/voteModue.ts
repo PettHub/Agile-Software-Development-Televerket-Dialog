@@ -21,7 +21,7 @@ export class voteModule {
                 });
                 break;
 
-            case "nominte":
+            case "nominate":
                 Nominator.isOpen().then((res) => {
                     res
                         ? new Nominator().doIt(args, message)
@@ -69,7 +69,7 @@ export class voteModule {
             message.channel.send("command lista för nom");
             return;
         }
-        const command = args.shift().toLowerCase();
+        const command = args[0].toLowerCase();
         switch (command) {
             case "open": //vote
                 TestAccess.doIt(message, "owner").then((res) => {
@@ -88,21 +88,24 @@ export class voteModule {
             case "ban": //vote
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
-                        ? Nominator.nomBan(message, args)
+                        ? Nominator.nomBan(message, args.slice(1))
                         : message.channel.send("Access level mod needed");
                 });
                 break;
             case "unban": //vote
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
-                        ? Nominator.nomUnBan(message, args)
+                        ? Nominator.nomUnBan(message, args.slice(1))
                         : message.channel.send("Access level mod needed");
                 });
                 break;
             case "remove": //user, section vote
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
-                        ? Nominator.removeNomineeFromSection(message, args)
+                        ? Nominator.removeNomineeFromSection(
+                              message,
+                              args.slice(1)
+                          )
                         : message.channel.send("Access level mod needed");
                 });
                 break;
@@ -118,10 +121,7 @@ export class voteModule {
                 //vote
                 Nominator.isOpen().then((res) => {
                     res
-                        ? Nominator.displayCandidates(
-                              [command, args[0]],
-                              message
-                          )
+                        ? Nominator.displayCandidates(args, message)
                         : message.channel.send(
                               "Nominations are currently closed"
                           );
@@ -134,14 +134,14 @@ export class voteModule {
     private static section(message: Discord.Message, args: string[]) {
         const command = args.shift().toLowerCase();
         switch (command) {
-            case "section add": //vote
+            case "add": //vote
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Sections.addsection(message, args)
                         : message.channel.send("Access level mod needed");
                 });
                 break;
-            case "section remove": //vote
+            case "remove": //vote
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Sections.removeSection(message, args)
