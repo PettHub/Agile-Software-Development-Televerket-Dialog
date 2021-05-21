@@ -1,7 +1,7 @@
 import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
-import { HelpCommand} from "./HelpCommand";
+import { HelpCommand } from "./HelpCommand";
 import { TestAccess } from "./TestAccess";
 export class Nominator {
     static resetNominations(
@@ -138,15 +138,15 @@ export class Nominator {
     public async doIt(args: string[], message: Discord.Message): Promise<void> {
         let section: string = "";
         if (!args[0]) {
-            if(await TestAccess.doIt(message, "owner")){
+            if (await TestAccess.doIt(message, "owner")) {
                 HelpCommand.doItVote(message, "voteowner");
                 return;
             }
-            if(await TestAccess.doIt(message, "mod")){
+            if (await TestAccess.doIt(message, "mod")) {
                 HelpCommand.doItVote(message, "votemod");
                 return;
             }
-            else{
+            else {
                 HelpCommand.doItVote(message, "voteuser");
             }
             return;

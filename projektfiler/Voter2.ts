@@ -30,18 +30,18 @@ export class Voter2 {
                 if (err) {
                     //catches any errors the database might throw
                     console.log(err);
-                    message.channel.send("An error has occoured");
+                    message.reply("An error has occoured");
                     this.terminate();
                 }
                 if (rows.length === 0 || rows === undefined) {
                     //check if there are any nomenees for the section
-                    message.channel.send(
+                    message.reply(
                         "You can only vote for sections that have nominated members and exists"
                     );
                     this.terminate();
                 } else if (rows.length === 1) {
                     //checks so that there are at least 2 nomenees
-                    message.channel.send(
+                    message.reply(
                         "There must at least be at least 2 nomenees for the section to vote"
                     );
                     this.terminate();
@@ -53,7 +53,7 @@ export class Voter2 {
                         "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
                     );
                     if (!restart)
-                        message.channel.send(
+                        message.reply(
                             //checks if the session was restarted and tells the user to check their dms to start a new session
                             "Please check your dms to start voting!"
                         );
@@ -61,20 +61,19 @@ export class Voter2 {
                         //checks if the user is out of votes
                         message.author
                             .send(
-                                `you are out of votes ${
-                                    Voter.timedOutUsers.get(message.author.id)
-                                        ? "you can vote again in " +
-                                          new Date(
-                                              Voter.timedOutUsers.get(
-                                                  message.author.id
-                                              )
-                                          ).toString()
-                                        : ""
+                                `you are out of votes ${Voter.timedOutUsers.get(message.author.id)
+                                    ? "you can vote again in " +
+                                    new Date(
+                                        Voter.timedOutUsers.get(
+                                            message.author.id
+                                        )
+                                    ).toString()
+                                    : ""
                                 }`
                             ) //tells the user that they are out of votes and when they can vote again
                             .catch((e) => {
                                 //catches any errors that the bot can throw in case it has been blocked by the user
-                                message.channel.send(
+                                message.reply(
                                     "Looks like I am unable to dm you"
                                 );
                             });
@@ -163,10 +162,9 @@ export class Voter2 {
                                         await Voter.vote(
                                             message,
                                             [
-                                                `${
-                                                    vote !== undefined
-                                                        ? rows[vote].user
-                                                        : id
+                                                `${vote !== undefined
+                                                    ? rows[vote].user
+                                                    : id
                                                 }`,
                                                 `${args[0]}`,
                                             ],
@@ -188,8 +186,7 @@ export class Voter2 {
                                     if (confirm) {
                                         //if the voter is about to vote this will cancel the vote
                                         message.author.send(
-                                            `Yor vote for ${
-                                                vote + 1
+                                            `Yor vote for ${vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} is cancelled`
@@ -231,8 +228,7 @@ export class Voter2 {
                                     } else {
                                         confirm = true; //makes it possible to respond yes
                                         message.author.send(
-                                            `You are about to vote for ${
-                                                vote + 1
+                                            `You are about to vote for ${vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} \nType "yes" to confirm or "no" to cancel the vote`
@@ -266,8 +262,7 @@ export class Voter2 {
         embed
             .setTitle("Members nominated for: " + section)
             .setDescription(
-                `you have ${3 - votes} votes left, page ${
-                    pages - (pages - this.counter / this.pagesize) + 1
+                `you have ${3 - votes} votes left, page ${pages - (pages - this.counter / this.pagesize) + 1
                 } of ${pages}`
             )
             .setColor("#6691BA");

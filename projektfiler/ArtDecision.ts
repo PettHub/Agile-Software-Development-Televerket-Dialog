@@ -4,7 +4,7 @@ import { DatabaseFunctions } from "./DatabaseFunctions";
 import { GlobalFunctions } from "./GlobalFunctions";
 
 export class ArtDecision {
-    constructor() {}
+    constructor() { }
 
     doIt(message: Discord.Message, args: any[], sub: string): void {
         let tmp = args.shift();
@@ -92,7 +92,7 @@ export class ArtDecision {
     ) {
         user.send(
             "Your art application has been rejected for the following reason:\n" +
-                reason
+            reason
         );
         message.channel.send(
             "User: " + user + " has been denied with the reason: " + reason
@@ -122,8 +122,8 @@ export class ArtDecision {
                 );
                 msg.channel.send(
                     "User: " +
-                        user.user.tag +
-                        " has been approved and given the Artist role."
+                    user.user.tag +
+                    " has been approved and given the Artist role."
                 );
             }
         });

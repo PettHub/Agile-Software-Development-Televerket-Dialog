@@ -4,7 +4,7 @@ import { Nominator } from "./Nominator";
 import { TestAccess } from "./TestAccess";
 import { Voter } from "./Voter";
 import { Sections } from "./Sections";
-import { HelpCommand} from "./HelpCommand";
+import { HelpCommand } from "./HelpCommand";
 
 export class VoteModule {
     static doIt(
@@ -67,15 +67,15 @@ export class VoteModule {
         client: Discord.Client
     ) {
         if (!args[0]) {
-            if(await TestAccess.doIt(message, "owner")){
+            if (await TestAccess.doIt(message, "owner")) {
                 HelpCommand.doItVote(message, "voteowner");
                 return;
             }
-            if(await TestAccess.doIt(message, "mod")){
+            if (await TestAccess.doIt(message, "mod")) {
                 HelpCommand.doItVote(message, "votemod");
                 return;
             }
-            else{
+            else {
                 HelpCommand.doItVote(message, "voteuser");
             }
             return;
