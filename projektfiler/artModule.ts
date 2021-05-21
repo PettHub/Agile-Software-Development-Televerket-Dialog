@@ -21,7 +21,6 @@ export class art {
                 break;
 
             case "setchannel": //art
-            new setChannel().doIt(message, args[0], client);
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new setChannel().doIt(message, args[0], client)
@@ -30,7 +29,6 @@ export class art {
                 break;
 
             case "deny": //art
-            new ArtDecision().doIt(message, args, "deny");
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "deny")
@@ -38,8 +36,7 @@ export class art {
                 });
                 break;
 
-            case "accept": //art
-            new ArtDecision().doIt(message, args, "accept");    
+            case "accept": //art  
             TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "accept")
@@ -55,8 +52,7 @@ export class art {
                 });
                 break;
 
-            case "setartist": //art
-            new ArtDecision().setArt(message, args.shift());    
+            case "setartist": //art 
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new ArtDecision().setArt(message, args.shift())
