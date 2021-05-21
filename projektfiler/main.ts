@@ -6,6 +6,7 @@ import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { art } from "./artModule";
 import { voteModule } from "./voteModue";
+import { ErrorLog } from "./ErrorLog";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -46,18 +47,7 @@ client.on("message", (message) => {
             try {
                 art.doIt(message, args, client); //Manages all the art sub commands
             } catch (error) {
-                message.channel.send(
-                    "An error has occoured, devs have been contacted"
-                );
-                message.guild.members
-                    .fetch("260115645696442371")
-                    .then((user) => {
-                        user.send(
-                            "An error has occoured, please check the logs:\n" +
-                                error
-                        );
-                    });
-                console.log(error);
+                ErrorLog.doIt(message, error);
             }
             break;
 
@@ -72,18 +62,7 @@ client.on("message", (message) => {
             try {
                 voteModule.doIt(command, message, args, client); //Manages all the voting commands
             } catch (error) {
-                message.channel.send(
-                    "An error has occoured, devs have been contacted"
-                );
-                message.guild.members
-                    .fetch("260115645696442371")
-                    .then((user) => {
-                        user.send(
-                            "an error has occoured, please check the logs:\n" +
-                                error
-                        );
-                    });
-                console.log(error);
+                ErrorLog.doIt(message, error);
             }
 
             break;
