@@ -16,9 +16,9 @@ export class VoteHandeler {
         return this.votehandler;
     }
 
-    public doIt(message: Discord.Message, args, client): void {
+    public doIt(message: Discord.Message, args: any[], client: Discord.Client): void {
         if (!args[0]) {
-            message.channel.send("Usage !newvote [section]"); //if newvote is called without section
+            message.channel.send("Usage !vote [section]"); //if vote is called without section
             return;
         }
         if (this.users.get(message.author.id)) {

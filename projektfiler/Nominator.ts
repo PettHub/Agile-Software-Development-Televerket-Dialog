@@ -185,9 +185,9 @@ export class Nominator {
                             message.reply(
                                 `you have already nominated once in the past 24 hours, you can nominate again: ${new Date(
                                     Date.now() +
-                                        1000 *
-                                            (24 * 60 * 60 -
-                                                (Date.now() / 1000 - row.stamp))
+                                    1000 *
+                                    (24 * 60 * 60 -
+                                        (Date.now() / 1000 - row.stamp))
                                 ).toString()}`
                             );
                             resolve(false);
@@ -223,7 +223,7 @@ export class Nominator {
                     }
                 });
             await Nominator.canNominate(message).then((res) => {
-                if (!res && false) {
+                if (!res) {
                     resolve(false);
                     done = true;
                 }

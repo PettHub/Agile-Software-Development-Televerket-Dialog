@@ -4,8 +4,8 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
-import { art } from "./artModule";
-import { voteModule } from "./voteModue";
+import { Art } from "./ArtModule";
+import { VoteModule } from "./VoteModule";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -44,7 +44,7 @@ client.on("message", (message) => {
 
         case "art":
             try {
-                art.doIt(message, args, client); //Manages all the art sub commands
+                Art.doIt(message, args, client); //Manages all the art sub commands
             } catch (error) {
                 message.channel.send(
                     "An error has occoured, devs have been contacted"
@@ -54,7 +54,7 @@ client.on("message", (message) => {
                     .then((user) => {
                         user.send(
                             "An error has occoured, please check the logs:\n" +
-                                error
+                            error
                         );
                     });
                 console.log(error);
@@ -70,7 +70,7 @@ client.on("message", (message) => {
         case "viewvotes":
         case "tallyvotes":
             try {
-                voteModule.doIt(command, message, args, client); //Manages all the voting commands
+                VoteModule.doIt(command, message, args, client); //Manages all the voting commands
             } catch (error) {
                 message.channel.send(
                     "An error has occoured, devs have been contacted"
@@ -80,7 +80,7 @@ client.on("message", (message) => {
                     .then((user) => {
                         user.send(
                             "an error has occoured, please check the logs:\n" +
-                                error
+                            error
                         );
                     });
                 console.log(error);

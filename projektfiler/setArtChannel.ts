@@ -3,7 +3,7 @@ import Discord from 'discord.js';
 import { TextChannel } from 'discord.js';
 import { GlobalFunctions } from './GlobalFunctions';
 
-export class setChannel {
+export class SetChannel {
 
     async doIt(message: Discord.Message, newChannel: string, client: Discord.Client): Promise<void> {
 

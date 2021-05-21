@@ -82,7 +82,7 @@ export class Voter2 {
                     }
                     let voter = new Discord.MessageEmbed();
                     voter
-                        .setTitle(`You have ${3 - votes[1]} vote to spend`)
+                        .setTitle(`You have ${3 - votes[1]} vote to spend`).setColor("#6691BA")
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name`
                         )
@@ -100,7 +100,7 @@ export class Voter2 {
                         async (embed) => {
                             await message.author.send(voter).catch((e) => {
                                 message.reply(
-                                //catches an error if the bot is blocked
+                                    //catches an error if the bot is blocked
                                     "Looks like I am unable to dm you"
                                 );
                                 blocked = true;

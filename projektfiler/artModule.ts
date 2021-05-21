@@ -1,11 +1,11 @@
 import Discord from "discord.js";
-import { setChannel } from "./setArtChannel";
+import { SetChannel } from "./SetArtChannel";
 import { TestAccess } from "./TestAccess";
 import { ApplyHandeler } from "./ApplyHandeler";
 import { ArtDecision } from "./ArtDecision";
 import { RemoveArtist } from "./RemoveArtist";
 
-export class art {
+export class Art {
     static applyHandler = new ApplyHandeler();
 
     static doIt(
@@ -21,16 +21,16 @@ export class art {
                 break;
 
             case "setchannel": //art
-            new setChannel().doIt(message, args[0], client);
+                new SetChannel().doIt(message, args[0], client);
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
-                        ? new setChannel().doIt(message, args[0], client)
+                        ? new SetChannel().doIt(message, args[0], client)
                         : message.channel.send("Access level owner needed");
                 });
                 break;
 
             case "deny": //art
-            new ArtDecision().doIt(message, args, "deny");
+                new ArtDecision().doIt(message, args, "deny");
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "deny")
@@ -39,8 +39,8 @@ export class art {
                 break;
 
             case "accept": //art
-            new ArtDecision().doIt(message, args, "accept");    
-            TestAccess.doIt(message, "mod").then((res) => {
+                new ArtDecision().doIt(message, args, "accept");
+                TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "accept")
                         : message.channel.send("Access level mod needed");
@@ -56,7 +56,7 @@ export class art {
                 break;
 
             case "setartist": //art
-            new ArtDecision().setArt(message, args.shift());    
+                new ArtDecision().setArt(message, args.shift());
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new ArtDecision().setArt(message, args.shift())
@@ -69,10 +69,10 @@ export class art {
                     res
                         ? message.channel.send("TODO all art commands")
                         : TestAccess.doIt(message, "mod").then((res) => {
-                              res
-                                  ? message.channel.send("TODO mod commands")
-                                  : message.channel.send("Usage !art apply");
-                          });
+                            res
+                                ? message.channel.send("TODO mod commands")
+                                : message.channel.send("Usage !art apply");
+                        });
                 });
                 break;
         }
