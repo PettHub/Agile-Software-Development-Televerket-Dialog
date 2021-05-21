@@ -93,7 +93,7 @@ export class ArtDecision {
                 let role = row.role;
                 user.roles.add(role);
                 user.send('Your art application has been approved and you have been granted the Artist role.');
-                msg.channel.send("User: " + user + " has been approved and given the Artist role.");
+                msg.channel.send("User: " + user.user.tag + " has been approved and given the Artist role.");
 
             }
         })
