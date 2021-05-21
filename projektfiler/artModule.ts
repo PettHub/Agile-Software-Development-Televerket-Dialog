@@ -22,29 +22,29 @@ export class art {
 
             case "setchannel": //art
             new setChannel().doIt(message, args[0], client);
-                /*TestAccess.doIt(message, "owner").then((res) => {
+                TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new setChannel().doIt(message, args[0], client)
                         : message.channel.send("Access level owner needed");
-                });*/
+                });
                 break;
 
             case "deny": //art
             new ArtDecision().doIt(message, args, "deny");
-                /*TestAccess.doIt(message, "mod").then((res) => {
+                TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "deny")
                         : message.channel.send("Access level mod needed");
-                });*/
+                });
                 break;
 
             case "accept": //art
             new ArtDecision().doIt(message, args, "accept");    
-            /*TestAccess.doIt(message, "mod").then((res) => {
+            TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "accept")
                         : message.channel.send("Access level mod needed");
-                });*/
+                });
                 break;
 
             case "remove": //art
@@ -57,11 +57,11 @@ export class art {
 
             case "setartist": //art
             new ArtDecision().setArt(message, args.shift());    
-                /*TestAccess.doIt(message, "owner").then((res) => {
+                TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new ArtDecision().setArt(message, args.shift())
                         : message.channel.send("Access level mod needed");
-                });*/
+                });
                 break;
 
             default:
