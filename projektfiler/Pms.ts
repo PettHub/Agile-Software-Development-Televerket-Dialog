@@ -98,7 +98,7 @@ export class PMHandler {
                     }
                 };
                 author.send(
-                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. You may send the images/links in separate messages. If you send more than three images/links the first three will be registered."
+                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. DO NOT write any text or links in messages with attachments. You may send the images/links in separate messages. If you send more than three images/links the first three will be registered."
                 ).catch(err =>
                     firstmessage.reply(
                         "I am unable to DM you, please unblock me and try again."
