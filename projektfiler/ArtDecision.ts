@@ -15,18 +15,25 @@ export class ArtDecision {
             );
             return;
         }
-        if (tmp === undefined) { //Checks if a user has been given
-            message.reply('you must provide a username/ID. Please try again with !art deny [user] [reason]');
+        if (tmp === undefined) {
+            //Checks if a user has been given
+            message.reply(
+                "you must provide a username/ID. Please try again with !art deny [user] [reason]"
+            );
             return;
         }
-        message.guild.members.fetch(GlobalFunctions.toId(tmp)).catch(e => {
-            message.reply('invalid username/ID. Please try again with !art deny [user] [reason].'); //Catches errors that discord js may throw so the bot wont die
-        }).then((user) => {
-            user
-                ? this.switch(message, args, sub, user) //Runs the switch function if the user is a valid guild member
-                : console.log('error, invalid user provided.'); //Logs that a discord error has occored
-        });
-
+        message.guild.members
+            .fetch(GlobalFunctions.toId(tmp))
+            .catch((e) => {
+                message.reply(
+                    "invalid username/ID. Please try again with !art deny [user] [reason]."
+                ); //Catches errors that discord js may throw so the bot wont die
+            })
+            .then((user) => {
+                user
+                    ? this.switch(message, args, sub, user) //Runs the switch function if the user is a valid guild member
+                    : console.log("error, invalid user provided."); //Logs that a discord error has occored
+            });
     }
 
     //Determines what sub command has been sent
@@ -42,8 +49,11 @@ export class ArtDecision {
                 break;
             case "deny":
                 let reason: string = args[0];
-                if (reason === undefined) { //Makes sure there is a reason provided 
-                    message.reply('you must provide a reason. Please try again with !art deny [user] [reason]');
+                if (reason === undefined) {
+                    //Makes sure there is a reason provided
+                    message.reply(
+                        "you must provide a reason. Please try again with !art deny [user] [reason]"
+                    );
                     return;
                 }
                 while (args.shift() && args[0]) {
@@ -74,11 +84,19 @@ export class ArtDecision {
         }
     }
 
-    //Sends the 'artist' the reason they were rejected and a confirming message so the mods know that the command worked and logs it. 
-    private deny(user: Discord.GuildMember, reason: string, message: Discord.Message) {
-        user.send('Your art application has been rejected for the following reason:\n' + reason)
-        message.channel.send('User: ' + user + ' has been denied with the reason: ' + reason);
-
+    //Sends the 'artist' the reason they were rejected and a confirming message so the mods know that the command worked and logs it.
+    private deny(
+        user: Discord.GuildMember,
+        reason: string,
+        message: Discord.Message
+    ) {
+        user.send(
+            "Your art application has been rejected for the following reason:\n" +
+                reason
+        );
+        message.channel.send(
+            "User: " + user + " has been denied with the reason: " + reason
+        );
     }
 
     // adds the art role to the user who has been approved.
@@ -96,10 +114,17 @@ export class ArtDecision {
             }
             if (row) {
                 let role = row.role;
-                user.roles.add(role);
-                user.send('Your art application has been approved and you have been granted the Artist role.');
-                msg.channel.send("User: " + user.user.tag + " has been approved and given the Artist role.");
-
+                user.roles.add(role).catch((error) => {
+                    ErrorLog.doIt(msg, error);
+                });
+                user.send(
+                    "Your art application has been approved and you have been granted the Artist role."
+                );
+                msg.channel.send(
+                    "User: " +
+                        user.user.tag +
+                        " has been approved and given the Artist role."
+                );
             }
         });
     }
