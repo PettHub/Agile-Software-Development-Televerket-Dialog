@@ -1,6 +1,8 @@
 import Discord from "discord.js";
 import { GlobalFunctions } from "./GlobalFunctions";
 import { DatabaseFunctions } from "./DatabaseFunctions";
+import { HelpCommand} from "./HelpCommand";
+import { TestAccess } from "./TestAccess";
 export class Nominator {
     static resetNominations(
         msg: Discord.Message,
@@ -134,8 +136,23 @@ export class Nominator {
     }
 
     public async doIt(args: string[], message: Discord.Message): Promise<void> {
-        let nominee = args[0];
         let section: string = "";
+        if (!args[0]) {
+            if(await TestAccess.doIt(message, "owner")){
+                HelpCommand.doItVote(message, "voteowner");
+                return;
+            }
+            if(await TestAccess.doIt(message, "mod")){
+                HelpCommand.doItVote(message, "votemod");
+                return;
+            }
+            else{
+                HelpCommand.doItVote(message, "voteuser");
+            }
+            return;
+        }
+        console.log(args[0]);
+        let nominee = args[0];
         for (let i = 1; i < args.length; i++) {
             section = section.concat(args[i] + " "); //array of strings to string
         }
@@ -148,11 +165,11 @@ export class Nominator {
         }
         nominee = GlobalFunctions.toId(nominee);
         if (message.author.id.toString() === nominee) {
-            message.reply("cannot nominate yourself.");
+            message.reply("can not nominate yourself.");
             return;
         }
         if (await this.isNomBanned(nominee)) {
-            message.reply("cannot nominate this user.");
+            message.reply("can not nominate this user.");
             return;
         }
         this.nominate(nominee, section, message).then((res) => {

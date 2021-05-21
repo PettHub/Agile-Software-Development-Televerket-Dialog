@@ -6,6 +6,9 @@ import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { art } from "./artModule";
 import { voteModule } from "./voteModue";
+import { HelpCommand} from "./HelpCommand";
+
+//import { userInfo } from "node:os";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -61,6 +64,9 @@ client.on("message", (message) => {
             }
             break;
 
+        case "help":
+            HelpCommand.doIt(message);
+            break;
         case "vote":
         case "nominations":
         case "nominate":
@@ -104,6 +110,7 @@ client.on("message", (message) => {
         case "setowner": //acc
             TestAccess.setOwner(message, args.shift());
             break;
+        
 
         // case 'help':
         //     TestAccess.doIt(message, "owner").then((res) => {
