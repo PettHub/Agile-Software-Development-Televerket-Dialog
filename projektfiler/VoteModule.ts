@@ -4,6 +4,7 @@ import { Nominator } from "./Nominator";
 import { TestAccess } from "./TestAccess";
 import { Voter } from "./Voter";
 import { Sections } from "./Sections";
+import { HelpCommand} from "./HelpCommand";
 
 export class VoteModule {
     static doIt(
@@ -60,13 +61,23 @@ export class VoteModule {
         }
     }
 
-    private static nominations(
+    private static async nominations(
         message: Discord.Message,
         args: string[],
         client: Discord.Client
     ) {
         if (!args[0]) {
-            message.channel.send("command lista för nom");
+            if(await TestAccess.doIt(message, "owner")){
+                HelpCommand.doItVote(message, "voteowner");
+                return;
+            }
+            if(await TestAccess.doIt(message, "mod")){
+                HelpCommand.doItVote(message, "votemod");
+                return;
+            }
+            else{
+                HelpCommand.doItVote(message, "voteuser");
+            }
             return;
         }
         const command = args[0].toLowerCase();
@@ -110,7 +121,7 @@ export class VoteModule {
                 });
                 break;
             case "reset": //vote
-                TestAccess.doIt(message, "owner").then((res) => {
+                TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Nominator.resetNominations(message, client)
                         : message.channel.send("Access level mod needed");

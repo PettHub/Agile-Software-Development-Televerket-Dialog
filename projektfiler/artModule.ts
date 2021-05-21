@@ -4,6 +4,7 @@ import { TestAccess } from "./TestAccess";
 import { ApplyHandeler } from "./ApplyHandeler";
 import { ArtDecision } from "./ArtDecision";
 import { RemoveArtist } from "./RemoveArtist";
+import { HelpCommand} from "./HelpCommand";
 
 export class Art {
     static applyHandler = new ApplyHandeler();
@@ -13,7 +14,10 @@ export class Art {
         args: any[],
         client: Discord.Client
     ): void {
-        const command = args.shift().toLowerCase();
+        let command: string;
+        if (args.shift()){
+        command = args.shift().toLowerCase();
+    }
 
         switch (command) {
             case "apply": //art
@@ -65,16 +69,18 @@ export class Art {
                 break;
 
             default:
+                if (!command){
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
-                        ? message.channel.send("TODO all art commands")
+                        ? HelpCommand.doItArt(message, "artowner")
                         : TestAccess.doIt(message, "mod").then((res) => {
-                            res
-                                ? message.channel.send("TODO mod commands")
-                                : message.channel.send("Usage !art apply");
-                        });
+                              res
+                                  ? HelpCommand.doItArt(message, "artmod")
+                                  : HelpCommand.doItArt(message, "artuser");
+                          });
                 });
                 break;
+            }
         }
     }
 }
