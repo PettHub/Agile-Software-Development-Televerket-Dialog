@@ -6,7 +6,7 @@ import { Database } from "sqlite3";
 export class Voter {
     public static showVotes(message: Discord.Message, args: any[]) {
         if (!args[0]) {
-            message.channel.send(
+            message.reply(
                 "please use correct input values, !viewVotes [userId]"
             );
             return;
@@ -17,7 +17,7 @@ export class Voter {
         DatabaseFunctions.getInstance().all(query, votee, async (err, row) => {
             if (err) {
                 console.log(err);
-                message.channel.send("An error has occured");
+                message.reply("An error has occured");
                 return;
             }
             if (!(row === undefined)) {
@@ -46,7 +46,7 @@ export class Voter {
         dm?: boolean
     ): Promise<void> {
         if (!args[0]) {
-            message.channel.send(
+            message.reply(
                 "please use correct input values, !vote [userId] [section]"
             );
             return;

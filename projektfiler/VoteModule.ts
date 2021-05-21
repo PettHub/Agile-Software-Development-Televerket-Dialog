@@ -4,8 +4,9 @@ import { Nominator } from "./Nominator";
 import { TestAccess } from "./TestAccess";
 import { Voter } from "./Voter";
 import { Sections } from "./Sections";
+import { HelpCommand } from "./HelpCommand";
 
-export class voteModule {
+export class VoteModule {
     static doIt(
         command: string,
         message: Discord.Message,
@@ -26,8 +27,8 @@ export class voteModule {
                     res
                         ? new Nominator().doIt(args, message)
                         : message.channel.send(
-                              "Nominations are currently closed"
-                          );
+                            "Nominations are currently closed"
+                        );
                 });
                 break;
             case "nominations":
@@ -60,13 +61,23 @@ export class voteModule {
         }
     }
 
-    private static nominations(
+    private static async nominations(
         message: Discord.Message,
         args: string[],
         client: Discord.Client
     ) {
         if (!args[0]) {
-            message.channel.send("command lista för nom");
+            if (await TestAccess.doIt(message, "owner")) {
+                HelpCommand.doItVote(message, "voteowner");
+                return;
+            }
+            if (await TestAccess.doIt(message, "mod")) {
+                HelpCommand.doItVote(message, "votemod");
+                return;
+            }
+            else {
+                HelpCommand.doItVote(message, "voteuser");
+            }
             return;
         }
         const command = args[0].toLowerCase();
@@ -103,14 +114,14 @@ export class voteModule {
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Nominator.removeNomineeFromSection(
-                              message,
-                              args.slice(1)
-                          )
+                            message,
+                            args.slice(1)
+                        )
                         : message.channel.send("Access level mod needed");
                 });
                 break;
             case "reset": //vote
-                TestAccess.doIt(message, "owner").then((res) => {
+                TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Nominator.resetNominations(message, client)
                         : message.channel.send("Access level mod needed");
@@ -123,8 +134,8 @@ export class voteModule {
                     res
                         ? Nominator.displayCandidates(args, message)
                         : message.channel.send(
-                              "Nominations are currently closed"
-                          );
+                            "Nominations are currently closed"
+                        );
                 });
 
                 break;

@@ -6,7 +6,7 @@ import { GlobalFunctions } from "./GlobalFunctions";
 //Removes the artist role from a user
 export class RemoveArtist {
 
-    static nick: string;
+    private static nick: string;
 
     constructor() {
 

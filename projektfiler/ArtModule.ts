@@ -1,11 +1,12 @@
 import Discord from "discord.js";
-import { setChannel } from "./setArtChannel";
+import { SetChannel } from "./SetArtChannel";
 import { TestAccess } from "./TestAccess";
 import { ApplyHandeler } from "./ApplyHandeler";
 import { ArtDecision } from "./ArtDecision";
 import { RemoveArtist } from "./RemoveArtist";
+import { HelpCommand } from "./HelpCommand";
 
-export class art {
+export class Art {
     static applyHandler = new ApplyHandeler();
 
     static doIt(
@@ -13,7 +14,10 @@ export class art {
         args: any[],
         client: Discord.Client
     ): void {
-        const command = args.shift().toLowerCase();
+        let command: string;
+        if (args.shift()) {
+            command = args.shift().toLowerCase();
+        }
 
         switch (command) {
             case "apply": //art
@@ -23,7 +27,7 @@ export class art {
             case "setchannel": //art
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
-                        ? new setChannel().doIt(message, args[0], client)
+                        ? new SetChannel().doIt(message, args[0], client)
                         : message.channel.send("Access level owner needed");
                 });
                 break;
@@ -61,16 +65,18 @@ export class art {
                 break;
 
             default:
-                TestAccess.doIt(message, "owner").then((res) => {
-                    res
-                        ? message.channel.send("TODO all art commands")
-                        : TestAccess.doIt(message, "mod").then((res) => {
-                              res
-                                  ? message.channel.send("TODO mod commands")
-                                  : message.channel.send("Usage !art apply");
-                          });
-                });
-                break;
+                if (!command) {
+                    TestAccess.doIt(message, "owner").then((res) => {
+                        res
+                            ? HelpCommand.doItArt(message, "artowner")
+                            : TestAccess.doIt(message, "mod").then((res) => {
+                                res
+                                    ? HelpCommand.doItArt(message, "artmod")
+                                    : HelpCommand.doItArt(message, "artuser");
+                            });
+                    });
+                    break;
+                }
         }
     }
 }

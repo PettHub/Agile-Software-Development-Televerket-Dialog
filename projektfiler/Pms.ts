@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { setChannel } from "./setArtChannel";
+import { SetChannel } from "./SetArtChannel";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class PMHandler {
@@ -15,7 +15,7 @@ export class PMHandler {
         var regex = new RegExp(expression);
 
         let repostChannel;
-        setChannel.getValue().then(async (res) => {
+        SetChannel.getValue().then(async (res) => {
             repostChannel = client.channels.cache.get(res);
 
             if (repostChannel === undefined) {
@@ -41,11 +41,11 @@ export class PMHandler {
                         //checks that author is correct and that the message was sent in DM
                         console.log("message.content: " + message.content);
                         let messageContent = message.content.split(/\n| /gm); //messageContent is an array of message content separated by spaces or newlines
-                    messageContent.forEach(function (content) {
-                        
-                        console.log("messageContent: " + messageContent);
-                        console.log(numberOfImages);
-                            
+                        messageContent.forEach(function (content) {
+
+                            console.log("messageContent: " + messageContent);
+                            console.log(numberOfImages);
+
                             if (content.match(regex)) {
                                 //checks that content is a link, if so add to images-array
                                 numberOfImages--; //if attachment exists, decrament remaining

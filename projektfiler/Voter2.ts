@@ -30,18 +30,18 @@ export class Voter2 {
                 if (err) {
                     //catches any errors the database might throw
                     console.log(err);
-                    message.channel.send("An error has occoured");
+                    message.reply("An error has occoured");
                     this.terminate();
                 }
                 if (rows.length === 0 || rows === undefined) {
                     //check if there are any nomenees for the section
-                    message.channel.send(
+                    message.reply(
                         "You can only vote for sections that have nominated members and exists"
                     );
                     this.terminate();
                 } else if (rows.length === 1) {
                     //checks so that there are at least 2 nomenees
-                    message.channel.send(
+                    message.reply(
                         "There must at least be at least 2 nomenees for the section to vote"
                     );
                     this.terminate();
@@ -53,7 +53,7 @@ export class Voter2 {
                         "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
                     );
                     if (!restart)
-                        message.channel.send(
+                        message.reply(
                             //checks if the session was restarted and tells the user to check their dms to start a new session
                             "Please check your dms to start voting!"
                         );
@@ -73,7 +73,7 @@ export class Voter2 {
                             ) //tells the user that they are out of votes and when they can vote again
                             .catch((e) => {
                                 //catches any errors that the bot can throw in case it has been blocked by the user
-                                message.channel.send(
+                                message.reply(
                                     "Looks like I am unable to dm you"
                                 );
                             });
@@ -83,6 +83,7 @@ export class Voter2 {
                     let voter = new Discord.MessageEmbed();
                     voter
                         .setTitle(`You have ${3 - votes[1]} vote to spend`)
+                        .setColor("#6691BA")
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name`
                         )
@@ -95,17 +96,20 @@ export class Voter2 {
                             "reply with cancel to cancel the voting session"
                         ); //prepairs an embed
                     let blocked: boolean = false;
+                    await message.author
+                        .send("Fetching information... please wait")
+                        .catch((e) => {
+                            message.reply(
+                                //catches an error if the bot is blocked
+                                "Looks like I am unable to dm you"
+                            );
+                            blocked = true;
+                        });
                     await this.embedder(rows, message, args[0], votes[1]).then(
                         //creates an embed listing all the nomenees
                         async (embed) => {
-                            await message.author.send(voter).catch((e) => {
-                                message.reply(
-                                //catches an error if the bot is blocked
-                                    "Looks like I am unable to dm you"
-                                );
-                                blocked = true;
-                            });
-                            if (blocked) return; //if the bot is blocked, stop
+                            message.author.send(voter);
+                            //if the bot is blocked, stop
                             message.author.send(embed);
                         }
                     );

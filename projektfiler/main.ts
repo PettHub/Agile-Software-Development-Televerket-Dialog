@@ -4,8 +4,12 @@ import Discord from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
-import { art } from "./artModule";
-import { voteModule } from "./voteModue";
+import { Art } from "./ArtModule";
+import { VoteModule } from "./VoteModule";
+import { ErrorLog } from "./ErrorLog";
+import { HelpCommand } from "./HelpCommand";
+
+//import { userInfo } from "node:os";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -44,23 +48,15 @@ client.on("message", (message) => {
 
         case "art":
             try {
-                art.doIt(message, args, client); //Manages all the art sub commands
+                Art.doIt(message, args, client); //Manages all the art sub commands
             } catch (error) {
-                message.channel.send(
-                    "An error has occoured, devs have been contacted"
-                );
-                message.guild.members
-                    .fetch("260115645696442371")
-                    .then((user) => {
-                        user.send(
-                            "An error has occoured, please check the logs:\n" +
-                                error
-                        );
-                    });
-                console.log(error);
+                ErrorLog.doIt(message, error);
             }
             break;
 
+        case "help":
+            HelpCommand.doIt(message);
+            break;
         case "vote":
         case "nominations":
         case "nominate":
@@ -70,20 +66,9 @@ client.on("message", (message) => {
         case "viewvotes":
         case "tallyvotes":
             try {
-                voteModule.doIt(command, message, args, client); //Manages all the voting commands
+                VoteModule.doIt(command, message, args, client); //Manages all the voting commands
             } catch (error) {
-                message.channel.send(
-                    "An error has occoured, devs have been contacted"
-                );
-                message.guild.members
-                    .fetch("260115645696442371")
-                    .then((user) => {
-                        user.send(
-                            "an error has occoured, please check the logs:\n" +
-                                error
-                        );
-                    });
-                console.log(error);
+                ErrorLog.doIt(message, error);
             }
 
             break;
@@ -104,6 +89,7 @@ client.on("message", (message) => {
         case "setowner": //acc
             TestAccess.setOwner(message, args.shift());
             break;
+
 
         // case 'help':
         //     TestAccess.doIt(message, "owner").then((res) => {
