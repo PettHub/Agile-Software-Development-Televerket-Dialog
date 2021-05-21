@@ -61,14 +61,15 @@ export class Voter2 {
                         //checks if the user is out of votes
                         message.author
                             .send(
-                                `you are out of votes ${Voter.timedOutUsers.get(message.author.id)
-                                    ? "you can vote again in " +
-                                    new Date(
-                                        Voter.timedOutUsers.get(
-                                            message.author.id
-                                        )
-                                    ).toString()
-                                    : ""
+                                `you are out of votes ${
+                                    Voter.timedOutUsers.get(message.author.id)
+                                        ? "you can vote again in " +
+                                          new Date(
+                                              Voter.timedOutUsers.get(
+                                                  message.author.id
+                                              )
+                                          ).toString()
+                                        : ""
                                 }`
                             ) //tells the user that they are out of votes and when they can vote again
                             .catch((e) => {
@@ -82,7 +83,8 @@ export class Voter2 {
                     }
                     let voter = new Discord.MessageEmbed();
                     voter
-                        .setTitle(`You have ${3 - votes[1]} vote to spend`).setColor("#6691BA")
+                        .setTitle(`You have ${3 - votes[1]} vote to spend`)
+                        .setColor("#6691BA")
                         .setDescription(
                             `To vote for an user simply reply with the number listed before their name`
                         )
@@ -95,17 +97,20 @@ export class Voter2 {
                             "reply with cancel to cancel the voting session"
                         ); //prepairs an embed
                     let blocked: boolean = false;
+                    await message.author
+                        .send("Fetching information... please wait")
+                        .catch((e) => {
+                            message.reply(
+                                //catches an error if the bot is blocked
+                                "Looks like I am unable to dm you"
+                            );
+                            blocked = true;
+                        });
                     await this.embedder(rows, message, args[0], votes[1]).then(
                         //creates an embed listing all the nomenees
                         async (embed) => {
-                            await message.author.send(voter).catch((e) => {
-                                message.reply(
-                                    //catches an error if the bot is blocked
-                                    "Looks like I am unable to dm you"
-                                );
-                                blocked = true;
-                            });
-                            if (blocked) return; //if the bot is blocked, stop
+                            message.author.send(voter);
+                            //if the bot is blocked, stop
                             message.author.send(embed);
                         }
                     );
@@ -158,9 +163,10 @@ export class Voter2 {
                                         await Voter.vote(
                                             message,
                                             [
-                                                `${vote !== undefined
-                                                    ? rows[vote].user
-                                                    : id
+                                                `${
+                                                    vote !== undefined
+                                                        ? rows[vote].user
+                                                        : id
                                                 }`,
                                                 `${args[0]}`,
                                             ],
@@ -182,7 +188,8 @@ export class Voter2 {
                                     if (confirm) {
                                         //if the voter is about to vote this will cancel the vote
                                         message.author.send(
-                                            `Yor vote for ${vote + 1
+                                            `Yor vote for ${
+                                                vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} is cancelled`
@@ -224,7 +231,8 @@ export class Voter2 {
                                     } else {
                                         confirm = true; //makes it possible to respond yes
                                         message.author.send(
-                                            `You are about to vote for ${vote + 1
+                                            `You are about to vote for ${
+                                                vote + 1
                                             }: ${await message.guild.members.fetch(
                                                 rows[vote].user
                                             )} \nType "yes" to confirm or "no" to cancel the vote`
@@ -258,7 +266,8 @@ export class Voter2 {
         embed
             .setTitle("Members nominated for: " + section)
             .setDescription(
-                `you have ${3 - votes} votes left, page ${pages - (pages - this.counter / this.pagesize) + 1
+                `you have ${3 - votes} votes left, page ${
+                    pages - (pages - this.counter / this.pagesize) + 1
                 } of ${pages}`
             )
             .setColor("#6691BA");
