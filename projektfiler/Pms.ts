@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { setChannel } from "./setArtChannel";
+import { SetChannel } from "./SetArtChannel";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 
 export class PMHandler {
@@ -15,7 +15,7 @@ export class PMHandler {
         var regex = new RegExp(expression);
 
         let repostChannel;
-        setChannel.getValue().then(async (res) => {
+        SetChannel.getValue().then(async (res) => {
             repostChannel = client.channels.cache.get(res);
 
             if (repostChannel === undefined) {
@@ -41,11 +41,11 @@ export class PMHandler {
                         //checks that author is correct and that the message was sent in DM
                         console.log("message.content: " + message.content);
                         let messageContent = message.content.split(/\n| /gm); //messageContent is an array of message content separated by spaces or newlines
-                    messageContent.forEach(function (content) {
-                        
-                        console.log("messageContent: " + messageContent);
-                        console.log(numberOfImages);
-                            
+                        messageContent.forEach(function (content) {
+
+                            console.log("messageContent: " + messageContent);
+                            console.log(numberOfImages);
+
                             if (content.match(regex)) {
                                 //checks that content is a link, if so add to images-array
                                 numberOfImages--; //if attachment exists, decrament remaining
@@ -98,7 +98,7 @@ export class PMHandler {
                     }
                 };
                 author.send(
-                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. You may send the images/links in separate messages. If you send more than three images/links the first three will be registered."
+                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. DO NOT write any text or links in messages with attachments. You may send the images/links in separate messages. If you send more than three images/links the first three will be registered."
                 ).catch(err =>
                     firstmessage.reply(
                         "I am unable to DM you, please unblock me and try again."

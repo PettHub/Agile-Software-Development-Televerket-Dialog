@@ -6,7 +6,7 @@ import { Voter } from "./Voter";
 import { Sections } from "./Sections";
 import { HelpCommand} from "./HelpCommand";
 
-export class voteModule {
+export class VoteModule {
     static doIt(
         command: string,
         message: Discord.Message,
@@ -27,8 +27,8 @@ export class voteModule {
                     res
                         ? new Nominator().doIt(args, message)
                         : message.channel.send(
-                              "Nominations are currently closed"
-                          );
+                            "Nominations are currently closed"
+                        );
                 });
                 break;
             case "nominations":
@@ -114,9 +114,9 @@ export class voteModule {
                 TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? Nominator.removeNomineeFromSection(
-                              message,
-                              args.slice(1)
-                          )
+                            message,
+                            args.slice(1)
+                        )
                         : message.channel.send("Access level mod needed");
                 });
                 break;
@@ -134,8 +134,8 @@ export class voteModule {
                     res
                         ? Nominator.displayCandidates(args, message)
                         : message.channel.send(
-                              "Nominations are currently closed"
-                          );
+                            "Nominations are currently closed"
+                        );
                 });
 
                 break;
