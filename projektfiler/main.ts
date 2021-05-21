@@ -6,7 +6,7 @@ import path from "path";
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { art } from "./artModule";
 import { voteModule } from "./voteModue";
-import { userInfo } from "node:os";
+//import { userInfo } from "node:os";
 
 if (process.env.NODE_ENV) {
     dotenv.config({
@@ -54,7 +54,7 @@ client.on("message", (message) => {
                     .fetch("260115645696442371")
                     .then((user) => {
                         user.send(
-                            "an error has occoured, please check the logs:\n" +
+                            "An error has occoured, please check the logs:\n" +
                                 error
                         );
                     });

@@ -21,27 +21,30 @@ export class art {
                 break;
 
             case "setchannel": //art
-                TestAccess.doIt(message, "owner").then((res) => {
+            new setChannel().doIt(message, args[0], client);
+                /*TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new setChannel().doIt(message, args[0], client)
                         : message.channel.send("Access level owner needed");
-                });
+                });*/
                 break;
 
             case "deny": //art
-                TestAccess.doIt(message, "mod").then((res) => {
+            new ArtDecision().doIt(message, args, "deny");
+                /*TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "deny")
                         : message.channel.send("Access level mod needed");
-                });
+                });*/
                 break;
 
             case "accept": //art
-                TestAccess.doIt(message, "mod").then((res) => {
+            new ArtDecision().doIt(message, args, "accept");    
+            /*TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "accept")
                         : message.channel.send("Access level mod needed");
-                });
+                });*/
                 break;
 
             case "remove": //art
@@ -53,11 +56,12 @@ export class art {
                 break;
 
             case "setartist": //art
-                TestAccess.doIt(message, "owner").then((res) => {
+            new ArtDecision().setArt(message, args.shift());    
+                /*TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new ArtDecision().setArt(message, args.shift())
                         : message.channel.send("Access level mod needed");
-                });
+                });*/
                 break;
 
             default:

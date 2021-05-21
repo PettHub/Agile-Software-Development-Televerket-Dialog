@@ -39,9 +39,13 @@ export class PMHandler {
                         message.channel.type === "dm"
                     ) {
                         //checks that author is correct and that the message was sent in DM
-
+                        console.log("message.content: " + message.content);
                         let messageContent = message.content.split(/\n| /gm); //messageContent is an array of message content separated by spaces or newlines
-                        messageContent.forEach(function (content) {
+                    messageContent.forEach(function (content) {
+                        
+                        console.log("messageContent: " + messageContent);
+                        console.log(numberOfImages);
+                            
                             if (content.match(regex)) {
                                 //checks that content is a link, if so add to images-array
                                 numberOfImages--; //if attachment exists, decrament remaining
@@ -51,6 +55,7 @@ export class PMHandler {
                                     numberOfImages--;
                                     let image = attachment.proxyURL;
                                     images[numberOfImages] = image;
+                                    console.log(numberOfImages);
                                 });
                                 // numberOfImages--;
                                 // images[numberOfImages] = message.attachments;
@@ -58,9 +63,9 @@ export class PMHandler {
                             if (numberOfImages === 0) {
                                 clearTimeout(timeout); //once we have 3, stop the clock
                                 let i: number = 0;
-                                repostChannel.send(author.username + " has applied to become an artist. Below is their application. Use !art accept or !art deny [reason] to accept or d").catch(err =>
+                                repostChannel.send(author.username + " has applied to become an artist. Below is their application. Use !art accept [user] or !art deny [user] [reason] to accept or deny them.").catch(err =>
                                     firstmessage.reply(
-                                        "Looks like I am unable to dm you"
+                                        "I am unable to DM you, please unblock me and try again."
                                     ));
                                 images.forEach(function (image) {
                                     i++;
@@ -77,7 +82,7 @@ export class PMHandler {
 
                                     repostChannel.send(embed).catch(err =>
                                         firstmessage.reply(
-                                            "Looks like I am unable to dm you"
+                                            "I am unable to DM you, please unblock me and try again."
                                         ));;
                                     //repostChannel.send(image + ' has been sent by user: ' + author.id); //print the image in the channel along with user id
                                 });
@@ -85,7 +90,7 @@ export class PMHandler {
                                     "Your application has been sent, you will get a response within 24 hours."
                                 ).catch(err =>
                                     firstmessage.reply(
-                                        "Looks like I am unable to dm you"
+                                        "I am unable to DM you, please unblock me and try again."
                                     ));; //notify applicant that application has been sent
                                 client.removeListener("message", listener); //remove the listener from memory
                             }
@@ -93,10 +98,10 @@ export class PMHandler {
                     }
                 };
                 author.send(
-                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. If you send more than three images/links the first three will be registered."
+                    "Please send 3 images (as attachements and/or links), you have 15 minutes. Separate links with spaces or newlines. You may send the images/links in separate messages. If you send more than three images/links the first three will be registered."
                 ).catch(err =>
                     firstmessage.reply(
-                        "Looks like I am unable to dm you"
+                        "I am unable to DM you, please unblock me and try again."
                     )); //send initial message asking for images. Could include rules if Matt has some.
                 let timeout = setTimeout(function () {
                     author.send("Timed out. Please start a new application if you wish to apply.");

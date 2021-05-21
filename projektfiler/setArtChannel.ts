@@ -34,7 +34,7 @@ export class setChannel {
             )
                 .run(newChannel);
         } catch {
-            message.reply("The bot has no access to this channel")
+            message.reply("the bot does not have access to that channel.")
         }
     }
 
