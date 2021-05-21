@@ -1,12 +1,12 @@
 # Agile-Software-Development-Televerket-Dialog
 
-Who's who?
-PettHub - Oliver
-TheThingIs - Markus
-Ronserro - Christian
-ide-1 - Ida
-Paint19 - Hanna
-MattiasHult - Mattias
+Who's who?<br />
+PettHub - Oliver<br />
+TheThingIs - Markus<br />
+Ronserro - Christian<br />
+ide-1 - Ida<br />
+Paint19 - Hanna<br />
+MattiasHult - Mattias<br />
 
 Important note: We have been programming in pairs and groups throughout the weeks, switching pair/group each week. So the git commit history does not properly reflect each person's contribution.
 
