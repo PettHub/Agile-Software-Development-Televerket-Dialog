@@ -15,9 +15,10 @@ export class Art {
         client: Discord.Client
     ): void {
         let command: string;
-        if (args.shift()) {
+        if (args[0]) {
             command = args.shift().toLowerCase();
         }
+        console.log(command);
 
         switch (command) {
             case "apply": //art
@@ -40,8 +41,8 @@ export class Art {
                 });
                 break;
 
-            case "accept": //art  
-            TestAccess.doIt(message, "mod").then((res) => {
+            case "accept": //art
+                TestAccess.doIt(message, "mod").then((res) => {
                     res
                         ? new ArtDecision().doIt(message, args, "accept")
                         : message.channel.send("Access level mod needed");
@@ -56,7 +57,7 @@ export class Art {
                 });
                 break;
 
-            case "setartist": //art 
+            case "setrole": //art
                 TestAccess.doIt(message, "owner").then((res) => {
                     res
                         ? new ArtDecision().setArt(message, args.shift())
@@ -70,10 +71,10 @@ export class Art {
                         res
                             ? HelpCommand.doItArt(message, "artowner")
                             : TestAccess.doIt(message, "mod").then((res) => {
-                                res
-                                    ? HelpCommand.doItArt(message, "artmod")
-                                    : HelpCommand.doItArt(message, "artuser");
-                            });
+                                  res
+                                      ? HelpCommand.doItArt(message, "artmod")
+                                      : HelpCommand.doItArt(message, "artuser");
+                              });
                     });
                     break;
                 }

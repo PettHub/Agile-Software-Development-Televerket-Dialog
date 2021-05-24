@@ -25,9 +25,8 @@ export class Voter {
                 embed
                     .setAuthor(
                         "votes for " +
-                        (
-                            await message.guild.members.fetch(votee)
-                        ).nickname
+                            (await message.guild.members.fetch(votee))
+                                .displayName
                     )
                     .setColor("#6691BA");
                 row?.forEach((element) => {
@@ -74,7 +73,7 @@ export class Voter {
                 //if user is timed out in the cache
                 voter.send(
                     "You are out of votes, please try again " +
-                    new Date(timeout).toString()
+                        new Date(timeout).toString()
                 ); //does not work correctly if you manually delete votes from the database since it still remembers the old timestamp, should not be a problem in production.
                 return;
             } else {
@@ -95,8 +94,8 @@ export class Voter {
                         } else
                             voter.send(
                                 "Vote went through. You have " +
-                                (2 - value[1]) +
-                                " votes remaining"
+                                    (2 - value[1]) +
+                                    " votes remaining"
                             );
                     }
                 ); //insert it
@@ -106,7 +105,7 @@ export class Voter {
                 if (timeout)
                     voter.send(
                         "You are out of votes, please try again " +
-                        new Date(timeout).toString()
+                            new Date(timeout).toString()
                     );
                 else voter.send("You are out of votes"); //should only run once per instance and user due to async problems since timeout is added in a async function
                 break;
@@ -143,8 +142,8 @@ export class Voter {
                                 let nextElligableVote =
                                     Date.now() +
                                     1000 *
-                                    (24 * 60 * 60 -
-                                        (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
+                                        (24 * 60 * 60 -
+                                            (Date.now() / 1000 - row.earliest)); //calculates the time the next elligable vote is to take place
                                 Voter.timedOutUsers.set(
                                     voter,
                                     nextElligableVote
@@ -189,7 +188,9 @@ export class Voter {
             let handler = async (err, res) => {
                 if (err) console.log(err);
                 if (!res) return;
-                this.sortQuery(res).then((result) => { //after the query is sorted for each section
+                this.sortQuery(res).then((result) => {
+                    //after the query is sorted for each section
+
                     let iterator = result.entries();
                     let next = iterator.next();
                     while (!next.done) {
@@ -198,7 +199,8 @@ export class Voter {
                     }
                 });
             };
-            if (section.length > 0) runnable.all(section, handler);  //if section is specified in the command
+            if (section.length > 0) runnable.all(section, handler);
+            //if section is specified in the command
             else runnable.all(handler); //for all sections
             resolve();
         });
@@ -282,8 +284,10 @@ export class Voter {
         section: { section: string; votee: string; votes: number }[]
     ): { section: string; votee: string; votes: number }[] {
         // take arry of rows sort by votes and give five highest
-        section.sort((a, b) => (a[2] > b[2] ? -1 : 1));
+        console.log(section);
+        section.sort((a, b) => (a.votes > b.votes ? -1 : 1));
         let result = section.slice(0, 5);
+        console.log(result);
         return result;
     }
 }

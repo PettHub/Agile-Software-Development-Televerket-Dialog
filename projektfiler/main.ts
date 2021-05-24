@@ -90,7 +90,6 @@ client.on("message", (message) => {
             TestAccess.setOwner(message, args.shift());
             break;
 
-
         // case 'help':
         //     TestAccess.doIt(message, "owner").then((res) => {
         //         res

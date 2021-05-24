@@ -145,8 +145,7 @@ export class Nominator {
             if (await TestAccess.doIt(message, "mod")) {
                 HelpCommand.doItVote(message, "votemod");
                 return;
-            }
-            else {
+            } else {
                 HelpCommand.doItVote(message, "voteuser");
             }
             return;
@@ -202,9 +201,9 @@ export class Nominator {
                             message.reply(
                                 `you have already nominated once in the past 24 hours, you can nominate again: ${new Date(
                                     Date.now() +
-                                    1000 *
-                                    (24 * 60 * 60 -
-                                        (Date.now() / 1000 - row.stamp))
+                                        1000 *
+                                            (24 * 60 * 60 -
+                                                (Date.now() / 1000 - row.stamp))
                                 ).toString()}`
                             );
                             resolve(false);
@@ -322,7 +321,7 @@ export class Nominator {
         message: Discord.Message
     ): void {
         DatabaseFunctions.getInstance().all(
-            "SELECT section FROM Nominations WHERE user=?",
+            "SELECT section, user FROM Nominations WHERE user=?",
             user,
             async (err, rows) => {
                 if (err) {
@@ -335,12 +334,6 @@ export class Nominator {
 
                     await message.guild.members.fetch(user).then((res) => {
                         if (res) {
-                            embed
-                                .setTitle(
-                                    res.displayName + " has been nominated for:"
-                                )
-                                .setColor("#E2C696");
-                            message.channel.send(embed); //send embed after all sections are added
                         } else {
                             message.reply(
                                 "this doesn't seem to be a valid user. Please try again."
@@ -363,9 +356,13 @@ export class Nominator {
         embed: Discord.MessageEmbed
     ): Promise<void> {
         return new Promise(async (resolve) => {
-            let i = 1;
-            row.forEach(async (element) => {
-                if (i++ % 100 == 0) {
+            let i = 0;
+
+            let user: string = row[0];
+            for (const element of row) {
+                user = element.user;
+                embed.addField(element.section, "-");
+                if (++i % 24 == 0) {
                     await message.guild.members
                         .fetch(element.user)
                         .then((res) => {
@@ -379,9 +376,18 @@ export class Nominator {
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
-                embed.addField(element.section, "-");
-                resolve();
-            });
+            }
+
+            if (i % 24 != 0) {
+                await message.guild.members.fetch(user).then((res) => {
+                    embed
+                        .setTitle(res.displayName + " has been nominated for:")
+                        .setColor("#E2C696");
+                    message.channel.send(embed);
+                });
+            }
+
+            resolve();
         });
     }
 
@@ -408,7 +414,7 @@ export class Nominator {
                     embed
                         .setTitle("Users nominated for " + section + ":")
                         .setColor("#E2C696");
-                    await message.channel.send(embed);
+                    //await message.channel.send(embed);
                 } else {
                     message.reply("this section has no nominations.");
                     return;
@@ -424,20 +430,27 @@ export class Nominator {
         section: string
     ): Promise<void> {
         return new Promise(async (resolve) => {
-            let i = 1;
+            let i = 0;
             message.channel.send("Fetching info, please wait...");
             for (const element of row) {
-                if (i++ % 100 == 0) {
+                await message.guild.members.fetch(element.user).then((res) => {
+                    embed.addField(res.displayName, res.user.tag, true);
+                });
+                if (++i % 24 == 0) {
                     embed
                         .setTitle("Users nominated for " + section + ":")
                         .setColor("#E2C696");
                     message.channel.send(embed);
                     embed = new Discord.MessageEmbed();
                 }
-                await message.guild.members.fetch(element.user).then((res) => {
-                    embed.addField(res.displayName, res.user.tag, true);
-                });
             }
+            if (i % 24 != 0) {
+                embed
+                    .setTitle("Users nominated for " + section + ":")
+                    .setColor("#E2C696");
+                message.channel.send(embed);
+            }
+
             resolve();
         });
     }
