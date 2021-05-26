@@ -1,5 +1,7 @@
 # Agile-Software-Development-Televerket-Dialog
 
+This readme is for our teachers in the course. Matt you don't have to read this :)
+
 Who's who?<br />
 PettHub - Oliver<br />
 TheThingIs - Markus<br />
@@ -8,7 +10,7 @@ ide-1 - Ida<br />
 Paint19 - Hanna<br />
 MattiasHult - Mattias<br />
 
-Important note: We have been programming in pairs and groups throughout the weeks, switching pair/group each week. So the git commit history does not properly reflect each person's contribution.
+Important note: We have been programming in pairs and groups throughout the weeks, switching pair/group each week. And we have mostly used Live Share, resulting in only one person per group committing code. So the git commit history/the built-in contribution check does not properly reflect each person's contribution.
 
 Structure
 Team reflections have been submitted in canvas and are not uploaded to git. 
