@@ -1,5 +1,7 @@
 # Agile-Software-Development-Televerket-Dialog
 
+This readme is for our teachers in the course. Matt you don't have to read this :)
+
 Who's who?<br />
 PettHub - Oliver<br />
 TheThingIs - Markus<br />
