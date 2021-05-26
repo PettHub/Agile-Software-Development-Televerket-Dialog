@@ -1,0 +1,12 @@
+•what do I want to learn or understand better?
+Nu har vi kommit igång och gjort en ping bot och lärt oss grunderna i Typescript, så nästa steg är att lära sig mer om discord.js biblioteket så att man förstår hur det fungerar.
+Men också att kunna sätta upp vår egen AWS EC2 instans och få boten att fungera där.
+
+•how can I help someone else, or the entire team, to learn something new?
+Det är några som inte har deltagit lika mycket och det är viktigt att dem också kommer med i diskussionerna och att de jobbar med user stories nu när vi ska börja koda nästa vecka.
+
+•what is my contribution towards the team’s use of Scrum?
+Än så länge så var jag med och skrev alla user stories och nästa steg är att kolla med handledaren på måndag om det vi skrivit är bra eller ej.
+
+•what is my contribution towards the team’s deliveries?
+Om det är något jag undrar över eller om jag kan bidra med något så har jag sagt mitt i diskussionerna, jag har även varit med och skrivit user stories mm.

@@ -1,0 +1,14 @@
+•what do I want to learn or understand better?
+Att veta ungefär hur lång tid en user story tar och mer om hur typescript och javascript fungerar.
+
+•how can I help someone else, or the entire team, to learn something new?
+Denna veckan satt vi i tre olika grupper vilket fungerade bra och nästa vecka så kom iden upp att vi ska dela upp oss i andra gruppen
+vilket ger att jag kan lära mig från någon annan som i sin tur kan lära sig från mig.
+
+•what is my contribution towards the team’s use of Scrum?
+Denna veckan tog vi inte så många user stories för att vi skulle bli mer vana vid hur lång tid saker tar
+och därför var vi färdiga ganska tidigt, så nu vet vi nästa vecka att vi kommer hinna med mer.
+
+•what is my contribution towards the team’s deliveries?
+Jag såg till så att dem user stories jag var med och bidrog till blev färdiga, samt att jag tog mig an att kolla 
+igenom vad alla hade gjort så att allt var rätt sammanlänkat.

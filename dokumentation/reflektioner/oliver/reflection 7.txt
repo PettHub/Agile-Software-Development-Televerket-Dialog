@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+How asynchronous functions work and how to work around them in a way to predict outcome.
+
+how can I help someone else, or the entire team, to learn something new?
+by learning it myself
+
+what is my contribution towards the team’s use of Scrum?
+Same as usual, helping at the start of the sprint with assigning groups and then just following the rules.
+
+what is my contribution towards the team’s deliveries?
+A way to tally votes using said asynchronous functions. Turned out to be more of a headache than previously thought.

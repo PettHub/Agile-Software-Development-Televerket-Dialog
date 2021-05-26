@@ -1,0 +1,16 @@
+•what do I want to learn or understand better?
+Som tidigare att lära mig mer om Typescript och om hur lång tid en user story tar, 
+känner att jag har fått mer grepp på dem men man kan alltid lära sig mer.
+
+•how can I help someone else, or the entire team, to learn something new?
+Denna veckan satt vi i tre nya grupper där jag hamnade med två andra, problemet var att det kändes som det var två
+som pratade och en som, även om fokus var där mestadels så kom hen inte med i diskussionen. Det är viktigt att alla
+är med i diskussionerna och därför är det viktigt att få med dem.
+
+•what is my contribution towards the team’s use of Scrum?
+Vi utökade antalet user stories och jag var med två andra att göra en sqllite databas med två andra med hjälp av nodejs
+sqllite3.
+
+•what is my contribution towards the team’s deliveries?
+Hittils så har jag själv inte kodat så mycket när vi alla sitter samlade utan ofta så har någon annan gjort det och
+diskuterat olika strategier och lösningar, tycker hittills att det fungerat bra. 

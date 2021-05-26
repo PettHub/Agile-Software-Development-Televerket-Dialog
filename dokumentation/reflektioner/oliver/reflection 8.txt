@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+What can produce errors during runtime. This becomes tricky since user input can not be standardized if we are to meet the expectations of our client. Bugfixing will have to occur over time
+
+how can I help someone else, or the entire team, to learn something new?
+Not much more to learn currently, we are at the end point of our project. The remaining work will just be bugfixing.
+
+what is my contribution towards the team’s use of Scrum?
+Not much, we now make our own teams based on what we want to do. User stories are already made, kpi gathering is standardized.
+
+what is my contribution towards the team’s deliveries?
+Some bugfixing and commenting the code to ease further work and maintenance. 

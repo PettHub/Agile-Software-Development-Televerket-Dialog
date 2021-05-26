@@ -1,0 +1,11 @@
+1. what do I want to learn or understand better?
+There isnt much left that I feel I need or want to learn. I feel that I have gotten a lot of experience out of this course both from the principles taught and the learning we have done within the group with typescript have been really meaningful for me at least. So I feel that I have taken away as much as possible from this project. 
+
+2. how can I help someone else, or the entire team, to learn something new?
+I am not sure how I am supposed to answer this since it was the last sprint but pretty much as last time. I will offer my help where I can work together with that person or the team so we can learn together. 
+
+3. what is my contribution towards the team’s use of Scrum?
+I have been looking for any wrapping up user stories that we can make and tried to organize the last few for they wrap up as much as possible for the final sprint.
+
+4. what is my contribution towards the team’s deliveries?
+I have been working on some final user stories such as separating the classes into modules and overall been hunting some bugs. I have also poked around and seen what other work pairs have been up to and see what I can do to help them. 

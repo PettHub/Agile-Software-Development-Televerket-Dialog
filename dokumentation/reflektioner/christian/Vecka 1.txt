@@ -1,0 +1,11 @@
+•what do I want to learn or understand better?
+Hur man bättre använder Git och om hur man löser konflikter som uppstår när man ändrar en fil som en annan också ändrat på. Även att bli bättre på att skriva bra user stories som var en kritik som min grupp fick under oopp kursen. Att vara mer noga att boka av en user story när en sak är klar och flytta den i de olika stegen istället för att endast markera när den är klar.
+
+•how can I help someone else, or the entire team, to learn something new?
+Om det är någon som inte vet vad hen ska göra så finns det kanske något annat som behöver göras och då kan man påpeka detta, så att alla är delaktiga i alla moment. Men också om någon inte kan en specifik dag kan man ta över hens arbete så att personen kan jobba extra en annan dag.
+
+•what is my contribution towards the team’s use of Scrum?
+Att bättre förstå hur hela processen fungerar mer i detalj och hur det är att jobba med en extern intressent om hur han vill att vi ska göra. Vi har tagit beslutet att vi inte vill ha en scrum master eller olika roller men detta kan ändras längre fram 
+
+•what is my contribution towards the team’s deliveries?
+Alltid göra mitt bästa och se till att arbeta självständigt genom att ta tag i saker som behöver göras och att någon annan inte ska behöva pusha hela tiden.

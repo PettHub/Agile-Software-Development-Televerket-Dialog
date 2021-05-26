@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+Projektets interaktioner med databasen har jag lärt mig mer om, men mer skulle inte skada. 
+
+how can I help someone else, or the entire team, to learn something new?
+Aktiv i alla diskussioner. Det finns begränsat med saker som jag kan tekniskt som de andra inte kan, men olika syn på problem leder till ny kunskap och nya idéer för alla. Den delen jag verkligen kan bidra med är synen på värdeskapande aktiviteter vid utvärderingar och liknande, där jag tar ett stort ansvar och det känns som att jag bidragit till övriga gruppens jobb kring den delen.
+
+what is my contribution towards the team’s use of Scrum?
+Mycket jobb med utvärderingar, delaktighet kring planeringar, diskussioner kring user stories bland annat.
+
+what is my contribution towards the team’s deliveries?
+Arbetat främst med kommandot !artremove, som tar bort artistrollen från en användare och rutiner kring det för att informera övriga moderatorer och användaren. Detta arbetet är gjort tillsammans med Hanna, där vi arbetade tillsammans genom live share.

@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+Eftersom programmeringsarbetet är klart nu, är det mest fokus framöver på att färdigställa allt för överlämning till examinatorer och intressenten. Och, såklart, dra bra slutsatser utifrån det som gjorts och vad som kan göras annorlunda inför framtiden.
+
+how can I help someone else, or the entire team, to learn something new?
+Jag tror att jag kan bidra mycket, främst kring skrivandet av rapporten! Vi har en lista över saker som ska göra, där rapporten är den största delen som är kvar. Det är en typ av arbete där jag har mycket erfarenhet och kommer kunna bidra väldigt mycket.
+
+what is my contribution towards the team’s use of Scrum?
+Som vanligt väldigt aktiv kring utvärderingar, diskussioner och liknande.
+
+what is my contribution towards the team’s deliveries?
+Denna veckan har jag och Ida arbetat med kommandot !help, som skickar embedded meddelande med de kommandon som finns tillgängliga. Metoden skickar olika meddelanden beroende på vad användaren har för roll, och skickar bara de kommandon som användaren som frågade om hjälp har behörighet att använda. Klassen har skrivits så att metoder har lagts till för att kunna anropas från andra klasser, där behov kan finnas av att skicka information om tillgängliga kommandon inom ett specifikt område. När arbetet nu implemeterats leder kommandon utan subcommand inom flera klasser till att hjälpmeddelande för kommandot skickas från klassen vi skrivit.

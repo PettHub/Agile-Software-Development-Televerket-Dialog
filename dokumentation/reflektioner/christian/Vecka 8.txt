@@ -1,0 +1,12 @@
+•what do I want to learn or understand better?
+Lära mig mer om processen att "deploya" projektet för PO på AWS samt se till att allt funkar.
+
+•how can I help someone else, or the entire team, to learn something new?
+Denna veckan har det inte varit så mycket nytt eftersom dem nya fuktionerna som las till var på liknande sätt som redan
+tidigare implementerade funktioner.
+
+•what is my contribution towards the team’s use of Scrum?
+Denna veckan var det mycket fixar och buggtester och därför så var det inte mycket om vertikala user stories utan mer horisontella.
+
+•what is my contribution towards the team’s deliveries?
+Denna veckan har mycket varit att fixa nya saker som kom upp under PO möte samt att refaktorera och testa gammal kod för min del.

@@ -1,0 +1,11 @@
+1. what do I want to learn or understand better?
+Promises and how to properly interact with the database. Since the last sprit we have worked on implementing the database and because of this we have to work with promises. Promises are quite hard to understand for me so I want to learn more about them and how to properly implement them in other parts of the code. 
+
+2. how can I help someone else, or the entire team, to learn something new?
+Since the last sprint we wrote a guide to how to properly interact with the database in typescript which is quite complex as mentioned before. I hope this will help the entire team being able to use it easily and properly as the code needs us to do so. 
+
+3. what is my contribution towards the team’s use of Scrum?
+I have helped writing and looking over different userstories to make sure they are “correct” and easy to understand. I have also worked on them with other members so the process has been going forward. 
+
+4. what is my contribution towards the team’s deliveries?
+As mentioned I have helped put together the document with the guide to the database so everyone will be able to learn how it works as fast as possible. I have also helped to make sure that each member have been given the chance to work with new members each week so we can take part of each other's knowledge and develop. 

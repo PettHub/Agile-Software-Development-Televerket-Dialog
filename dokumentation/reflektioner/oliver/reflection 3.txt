@@ -1,0 +1,12 @@
+what do I want to learn or understand better?
+I want to learn the Amazon web services in order to host a bot on a server instead of my local machine.
+How to optimize RAM usage and speed in order to save cost for the hoster of out bot.
+
+how can I help someone else, or the entire team, to learn something new?
+By learning said thing first in order to be able to answe questions.
+
+what is my contribution towards the team’s use of Scrum?
+this week we created user stories. I created 3 of them.
+
+what is my contribution towards the team’s deliveries?
+None since we went with another members bot skeleton

@@ -1,0 +1,13 @@
+what do I want to learn or understand better?
+SQLite
+
+how can I help someone else, or the entire team, to learn something new?
+By learning said thing first in order to be able to answer questions.
+
+what is my contribution towards the team’s use of Scrum?
+team generation for tackling user stories.
+
+what is my contribution towards the team’s deliveries?
+https://trello.com/c/WaYCHKI2/14-nominations-section
+https://trello.com/c/teJuYq5o/8-nominate-member-section
+Creating the handler for nominations which are to be defunct by the next week since databases are complete

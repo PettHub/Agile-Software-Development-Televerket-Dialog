@@ -1,0 +1,17 @@
+•what do I want to learn or understand better?
+Vi är färdiga med projektet men det hade varit kul att lära sig ännu mer om typescript och javascript. Men tycker att det har varit en lärorik
+resa och det är en av kurserna som jag lärt mig mest av eftersom jag lär mig bäst med praktiskt arbete. Det har varit väldigt roligt att lära
+sig ett nytt språk efter att ha programmerat med Java i alla andra kurser på Chalmers.
+
+•how can I help someone else, or the entire team, to learn something new?
+Jag har verkligen försökt att hjälpa andra förstå hur koden och databasen fungerar även om jag själv inte anser mig vara den bästa läraren. 
+
+•what is my contribution towards the team’s use of Scrum?
+Denna veckan har det inte varit så mycket utan vi vad färdiga med alla user stories förutom help kommando och finjusteringar. Som helhet
+har jag lärt mig mycket mer om Scrum jämfört med OOP kursen eftersom vi hade mer fokus denna gång på att ha en korrekt Scrum process, dock utan
+Scrum master. 
+
+•what is my contribution towards the team’s deliveries?
+Vi har alla i gruppen gått igenom alla kommandon och kollat alla edge cases och ser till så att inte boten craschar. På det stora så har jag varit
+mycket mer aktiv med Scrum och programmering än med skrivande av veckorapporter. Som tur var fanns det andra personer som var bättre på att skriva
+rapporter där jag kunde bidra med de saker jag var bra på.

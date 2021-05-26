@@ -1,0 +1,12 @@
+what do I want to learn or understand better?
+Till att börja med, bli mekväm med gitkraken och github. Målet är att så snart som möjligt vara fullt bekväm med det trots att jag inte använt det innan denna kursen. I övrigt så tänker jag ta reda på mer om att göra en bot, så att jag fullt ut förstår vad det kommer innebära för kommande arbete om vi går vidare med den idén.
+
+how can I help someone else, or the entire team, to learn something new?
+Just nu kommer jag ödmjukt säga att jag inte är där ännu med tanke på att vi än så länge är inne på saker som övriga gruppen har mycket mer erfarenhet av. Men min förhoppning är att komma dit genom att läsa på vad förslagen på idéer innebär.
+
+what is my contribution towards the team’s use of Scrum?
+Än så länge begränsat eftersom vi inte kommit igång med mjukvaruutvecklingen och därmed scrumprocessen. Med det sagt så har jag varit engagerad i diskussionerna om idéer och hur de skulle kunna passa med mål vi har för kursen och användningen av scrum.
+
+what is my contribution towards the team’s deliveries?
+Än så länge, engagemang under möten och försöka bidra med de tankar jag har om de idéer som diskuterats. Mycket fokus har varit på de miljöer som IT har större erfarenhet av än I och övriga gruppen har varit superhjälpsamma med att underlätta för oss från I. Har börjat kolla tutorials osv för att snabba på processen med att minska skillnaderna i kunskap mellan oss och studenterna från IT.
+
