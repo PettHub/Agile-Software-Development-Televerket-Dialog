@@ -1,11 +1,11 @@
 what do I want to learn or understand better?
-Stående punkt på denna är att hela tiden försöka lära mig mer Typscript, eftersom ju mer desto bättre. Jag har lärt mig en hel del, och kommer fortsätta så. Den nya, stora punkten är databasen som används och hur den ska användas i koden framöver där det finns en skriven tutorial för gruppen som ska studeras, om några funderingar kring det uppstår så kommer jag försöka hitta andra källor för att lära mig mer (och diskussioner i gruppen!).
+Ytterligare typescrift, och även Discord-specifika saker. Längre fram kommer lagring av information behöva göras och inför det behöver jag sätta in mig mer i hur det fungerar beroende på vilken lagring som väljs.
 
 how can I help someone else, or the entire team, to learn something new?
-Eftersom alla jobbat med olika saker så uppstår en ganska naturlig kunskapsdelning när nya grupper formeras inom gruppen och nya user stories fördelas. Alla har ett ansvar att kunna sätta in alla i den kod man varit med och skrivit, och det är jag en del av. I övrigt så kretsar mycket kring gemensamma diskussioner i gruppen om hur saker ska lösas, och att vara del av de diskussionerna är en utmärkt möjlighet för mig att bidra. 
+Försöka bidra där behov finns. Ofta diskuteras problem i grupp, och delaktighet i dessa diskussioner brukar leda till en bra lösning där en eller flera lär sig nya saker.
 
 what is my contribution towards the team’s use of Scrum?
-Mycket stor delaktighet i sprintutvärderingar när de skrivs, men också att vara aktiv med scrumboarden för att se till att den hela tiden är uppdaterad med arbetsprocessen och eventuella saker som behöver tas upp i framtiden. Saker dyker alltid upp under arbetets gång, och att dokumentera det för att kunna lösa problem som gruppen stöter på är viktigt för att saker inte ska falla mellan stolarna eller att utveckling görs i en riktning som avviker från det gruppen planerat.
+Användning av scrumboard, stor delaktighet i sprintutvärdering. 
 
 what is my contribution towards the team’s deliveries?
-Denna veckas arbete har fokuserat på Nominator-klassen och Sections, som används för att hantera sektioner och nomineringar av medlemmar i en sektion. Arbetet har denna vecka gjorts tillsammans med Oliver, och alla user stories kring dessa områden har under veckan utförts av oss. Ny funktionalitet som implementerats är bland annat att kunna se nomineringar både för sektion och för användare, att begränsa nomineringar till en per användare och dygn och att få utskrivet vilka sektioner som finns att nominera användare inom.
+Hittills TestAccess, som gjorts tillsammans med Emil och Markus. Där finns metoder för att testa och tilldela moderatorrättigheter på servern, och vissa metoder har jag gjort och de andra har gjorts tillsammans med de andra. Jag har varit delaktig i allt som rör TestAccess, och Markus har hjälpt väldigt bra med de saker som det funnits oklarheter kring.

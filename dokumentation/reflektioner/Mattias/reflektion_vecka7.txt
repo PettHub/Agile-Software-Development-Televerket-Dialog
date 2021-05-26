@@ -1,0 +1,11 @@
+what do I want to learn or understand better?
+Främst databaser, som blivit en allt större del av arbetet. När det gäller typescript och relevanta saker inom Discord.js så känner jag mig allt mer bekväm, så främst databaser är det jag vill fokusera på för att kunna bidra ännu mer.
+
+how can I help someone else, or the entire team, to learn something new?
+Att vara aktiv inom allt vi gör; olika syn på saker och diskussioner leder alltid alltid till ny kunskap hos alla. Just nu är det inte så mycket kunskapsluckor som vi känner till eftersom vi är igång med allt, men alla vill bidra där de kan och så även jag.
+
+what is my contribution towards the team’s use of Scrum?
+Väldigt aktiv under utvärderingar, och allt arbete utgår från vår scrumboard. Så scrum genomsyrar verkligen allt som görs, och inte minst inom utvärderingar är jag en mycket stor del. I övrigt följs rutiner som satts upp kring arbetsprocessen, och det gör alla inom gruppen med frekvent uppdatering av scrumboards, möten varje dag under sprint och gemensam planering av allt som ska göras (på story-nivå, detaljplanering lämnas till de som utför story).
+
+what is my contribution towards the team’s deliveries?
+Denna veckan, arbete på nominator-klassen och dess interaktion med databasen. Samtliga funktioner har skrivits om och vissa har tagits bort och tillkommit, för att få en struktur med metoder osv som enklare fungerar med en databas och de fördelar som finns med databas jämfört med maps som användes inledningsvis. Så alla funktioner som rör klassen har jag och de övriga i gruppen arbetat med, och det har lett till fungerande klass tillsammans med tabell i databasen med bibehållen funktionalitet för användare sett till de acceptanskriterier som funnits under tidigare user stories kopplade till klassen.

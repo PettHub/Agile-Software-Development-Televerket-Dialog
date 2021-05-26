@@ -1,11 +1,12 @@
 what do I want to learn or understand better?
-Ytterligare typescrift, och även Discord-specifika saker. Längre fram kommer lagring av information behöva göras och inför det behöver jag sätta in mig mer i hur det fungerar beroende på vilken lagring som väljs.
+Ytterligare typescrift, och även Discord-specifika saker som hur bottar hanterar när bilder skickas till dem.
 
 how can I help someone else, or the entire team, to learn something new?
-Försöka bidra där behov finns. Ofta diskuteras problem i grupp, och delaktighet i dessa diskussioner brukar leda till en bra lösning där en eller flera lär sig nya saker.
+Hittills har det mest handlat om att bolla tankar och idéer, men nya user stories kommande vecka innebär att vi alla har nya saker att fokusera på och därmed ytterligare kunskap att förmedla. Det kommer jag vara en del av och kommer bidra i den mån det är möjligt.
 
 what is my contribution towards the team’s use of Scrum?
-Användning av scrumboard, stor delaktighet i sprintutvärdering. 
+Hittills, diskussioner om arbetsplanering och kommande arbete. Även bidragit med att göra stor del av veckorapporten. Hittills har alla mer eller mindre gjort samma sak, att skapa en egen fungerande pingbot för att komma in i grunderna och det har jag gjort. 
 
 what is my contribution towards the team’s deliveries?
-Hittills TestAccess, som gjorts tillsammans med Emil och Markus. Där finns metoder för att testa och tilldela moderatorrättigheter på servern, och vissa metoder har jag gjort och de andra har gjorts tillsammans med de andra. Jag har varit delaktig i allt som rör TestAccess, och Markus har hjälpt väldigt bra med de saker som det funnits oklarheter kring.
+Satt mig in i Typescript för att kunna bidra när saker felsökts och när nya funktioner implementerats för att möjliggöra pingboten. Då arbetet varit att alla ska göra samma sak för att få upp en fungerande utvecklings- och testmiljö har inga större individuella bidrag till deliveries skett än, mer än stöd åt varandra att få allt att fungera som tänkt. Det har jag varit en del av, och kommande veckor kommer möjligheterna till individuella bidrag bli större och så även mitt bidrag.
+
