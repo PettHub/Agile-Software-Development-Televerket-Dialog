@@ -61,14 +61,15 @@ export class Voter2 {
                         //checks if the user is out of votes
                         message.author
                             .send(
-                                `you are out of votes ${Voter.timedOutUsers.get(message.author.id)
-                                    ? "you can vote again in " +
-                                    new Date(
-                                        Voter.timedOutUsers.get(
-                                            message.author.id
-                                        )
-                                    ).toString()
-                                    : ""
+                                `you are out of votes ${
+                                    Voter.timedOutUsers.get(message.author.id)
+                                        ? "you can vote again in " +
+                                          new Date(
+                                              Voter.timedOutUsers.get(
+                                                  message.author.id
+                                              )
+                                          ).toString()
+                                        : ""
                                 }`
                             ) //tells the user that they are out of votes and when they can vote again
                             .catch((e) => {
@@ -162,9 +163,10 @@ export class Voter2 {
                                         await Voter.vote(
                                             message,
                                             [
-                                                `${vote !== undefined
-                                                    ? rows[vote].user
-                                                    : id
+                                                `${
+                                                    vote !== undefined
+                                                        ? rows[vote].user
+                                                        : id
                                                 }`,
                                                 `${args[0]}`,
                                             ],
@@ -186,10 +188,14 @@ export class Voter2 {
                                     if (confirm) {
                                         //if the voter is about to vote this will cancel the vote
                                         message.author.send(
-                                            `Yor vote for ${vote + 1
-                                            }: ${await message.guild.members.fetch(
-                                                rows[vote].user
-                                            )} is cancelled`
+                                            `Yor vote for ${
+                                                vote + 1
+                                            }: ${await message.guild.members
+                                                .fetch(rows[vote].user)
+                                                .catch((e) => {
+                                                    console.log(e);
+                                                    return rows[vote].user;
+                                                })} is cancelled`
                                         );
                                         confirm = false;
                                         vote = undefined;
@@ -210,9 +216,12 @@ export class Voter2 {
                                     ) {
                                         confirm = true;
                                         message.author.send(
-                                            `You are about to vote for ${await message.guild.members.fetch(
-                                                message2.content
-                                            )} \nType "yes" to confirm or "no" to cancel the vote`
+                                            `You are about to vote for ${await message.guild.members
+                                                .fetch(message2.content)
+                                                .catch((e) => {
+                                                    console.log(e);
+                                                    return rows[vote].user;
+                                                })} \nType "yes" to confirm or "no" to cancel the vote`
                                         ); //tells the voter who they are about to vvote for and how to confirm the vote
                                         id = message2.content;
                                         break;
@@ -228,10 +237,14 @@ export class Voter2 {
                                     } else {
                                         confirm = true; //makes it possible to respond yes
                                         message.author.send(
-                                            `You are about to vote for ${vote + 1
-                                            }: ${await message.guild.members.fetch(
-                                                rows[vote].user
-                                            )} \nType "yes" to confirm or "no" to cancel the vote`
+                                            `You are about to vote for ${
+                                                vote + 1
+                                            }: ${await message.guild.members
+                                                .fetch(rows[vote].user)
+                                                .catch((e) => {
+                                                    console.log(e);
+                                                    return rows[vote].user;
+                                                })} \nType "yes" to confirm or "no" to cancel the vote`
                                         ); //tells the voter who they are about to vote for and how to confirm the vote
                                     }
                                     break;
@@ -262,17 +275,24 @@ export class Voter2 {
         embed
             .setTitle("Members nominated for: " + section)
             .setDescription(
-                `you have ${3 - votes} votes left, page ${pages - (pages - this.counter / this.pagesize) + 1
+                `you have ${3 - votes} votes left, page ${
+                    pages - (pages - this.counter / this.pagesize) + 1
                 } of ${pages}`
             )
             .setColor("#6691BA");
-        for (const element of rows.slice(this.counter, rows.length)) {
+        loop: for (const element of rows.slice(this.counter, rows.length)) {
             //goes through a "pagesize" abouts of nomenees
             this.counter++;
-            let user = await message.guild.members.fetch(element.user);
+            let user = await message.guild.members
+                .fetch(element.user)
+                .catch((e) => {
+                    console.log(e);
+                });
             embed.addField(
-                `${this.counter} ${user.user.tag}`,
-                `nickname: ${user.displayName}`,
+                `${this.counter} ${
+                    user ? user.user.tag : "user not in server"
+                }`,
+                `nickname: ${user ? user.displayName : "not in server"}`,
                 true
             );
 

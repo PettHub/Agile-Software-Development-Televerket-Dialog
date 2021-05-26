@@ -332,14 +332,19 @@ export class Nominator {
                     let embed = new Discord.MessageEmbed();
                     await Nominator.forEachRowCandidate(rows, message, embed);
 
-                    await message.guild.members.fetch(user).then((res) => {
-                        if (res) {
-                        } else {
-                            message.reply(
-                                "this doesn't seem to be a valid user. Please try again."
-                            );
-                        }
-                    });
+                    await message.guild.members
+                        .fetch(user)
+                        .then((res) => {
+                            if (res) {
+                            } else {
+                                message.reply(
+                                    "this doesn't seem to be a valid user. Please try again."
+                                );
+                            }
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
                 } else {
                     message.reply(
                         "this user hasn't been nominated for any section."
@@ -368,9 +373,15 @@ export class Nominator {
                         .then((res) => {
                             embed
                                 .setTitle(
-                                    res.displayName + " has been nominated for:"
+                                    res
+                                        ? res.displayName
+                                        : element.user +
+                                              " has been nominated for:"
                                 )
                                 .setColor("#E2C696");
+                        })
+                        .catch((e) => {
+                            console.log(e);
                         });
 
                     message.channel.send(embed);
@@ -379,12 +390,21 @@ export class Nominator {
             }
 
             if (i % 24 != 0) {
-                await message.guild.members.fetch(user).then((res) => {
-                    embed
-                        .setTitle(res.displayName + " has been nominated for:")
-                        .setColor("#E2C696");
-                    message.channel.send(embed);
-                });
+                await message.guild.members
+                    .fetch(user)
+                    .then((res) => {
+                        embed
+                            .setTitle(
+                                res
+                                    ? res.displayName
+                                    : user + " has been nominated for:"
+                            )
+                            .setColor("#E2C696");
+                        message.channel.send(embed);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
             }
 
             resolve();
@@ -433,9 +453,18 @@ export class Nominator {
             let i = 0;
             message.channel.send("Fetching info, please wait...");
             for (const element of row) {
-                await message.guild.members.fetch(element.user).then((res) => {
-                    embed.addField(res.displayName, res.user.tag, true);
-                });
+                await message.guild.members
+                    .fetch(element.user)
+                    .then((res) => {
+                        embed.addField(
+                            res ? res.displayName : "Not in server",
+                            res ? res.user.tag : element.user,
+                            true
+                        );
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
                 if (++i % 24 == 0) {
                     embed
                         .setTitle("Users nominated for " + section + ":")
