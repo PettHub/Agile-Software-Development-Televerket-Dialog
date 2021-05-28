@@ -73,7 +73,11 @@ export class RemoveArtist {
                 user.send(
                     "The Artist role has been removed from you for the following reason:\n" +
                         removeReason
-                );
+                ).catch((e) => {
+                    message.reply(
+                        "Seems like I am unable to dm the member! They are not aware that they lost their role or why!"
+                    );
+                });
                 message.reply(
                     "User: " +
                         RemoveArtist.nick +
