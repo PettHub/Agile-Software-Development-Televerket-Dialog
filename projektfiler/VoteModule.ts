@@ -15,11 +15,17 @@ export class VoteModule {
     ) {
         switch (command) {
             case "vote":
-                Nominator.isOpen().then((res) => {
-                    res
-                        ? VoteHandeler.getinstance().doIt(message, args, client)
-                        : message.channel.send("votes are currently closed");
-                });
+                let open = false;
+                if (open){
+                    Nominator.isOpen().then((res) => {
+                        res
+                            ? VoteHandeler.getinstance().doIt(message, args, client)
+                            : message.channel.send("votes are currently closed");
+                    });
+                } else {
+                    message.reply('votes are closed');
+                }
+                
                 break;
 
             case "nominate":

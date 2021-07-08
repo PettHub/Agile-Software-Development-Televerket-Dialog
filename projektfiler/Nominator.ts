@@ -196,7 +196,7 @@ export class Nominator {
                     }
                     if (row) {
                         nominationsByUser = row.nominator;
-                        if (nominationsByUser >= 1) {
+                        if (nominationsByUser >= 10) {
                             //if user has nominated in the last 24 hours
                             message.reply(
                                 `you have already nominated once in the past 24 hours, you can nominate again: ${new Date(
