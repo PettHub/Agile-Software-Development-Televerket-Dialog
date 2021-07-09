@@ -43,6 +43,10 @@ export class DatabaseFunctions {
         ); //Creates a table for TestAccess
 
         this.db.run(
+            "CREATE TABLE IF NOT EXISTS VotesOpen(isOpen INTEGER PRIMARY KEY)"
+        ); //Creates a table for TestAccess
+
+        this.db.run(
             "CREATE TABLE IF NOT EXISTS NominatorBanned(banned INTEGER PRIMARY KEY)"
         ); //Creates a table for TestAccess
 

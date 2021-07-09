@@ -15,17 +15,11 @@ export class VoteModule {
     ) {
         switch (command) {
             case "vote":
-                let open = false;
-                if (open){
-                    Nominator.isOpen().then((res) => {
+                    Voter.isOpen().then((res) => {
                         res
                             ? VoteHandeler.getinstance().doIt(message, args, client)
                             : message.channel.send("votes are currently closed");
                     });
-                } else {
-                    message.reply('votes are closed');
-                }
-                
                 break;
 
             case "nominate":
@@ -60,6 +54,22 @@ export class VoteModule {
                         ? await Voter.tallyVotes(client, message, args)
                         : message.channel.send("Access level mod needed");
                 });
+                break;
+            case "votes":
+                console.log(args[0]);
+            if (args[0] === "open"){
+                TestAccess.doIt(message, "owner").then(async (res) => {
+                    res
+                        ? Voter.openVotes(message)
+                        : message.channel.send("Access level owner needed");
+                });
+            } else if (args[0] === "close"){
+                TestAccess.doIt(message, "owner").then(async (res) => {
+                    res
+                        ? Voter.closeVotes(message)
+                        : message.channel.send("Access level owner needed");
+                });
+            }
                 break;
 
             default:

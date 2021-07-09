@@ -1,9 +1,43 @@
 import { DatabaseFunctions } from "./DatabaseFunctions";
 import { GlobalFunctions } from "./GlobalFunctions";
 import Discord from "discord.js";
-import { Database } from "sqlite3";
 
 export class Voter {
+
+    public static isOpen(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let query = "SELECT * FROM VotesOpen";
+            DatabaseFunctions.getInstance().get(query, (err, row) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                row ? resolve(true) : resolve(false);
+            });
+        });
+    }
+
+    public static openVotes(message: Discord.Message): void {
+        DatabaseFunctions.getInstance()
+            .prepare("INSERT INTO VotesOpen (isOpen) VALUES (?)")
+            .run(1, (err) => {
+                if (err) {
+                    console.log(err);
+                    message.reply(
+                        "an error has occurred, Votes might already be open."
+                    );
+                } else {
+                    message.reply("Votes are open!");
+                }
+            });
+    }
+    public static closeVotes(message: Discord.Message): void {
+        DatabaseFunctions.getInstance()
+            .prepare("DELETE FROM VotesOpen")
+            .run();
+        message.reply("Votes are closed.");
+    }
+
     public static showVotes(message: Discord.Message, args: any[]) {
         if (!args[0]) {
             message.reply(
@@ -63,8 +97,8 @@ export class Voter {
             return;
         }
         let db = DatabaseFunctions.getInstance();
-        let queryVotes =
-            "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"; //amount of votes from a person the last 24 hours
+        //let queryVotes =
+        //    "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"; //amount of votes from a person the last 24 hours
         let insertVote =
             "INSERT INTO Votes(stamp, voter, votee, section) VALUES (CURRENT_TIMESTAMP, ?, ?, ?);";
         let timeout = Voter.timedOutUsers.get(voter.id);
@@ -79,7 +113,7 @@ export class Voter {
             } else {
                 Voter.timedOutUsers.delete(voter.id); //clean up the ram by removing unnessescary entries in the map
             }
-        let value = await Voter.queryDB(voter.id, db, queryVotes); // get number of votes the last 24 hours
+        let value = await Voter.queryDB(voter.id, section); // get number of votes the last 24 hours
         switch (value[0]) {
             case result.passed:
                 db.prepare(insertVote).run(
@@ -95,7 +129,7 @@ export class Voter {
                             voter.send(
                                 "Vote went through. You have " +
                                     (2 - value[1]) +
-                                    " votes remaining"
+                                    " votes remaining for this section"
                             );
                     }
                 ); //insert it
@@ -114,12 +148,12 @@ export class Voter {
 
     public static queryDB(
         voter: string,
-        db: Database,
-        queryVotes: string
+        section: string
     ): Promise<[result: number, votes: number]> {
         return new Promise((resolve, reject) => {
             let votesByVoter = 0;
-            db.get(queryVotes, voter, (err, row) => {
+            let querry = 'SELECT COUNT(voter) as votes FROM Votes WHERE section = ? AND voter = ? GROUP BY voter';
+            DatabaseFunctions.getInstance().get(querry, section, voter, (err, row) => {
                 if (err) {
                     console.log(err + " this should not be happening");
                     reject(err); // if we get an unknown error we return this
@@ -127,11 +161,11 @@ export class Voter {
                 if (row) {
                     votesByVoter = row.votes;
                     //console.log(votesByVoter);
-                    if (votesByVoter >= 3) {
+                    if (votesByVoter >= 3 && votesByVoter < 0) {
                         //if user has voted more than 3 times the last 24 hours
-                        let queryAllVotes =
-                            "SELECT strftime('%s',MIN(stamp)) as earliest FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter;";
-                        db.get(queryAllVotes, voter, (err, row) => {
+                        //let queryAllVotes =
+                        //    "SELECT strftime('%s',MIN(stamp)) as earliest FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter;";
+                        /*db.get(voter, (err, row) => {
                             if (err) {
                                 console.log(
                                     err + " this is a simulation, wake up"
@@ -149,7 +183,7 @@ export class Voter {
                                     nextElligableVote
                                 ); //caches that the user is timed out in order to save the db some load
                             }
-                        });
+                        });*/
                         resolve([result.outOfVotes, votesByVoter]); //out of votes
                     }
                 }
@@ -284,10 +318,8 @@ export class Voter {
         section: { section: string; votee: string; votes: number }[]
     ): { section: string; votee: string; votes: number }[] {
         // take arry of rows sort by votes and give five highest
-        console.log(section);
         section.sort((a, b) => (a.votes > b.votes ? -1 : 1));
         let result = section.slice(0, 5);
-        console.log(result);
         return result;
     }
 }

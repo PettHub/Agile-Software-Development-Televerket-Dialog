@@ -65,14 +65,13 @@ client.on("message", (message) => {
         case "sections":
         case "viewvotes":
         case "tallyvotes":
+        case "votes":
             try {
                 VoteModule.doIt(command, message, args, client); //Manages all the voting commands
             } catch (error) {
                 ErrorLog.doIt(message, error);
             }
-
             break;
-
         case "hasaccess": //acc
             TestAccess.doIt(message, "mod").then((res) => {
                 message.channel.send(
@@ -89,18 +88,6 @@ client.on("message", (message) => {
         case "setowner": //acc
             TestAccess.setOwner(message, args.shift());
             break;
-
-        // case 'help':
-        //     TestAccess.doIt(message, "owner").then((res) => {
-        //         res
-        //             ? message.channel.send("TODO all art commands")
-        //             : TestAccess.doIt(message, "mod").then((res) => {
-        //                   res
-        //                       ? message.channel.send("TODO mod commands")
-        //                       : message.channel.send("Usage !art apply");
-        //               });
-        //     });
-        //     break;
     }
 });
 

@@ -49,8 +49,7 @@ export class Voter2 {
                     let votes = await Voter.queryDB(
                         //gets how many votes the user have left to spend
                         message.author.id,
-                        DatabaseFunctions.getInstance(),
-                        "SELECT COUNT(voter) as votes FROM Votes WHERE (strftime('%s','now')-strftime('%s',stamp) < 60*60*24 AND voter == ?) GROUP BY voter"
+                        args[0]
                     );
                     if (!restart)
                         message.reply(
