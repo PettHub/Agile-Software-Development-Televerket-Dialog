@@ -108,9 +108,13 @@ export class Voter2 {
                     await this.embedder(rows, message, args[0], votes[1]).then(
                         //creates an embed listing all the nomenees
                         async (embed) => {
-                            message.author.send(voter);
+                            message.author.send(voter).catch((e) => {
+                                blocked = true;
+                            });
                             //if the bot is blocked, stop
-                            message.author.send(embed);
+                            message.author.send(embed).catch((e) => {
+                                blocked = true;
+                            });
                         }
                     );
                     if (blocked) {
@@ -135,7 +139,11 @@ export class Voter2 {
                                         args[0],
                                         votes[1]
                                     ).then((embed) => {
-                                        message.author.send(embed);
+                                        message.author
+                                            .send(embed)
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            });
                                     });
                                     break;
                                 // case "prev": //unimplemented
@@ -151,9 +159,11 @@ export class Voter2 {
                                 //     });
                                 //     break;
                                 case "cancel": //cancels the voting session if
-                                    message.author.send(
-                                        "the vote has been cancelled"
-                                    );
+                                    message.author
+                                        .send("the vote has been cancelled")
+                                        .catch((e) => {
+                                            this.terminate(client);
+                                        });
                                     this.terminate(client); //terminates the session since it was cencelled
                                     break;
                                 case "yes": //confirms that the voter wants to vote for the user
@@ -178,31 +188,41 @@ export class Voter2 {
                                             true
                                         ); //restarts the session so the voter can vote again
                                     } else {
-                                        message.author.send(
-                                            "You need to choose a nominee before you can confirm"
-                                        ); //tells the voter that they need to choose someone to vote for
+                                        message.author
+                                            .send(
+                                                "You need to choose a nominee before you can confirm"
+                                            )
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            }); //tells the voter that they need to choose someone to vote for
                                     }
                                     break;
                                 case "no":
                                     if (confirm) {
                                         //if the voter is about to vote this will cancel the vote
-                                        message.author.send(
-                                            `Yor vote for ${
-                                                vote + 1
-                                            }: ${await message.guild.members
-                                                .fetch(rows[vote].user)
-                                                .catch((e) => {
-                                                    console.log(e);
-                                                    return rows[vote].user;
-                                                })} is cancelled`
-                                        );
+                                        message.author
+                                            .send(
+                                                `Yor vote for ${
+                                                    vote + 1
+                                                }: ${await message.guild.members
+                                                    .fetch(rows[vote].user)
+                                                    .catch((e) => {
+                                                        console.log(e);
+                                                        return rows[vote].user;
+                                                    })} is cancelled`
+                                            )
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            });
                                         confirm = false;
                                         vote = undefined;
                                         id = undefined;
                                     } else {
-                                        message.author.send(
-                                            "There is no vote to cancel"
-                                        ); //tells the user that they cant cancel a vote right now
+                                        message.author
+                                            .send("There is no vote to cancel")
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            }); //tells the user that they cant cancel a vote right now
                                     }
                                     break;
                                 default:
@@ -214,14 +234,18 @@ export class Voter2 {
                                         ) // checks if the command is an user id
                                     ) {
                                         confirm = true;
-                                        message.author.send(
-                                            `You are about to vote for ${await message.guild.members
-                                                .fetch(message2.content)
-                                                .catch((e) => {
-                                                    console.log(e);
-                                                    return rows[vote].user;
-                                                })} \nType "yes" to confirm or "no" to cancel the vote`
-                                        ); //tells the voter who they are about to vvote for and how to confirm the vote
+                                        message.author
+                                            .send(
+                                                `You are about to vote for ${await message.guild.members
+                                                    .fetch(message2.content)
+                                                    .catch((e) => {
+                                                        console.log(e);
+                                                        return rows[vote].user;
+                                                    })} \nType "yes" to confirm or "no" to cancel the vote`
+                                            )
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            }); //tells the voter who they are about to vvote for and how to confirm the vote
                                         id = message2.content;
                                         break;
                                     }
@@ -230,21 +254,27 @@ export class Voter2 {
                                     }
                                     if (!rows[vote]) {
                                         //checks so the command is valid
-                                        message2.author.send(
-                                            "this is not a valid command"
-                                        );
+                                        message2.author
+                                            .send("this is not a valid command")
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            });
                                     } else {
                                         confirm = true; //makes it possible to respond yes
-                                        message.author.send(
-                                            `You are about to vote for ${
-                                                vote + 1
-                                            }: ${await message.guild.members
-                                                .fetch(rows[vote].user)
-                                                .catch((e) => {
-                                                    console.log(e);
-                                                    return rows[vote].user;
-                                                })} \nType "yes" to confirm or "no" to cancel the vote`
-                                        ); //tells the voter who they are about to vote for and how to confirm the vote
+                                        message.author
+                                            .send(
+                                                `You are about to vote for ${
+                                                    vote + 1
+                                                }: ${await message.guild.members
+                                                    .fetch(rows[vote].user)
+                                                    .catch((e) => {
+                                                        console.log(e);
+                                                        return rows[vote].user;
+                                                    })} \nType "yes" to confirm or "no" to cancel the vote`
+                                            )
+                                            .catch((e) => {
+                                                this.terminate(client);
+                                            }); //tells the voter who they are about to vote for and how to confirm the vote
                                     }
                                     break;
                             }
@@ -252,7 +282,9 @@ export class Voter2 {
                     };
                     this.timeout = setTimeout(() => {
                         //sets a timeout for the listener
-                        message.author.send("timed out");
+                        message.author.send("timed out").catch((e) => {
+                            this.terminate(client);
+                        });
                         this.terminate(client);
                     }, 1000 * 60 * 5);
                     client.on("message", this.listener); //starts the listener
